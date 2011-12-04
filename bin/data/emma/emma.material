@@ -1,0 +1,94 @@
+
+material Material#147
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.913726 0.690196 0.576471 1
+			diffuse 0.913726 0.690196 0.576471 1
+			specular 0.95 0.95 0.95 1 69
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture emma/emma_head_diffuse.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material Material#148
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			specular 0.279 0.279 0.279 1 33
+			scene_blend one one_minus_src_alpha
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture emma/emma_hair_diffuse.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material Material#147
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.913726 0.690196 0.576471 1
+			diffuse 0.913726 0.690196 0.576471 1
+			specular 0.207451 0.220078 0.23 1 19
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture emma/emma_head_diffuse.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material 01-Default
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.123882 0.127961 0.13 1 20
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture emma/emma_body_diffuse.tga
+			}
+		}
+
+	}
+
+}
+
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterial>
+  <Name>test material</Name>
+  <MaterialDef Filename="true">skybox.matdef</MaterialDef>
+    
+  <Properties>
+    <Property Name="tex_front">
+    	<Texture Filename="true">skybox/cloudy_noon_FR.jpg</Texture>
+    </Property>
+    <Property Name="tex_back">
+    	<Texture Filename="true">skybox/cloudy_noon_BK.jpg</Texture>
+    </Property>
+    <Property Name="tex_left">
+    	<Texture Filename="true">skybox/cloudy_noon_LF.jpg</Texture>
+    </Property>
+    <Property Name="tex_right">
+    	<Texture Filename="true">skybox/cloudy_noon_RT.jpg</Texture>
+    </Property>
+    <Property Name="tex_up">
+    	<Texture Filename="true">skybox/cloudy_noon_UP.jpg</Texture>
+    </Property>
+    <Property Name="tex_down">
+    	<Texture Filename="true">skybox/cloudy_noon_DN.jpg</Texture>
+    </Property>
+  </Properties>
+
+</WmeMaterial>

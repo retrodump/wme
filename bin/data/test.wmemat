@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterial>
+  <Name>test material</Name>
+  <MaterialDef Filename="true">test.matdef</MaterialDef>
+    
+  <Properties>
+    <Property Name="diffuse_tex">
+    	<Texture Filename="true">CubixStudioMaleNPC.jpg</Texture>
+    </Property>
+    <Property Name="ambient_color">
+    	<Color R="1" G="0.588235" B="0.588235" A="1" />
+    </Property>
+    <Property Name="diffuse_color">
+    	<Color R="0" G="0" B="1" A="1" />
+    </Property>
+    <Property Name="specular_color">
+    	<Color R="0" G="0" B="1" A="1" />
+    </Property>
+    <Property Name="shininess">
+    	<Value>100</Value>
+    </Property>
+  </Properties>
+
+</WmeMaterial>

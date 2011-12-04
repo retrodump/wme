@@ -1,0 +1,61 @@
+abstract material BaseMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient $ambient_color
+			diffuse $diffuse_color
+			specular $specular_color $shininess
+
+			texture_unit
+			{
+				texture $diffuse_tex
+			}
+		}
+	}
+}
+
+abstract material BaseMaterialAlpha : BaseMaterial
+{
+	technique
+	{
+		pass
+		{
+			scene_blend one one_minus_src_alpha
+		}
+	}
+}
+
+abstract material BaseMaterialAlphaNoCull : BaseMaterialAlpha
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			//alpha_rejection greater 80
+			scene_blend alpha_blend
+			depth_write off          
+		}
+	}
+}
+
+
+
+
+
+abstract material BaseMaterialSimple
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture $diffuse_tex
+			}
+		}
+	}
+}

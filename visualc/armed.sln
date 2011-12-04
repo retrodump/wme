@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "armed", "armed.vcproj", "{AE2ED9C1-4465-4101-8A39-08B15A4E9613}"
+	ProjectSection(ProjectDependencies) = postProject
+		{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE} = {04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wmecore", "wmecore.vcproj", "{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE2ED9C1-4465-4101-8A39-08B15A4E9613}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AE2ED9C1-4465-4101-8A39-08B15A4E9613}.Debug|Win32.Build.0 = Debug|Win32
+		{AE2ED9C1-4465-4101-8A39-08B15A4E9613}.Release|Win32.ActiveCfg = Release|Win32
+		{AE2ED9C1-4465-4101-8A39-08B15A4E9613}.Release|Win32.Build.0 = Release|Win32
+		{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}.Debug|Win32.Build.0 = Debug|Win32
+		{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}.Release|Win32.ActiveCfg = Release|Win32
+		{04CD8725-7BF5-42BF-A667-4FD1AD18C1EE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/arrow_down.png</file>
+        <file>icons/arrow_up.png</file>
+        <file>icons/cross.png</file>
+        <file>icons/folder_page.png</file>
+        <file>icons/page_white_add.png</file>
+        <file>icons/disk.png</file>
+        <file>icons/find.png</file>
+        <file>icons/find_next.png</file>
+        <file>icons/find_prev.png</file>
+        <file>icons/close.png</file>
+        <file>icons/brick.png</file>
+        <file>icons/chart_organisation.png</file>
+        <file>icons/camera.png</file>
+        <file>icons/lightbulb.png</file>
+        <file>icons/cleartext.png</file>
+        <file>icons/house.png</file>
+        <file>icons/image.png</file>
+        <file>icons/photo.png</file>
+        <file>icons/picture.png</file>
+        <file>icons/film.png</file>
+        <file>icons/application_form.png</file>
+        <file>icons/font.png</file>
+        <file>icons/layout.png</file>
+        <file>icons/palette.png</file>
+        <file>icons/script.png</file>
+        <file>icons/sound.png</file>
+        <file>icons/status_offline.png</file>
+        <file>icons/vector.png</file>
+        <file>icons/film_go.png</file>
+        <file>icons/script_palette.png</file>
+        <file>icons/user.png</file>
+    </qresource>
+</RCC>

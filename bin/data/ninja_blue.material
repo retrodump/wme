@@ -1,0 +1,15 @@
+
+material "Examples/Ninja_blue"
+{
+	technique
+	{
+		pass
+		{
+		
+			texture_unit
+			{
+				texture nskinbl.jpg 
+			}
+		}
+	}
+}

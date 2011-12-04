@@ -1,0 +1,13 @@
+syntax: glob
+bin/data/.metadata
+bin/debug
+bin/release
+src/armed/GeneratedFiles
+src/wmecore/wmescriptparser.cpp.output
+*.ncb
+*.suo
+visualc/armed.vcproj.JNML.Jan Nedoma.user
+visualc/dep
+visualc/obj
+visualc/wme.vcproj.JNML.Jan Nedoma.user
+visualc/wmecore.vcproj.JNML.Jan Nedoma.user

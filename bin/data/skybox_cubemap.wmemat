@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterial>
+  <Name>test material</Name>
+  <MaterialDef Filename="true">skybox.matdef</MaterialDef>
+    
+  <Properties>
+    <Property Name="tex_front">
+    	<Texture Filename="true">skybox/cubescene_fr.jpg</Texture>
+    </Property>
+    <Property Name="tex_back">
+    	<Texture Filename="true">skybox/cubescene_bk.jpg</Texture>
+    </Property>
+    <Property Name="tex_left">
+    	<Texture Filename="true">skybox/cubescene_lf.jpg</Texture>
+    </Property>
+    <Property Name="tex_right">
+    	<Texture Filename="true">skybox/cubescene_rt.jpg</Texture>
+    </Property>
+    <Property Name="tex_up">
+    	<Texture Filename="true">skybox/cubescene_up.jpg</Texture>
+    </Property>
+    <Property Name="tex_down">
+    	<Texture Filename="true">skybox/cubescene_dn.jpg</Texture>
+    </Property>
+  </Properties>
+
+</WmeMaterial>

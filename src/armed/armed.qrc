@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/WndMain">
+        <file>armed.ico</file>
+    </qresource>
+</RCC>

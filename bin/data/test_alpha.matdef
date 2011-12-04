@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterialDef>
+  <MaterialScript Filename="true">base.material</MaterialScript>
+  <BaseMaterialName>BaseMaterialAlpha</BaseMaterialName>
+  <Name>test material definition</Name>
+  
+  <Properties>
+
+    <Property Type="texture">
+    	<Name>diffuse_tex</Name>
+    	<Label>Texture</Label>
+    </Property>
+
+    <Property Type="color">
+    	<Name>ambient_color</Name>
+    	<Label>Ambient</Label>
+    	<DefaultValue>
+    		<Color R="1" G="1" B="1" A="1" />
+    	</DefaultValue>
+    	<IncludeAlpha>true</IncludeAlpha>
+    </Property>
+
+    <Property Type="color">
+    	<Name>diffuse_color</Name>
+    	<Label>&amp;Diffuse</Label>
+    	<DefaultValue>
+    		<Color R="1" G="1" B="1" A="1" />
+    	</DefaultValue>
+    	<IncludeAlpha>true</IncludeAlpha>
+    </Property>
+    
+    <Property Type="color">
+    	<Name>specular_color</Name>
+    	<Label>Specular</Label>
+    	<DefaultValue>
+    		<Color R="0" G="0" B="0" A="1" />
+    	</DefaultValue>
+    </Property>    
+
+    <Property Type="float">
+    	<Name>shininess</Name>
+    	<Label>Shininess</Label>
+    	<DefaultValue>
+    		<Value>0</Value>
+    	</DefaultValue>
+    	<MinValue>0</MinValue>
+    	<MaxValue>100</MaxValue>
+    </Property>    
+    
+  </Properties>
+
+</WmeMaterialDef>

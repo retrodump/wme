@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeWindow GeneratorVersion="2.0.0">
+    <ClickThrough>false</ClickThrough>
+    <ClipContent>true</ClipContent>
+    <NormalStyle>
+        <Image>
+            <Image Filename="true">win.bmp</Image>
+            <FrameSize Left="30" Right="30" Top="30" Bottom="30" />
+            <Type>Tiled</Type>
+        </Image>
+        <Sprite Filename="true">cur_wait.png</Sprite>
+    </NormalStyle>
+    <InactiveStyle />
+    <DisabledStyle />
+    <Name>test window</Name>
+    <Position X="100" Y="100" />
+    <Size Width="200" Height="100" />
+    <PixelPerfect>false</PixelPerfect>
+    <Disabled>false</Disabled>
+    <Visible>true</Visible>
+    <Text Localizable="true"></Text>
+    <Children>
+        <WmeWindow>
+            <ClickThrough>false</ClickThrough>
+            <ClipContent>true</ClipContent>
+            <NormalStyle>
+                <Image>
+                    <Image Filename="true">win.bmp</Image>
+                    <FrameSize Left="30" Right="30" Top="30" Bottom="30" />
+                    <Type>Tiled</Type>
+                </Image>
+                <Sprite Filename="true">cur_wait.png</Sprite>
+            </NormalStyle>
+            <InactiveStyle />
+            <DisabledStyle />
+            <Name>child window</Name>
+            <Position X="150" Y="50" />
+            <Size Width="61" Height="61" />
+            <PixelPerfect>true</PixelPerfect>
+            <Disabled>false</Disabled>
+            <Visible>true</Visible>
+            <Text Localizable="true"></Text>
+            <Children />
+        </WmeWindow>
+        <WmeButton>
+            <PressOffset X="1" Y="1" />
+            <TwoStateButton>false</TwoStateButton>
+            <Pressed>false</Pressed>
+            <Alignment Horizontal="Center" Vertical="Center" />
+            <NormalStyle>
+                <Image>
+                    <Image Filename="true">but_normal.bmp</Image>
+                    <FrameSize Left="10" Right="10" Top="10" Bottom="10" />
+                    <Type>Tiled</Type>
+                </Image>
+                <Sprite Filename="true">cur_wait.png</Sprite>
+            </NormalStyle>
+            <HoverStyle>
+                <Image>
+                    <Image Filename="true">but_hover.bmp</Image>
+                    <FrameSize Left="10" Right="10" Top="10" Bottom="10" />
+                    <Type>Tiled</Type>
+                </Image>
+                <TextColor R="1" G="0" B="0" A="1" />
+            </HoverStyle>
+            <DisabledStyle>
+                <Image>
+                    <Image Filename="true">but_disabled.bmp</Image>
+                    <FrameSize Left="10" Right="10" Top="10" Bottom="10" />
+                    <Type>Tiled</Type>
+                </Image>
+                <TextColor R="0.5" G="0.5" B="0.5" A="1" />
+            </DisabledStyle>
+            <PressedStyle>
+                <Image>
+                    <Image Filename="true">but_pressed.bmp</Image>
+                    <FrameSize Left="10" Right="10" Top="10" Bottom="10" />
+                    <Type>Tiled</Type>
+                </Image>
+            </PressedStyle>
+            <Name>button</Name>
+            <Position X="5" Y="30" />
+            <Size Width="80" Height="50" />
+            <PixelPerfect>false</PixelPerfect>
+            <Disabled>false</Disabled>
+            <Visible>true</Visible>
+            <Text Localizable="true">Button here</Text>
+            <Children />
+        </WmeButton>
+    </Children>
+</WmeWindow>

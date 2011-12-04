@@ -1,0 +1,22 @@
+Game.Log("writing to log");
+
+var something = "some value";
+
+while(true)
+{
+  Sleep(5000);
+
+  for (var i = 0; i < 100; i++)
+  {
+    Game.CustomMethod("param" + ToString(i));
+    Game.CustomProp = "custom" + i;
+    Sleep();
+  }
+}
+
+
+method CustomMethod(param)
+{
+  var local = "local";
+  //Game.Msg("in method: " + param);
+}

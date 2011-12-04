@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeFont GeneratorVersion="2.0.0">
+    <Face Filename="true">arial.ttf</Face>
+    <PointSize>31</PointSize>
+    <DPI Vertical="96" Horizontal="96" />
+    <Antialias>true</Antialias>
+</WmeFont>

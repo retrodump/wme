@@ -1,0 +1,21 @@
+#include "Wme.h"
+#include "SoundDataSource.h"
+
+
+namespace Wme
+{
+
+
+//////////////////////////////////////////////////////////////////////////
+SoundDataSource::SoundDataSource()
+{
+	m_Initialized = false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+SoundDataSource::~SoundDataSource()
+{
+}
+
+
+} // namespace Wme

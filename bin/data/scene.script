@@ -1,0 +1,118 @@
+﻿Game.Log(true ? 1 : 2);
+
+global actor, actor2;
+
+method OnLeftClick(pos, viewport)
+{
+  //Game.Msg(actor2.HasAnim("wave"));
+	//actor.Test();
+	//actor.Name = "male2";
+	this.Test();
+}
+
+method OnRightClick(pos, viewport)
+{
+	actor.Test();
+	//actor2.DeleteAnim("wave");
+}
+
+method OnMiddleClick(pos, viewport)
+{
+	actor2.AddSkeleton("male2.skeleton", "wave");
+	actor2.Test();	
+}
+
+/*
+method Test(param)
+{
+  Game.Msg(param);
+	Sleep(2000);	
+	return "meh";
+}
+*/
+/*
+Game.Log(this.Type);
+Game.Log(Game.Type);
+
+StringTests();
+
+
+method OnLeftClick(pos, viewport)
+{
+	Game.Log("Left Click " + pos.X + ", " + pos.Y + "   " + viewport.Type);
+	StringTests();
+}
+
+
+method OnLeftDoubleClick(pos)
+{
+	Game.Log("Left DoubleClick " + pos.X + ", " + pos.Y);
+}
+
+
+
+method OnRightClick(pos)
+{
+	Game.Log("Right Click " + pos.X + ", " + pos.Y);
+}
+
+
+method OnMiddleDoubleClick(pos)
+{
+	Game.Log("Middle DoubleClick " + pos.X + ", " + pos.Y);
+}
+
+
+function StringTests()
+{
+  /*
+  var str = "0123456789";
+  Game.Log(str.Length);
+  str += str;
+  Game.Log(str.Length);
+
+
+  str = "ŽLUŤOUČKÝ KŮŇ".ToLower().ToUpper();
+  Game.Log(str);
+  Game.Log(str.ToUpper());
+  
+  str = "cat and dog";
+  Game.Log(str.Substring(8));
+  Game.Log(str.Substring(0, 3));
+  Game.Log(str.Substring(4, 20));
+  
+  Game.Log("aaa".Compare("AAA"));
+  Game.Log("aaa".Compare("AAA", true));
+  
+  Game.Log("dog".StartsWith("D", true));
+  Game.Log("cat".EndsWith("t"));
+    
+  var array = "aaa,bbb,ccc,ddd,,fff".Split(",", true);
+	for (var i = 0; i < array.Length; i++)
+	{
+	  Game.Log(ToString(i) + ": " + array[i]);
+	} 
+
+	
+	var str = "   cat  ";
+	Game.Log(str.Trim());
+	Game.Log(str.TrimStart());
+	Game.Log(str.TrimEnd());
+	
+	Game.Log(str.Trim(" c"));
+  
+  
+  Game.Log("cats and dogs".Replace("cats", "birds").Replace("dogs", "butterflies").Replace("and", "or"));
+  
+  
+  var str = "cats and dogs";
+  Game.Log(str.LastIndexOf("cats"));
+  Game.Log(str.LastIndexOf("cats", 1));
+  Game.Log(str.LastIndexOf("dogs", 0));
+  Game.Log(str.LastIndexOf("dogs"));
+  */
+  
+  Game.Log(@"aaa\nbbb\""ccc\\ddd\x");
+  Game.Log("aaa\nbbb\"ccc\\ddd");  
+}
+*/

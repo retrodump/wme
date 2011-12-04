@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeSprite>
+  <Looping>true</Looping>
+
+  <Frame>
+    <Delay>90</Delay>
+    <SubFrame>
+      <Image Filename="true">actors/molly/walk/00.bmp</Image>
+      <BasePoint X="60" Y="250" />
+      <ColorKey R="1.0" G="0.0" B="1.0" />
+      <MirrorX>false</MirrorX>
+      <MirrorY>false</MirrorY>
+    </SubFrame>
+  </Frame>
+
+
+</WmeSprite>

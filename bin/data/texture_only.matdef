@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterialDef>
+  <MaterialScript Filename="true">base.material</MaterialScript>
+  <BaseMaterialName>BaseMaterialSimple</BaseMaterialName>
+  <Name>test material definition</Name>
+  
+  <Properties>
+
+    <Property Type="texture">
+    	<Name>diffuse_tex</Name>
+    	<Label>Texture</Label>
+    </Property>
+    
+  </Properties>
+
+</WmeMaterialDef>

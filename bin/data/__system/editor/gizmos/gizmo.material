@@ -1,0 +1,170 @@
+material sys/gizmo/base
+{
+    receive_shadows off    
+	technique
+	{
+		pass
+		{
+            depth_func greater
+            lighting off
+		}
+		pass
+		{
+			fog_override true none
+			ambient 0 0 0
+			diffuse 0.2 0.2 0.2
+			specular 0 0 0 40
+            polygon_mode solid
+            polygon_mode_overrideable false
+            cull_hardware none
+            cull_software none
+            depth_func less_equal
+		}
+	}
+}
+
+material sys/gizmo/x : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0.5 0 0
+		}
+	}
+}
+
+material sys/gizmo/x_sel : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 1 0 0
+		}
+	}
+}
+
+material sys/gizmo/y : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0 0.5 0
+		}
+	}
+}
+
+material sys/gizmo/y_sel : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0 1 0
+		}
+	}
+}
+
+material sys/gizmo/z : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0 0 0.45
+		}
+	}
+}
+
+material sys/gizmo/z_sel : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0 0 1
+		}
+	}
+}
+
+material sys/gizmo/scale : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 0.5 0.5 0.5
+		}
+	}
+}
+
+material sys/gizmo/scale_sel : sys/gizmo/base
+{
+	technique
+	{
+		pass
+		{
+		}
+		pass
+		{
+			emissive 1 1 1
+		}
+	}
+}
+
+material sys/gizmo/camera
+{
+    receive_shadows off    
+	technique
+	{
+		pass
+		{
+			fog_override true none
+			ambient 0 0 0
+			diffuse 0 0 0
+			emissive 0 0.5 0.5
+			specular 0 0 0 40
+            polygon_mode wireframe
+		}
+	}
+}
+
+material sys/gizmo/light
+{
+    receive_shadows off    
+	technique
+	{
+		pass
+		{
+			fog_override true none
+			ambient 0 0 0
+			diffuse 0 0 0
+			emissive 1 1 0
+			specular 0 0 0 40
+            polygon_mode wireframe
+		}
+	}
+}

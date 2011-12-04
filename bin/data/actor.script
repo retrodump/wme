@@ -1,0 +1,6 @@
+/*
+method OnLeftClick(pos)
+{
+	Game.Log("Click " + pos.X + ", " + pos.Y);
+}
+*/

@@ -1,0 +1,17 @@
+abstract material SkyboxBase
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture $tex_front $tex_back $tex_left $tex_right $tex_up $tex_down separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}

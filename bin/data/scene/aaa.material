@@ -1,0 +1,236 @@
+
+material "Material #9"
+{
+    transparency_casts_shadows on
+    receive_shadows on
+
+	technique
+	{
+		pass
+		{
+			ambient 0.066666 0.184312 0.0588229 1
+			diffuse 0.2 0.552941 0.176471 1
+			specular 0.045 0.045 0.045 25 0
+			//colour_write off
+
+			texture_unit
+			{
+				texture 0RTRAVA1.BMP
+			}
+		}
+
+	}
+
+}
+
+
+material "Material #2"
+{
+	receive_shadows off
+	technique
+	{
+		pass
+		{
+			ambient 0.066666 0.184312 0.0588229 1
+			diffuse 0.2 0.552941 0.176471 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture b_sr_v26.tga
+			}
+		}
+
+	}
+
+}
+
+
+material "Material test"
+{	
+	technique
+	{
+		pass
+		{
+			ambient 0.066666 0.184312 0.0588229 1
+			diffuse 0.2 0.552941 0.176471 1
+			specular 0.045 0.045 0.045 25 0
+			//colour_write off
+
+			texture_unit
+			{
+				texture b_sr_v26.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #5"
+{
+	technique
+	{
+		pass
+		{
+			/*ambient 0.0640517 0.103267 0.181698 1
+			diffuse 0.192157 0.309804 0.545098 1
+			specular 0.045 0.045 0.045 25 0*/
+			diffuse 1 1 1 1
+			specular 1 1 1 1
+			ambient 1 1 1 1
+
+			texture_unit
+			{
+				texture 00KONT02.BMP
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #7"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.0640517 0.158168 0.181698 1
+			diffuse 0.192157 0.47451 0.545098 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture 0VZACH2.BMP
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #10"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.12941 0.176469 0.0640517 1
+			diffuse 0.388235 0.529412 0.192157 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture 1HALAZ.BMP
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #13"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.0640517 0.12941 0.226142 1
+			diffuse 0.192157 0.388235 0.678431 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture ^krstr02.bmp
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #14"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.215684 0.0640517 0.125489 1
+			diffuse 0.647059 0.192157 0.376471 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture ^PODEZ04.BMP
+			}
+		}
+
+	}
+
+}
+
+
+
+material "Material #20"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0.145097 0.0640517 1
+			diffuse 0 0.435294 0.192157 1
+			specular 0.045 0.045 0.045 25 0
+		}
+
+	}
+
+}
+
+
+
+material "Material #8"
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+
+
+material "Material #1"
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.179083 0.0653588 0.0653588 1
+			diffuse 0.537255 0.196078 0.196078 1
+			specular 0.045 0.045 0.045 25 0
+
+			texture_unit
+			{
+				texture 0FBET2.bmp
+			}
+		}
+
+	}
+
+}
+
+

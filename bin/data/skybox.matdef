@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeMaterialDef>
+  <MaterialScript Filename="true">skybox.material</MaterialScript>
+  <BaseMaterialName>SkyboxBase</BaseMaterialName>
+  <Name>Skybox material</Name>
+  
+  <Properties>
+
+    <Property Type="texture">
+    	<Name>tex_front</Name>
+    	<Label>Front</Label>
+    </Property>
+    <Property Type="texture">
+    	<Name>tex_back</Name>
+    	<Label>Back</Label>
+    </Property>
+    <Property Type="texture">
+    	<Name>tex_left</Name>
+    	<Label>Left</Label>
+    </Property>
+    <Property Type="texture">
+    	<Name>tex_right</Name>
+    	<Label>Right</Label>
+    </Property>
+    <Property Type="texture">
+    	<Name>tex_up</Name>
+    	<Label>Up</Label>
+    </Property>
+    <Property Type="texture">
+    	<Name>tex_down</Name>
+    	<Label>Down</Label>
+    </Property>
+    
+  </Properties>
+
+</WmeMaterialDef>
