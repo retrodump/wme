@@ -8,8 +8,8 @@ while(true)
 
   for (var i = 0; i < 100; i++)
   {
-    Game.CustomMethod("param" + ToString(i));
-    Game.CustomProp = "custom" + i;
+    this.CustomMethod("param" + ToString(i));
+    this.CustomProp = "custom" + i;
     Sleep();
   }
 }

@@ -30,6 +30,8 @@ namespace Wme
 		/// Invoke garbage collecting on existing values.
 		void CollectGarbage();
 
+		void CollectFull();
+
 		/// Adds a single value to a gray list.
 		/// Only adds the value if it's unmarked and if the garbage collector
 		/// is currently tracking
@@ -41,6 +43,8 @@ namespace Wme
 		}
 
 		void WriteBarrier(Value* parentVal, Value* newVal);
+
+		float GetGrowthRate() const;
 
 		WideString GetInfo() const;
 
@@ -69,16 +73,21 @@ namespace Wme
 #ifdef WME_GC_WRITE_BARRIER_CHECKING
 		void WriteBarrierCheck();
 #endif
+		void AdjustLimits();
 
 		Value::ValueList m_GrayList;
 		bool m_FirstRun;
 		GCState m_GCState;
+
+		// constants
+		static const float HARD_TO_SOFT_LIMIT_RATIO;
 		
 		// GC parameters
 		size_t m_NumToTrackPerFrame;
 		size_t m_NumToDeletePerFrame;
-		size_t m_NumFramesToStartGC;
-		size_t m_GrowthToStartGC;
+		size_t m_MaxLimitHard;
+		size_t m_MaxLimitSoft;
+		float m_LimitGrowthRate;
 		
 
 		// GC stats

@@ -324,6 +324,10 @@ bool FullScene::HandleKeyboardEvent(Viewport* viewport, KeyboardEvent& event)
 
 			return true;
 
+		case OIS::KC_F4:
+			m_Actor->AddScript(L"test.script");
+			return true;
+
 		}
 	}
 	return false;

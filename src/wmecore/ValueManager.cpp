@@ -10,6 +10,7 @@
 namespace Wme
 {
 
+const float ValueManager::HARD_TO_SOFT_LIMIT_RATIO = 0.9f;
 
 //////////////////////////////////////////////////////////////////////////
 ValueManager::ValueManager()
@@ -19,8 +20,10 @@ ValueManager::ValueManager()
 
 	m_NumToTrackPerFrame = 200;
 	m_NumToDeletePerFrame = 200;
-	m_NumFramesToStartGC = 100;
-	m_GrowthToStartGC = 500;
+
+	m_MaxLimitHard = 1000;
+	m_MaxLimitSoft = (size_t)((float)m_MaxLimitHard * HARD_TO_SOFT_LIMIT_RATIO);
+	m_LimitGrowthRate = 1.2f;
 
 	m_FramesSinceLastCollect = 0;
 	m_GrowthSinceLastCollect = 0;
@@ -87,12 +90,20 @@ void ValueManager::CollectGarbage()
 {
 	Game::GetInstance()->m_TestInfo = GetInfo();
 
+	// we exceeded maximum allowed size
+	if (m_Values.size() >= m_MaxLimitHard)
+	{
+		CollectFull();
+		return;
+	}
+
+
 	if (m_GCState == GC_IDLE)
 	{
 		m_FramesSinceLastCollect++;
-
+				
 		// should we collect the garbage now?
-		if (m_FramesSinceLastCollect >= m_NumFramesToStartGC || m_GrowthSinceLastCollect >= m_GrowthToStartGC)
+		if (m_Values.size() >= m_MaxLimitSoft)
 		{
 			m_GCState = GC_TRACKING;
 			m_FirstRun = true;
@@ -129,6 +140,29 @@ void ValueManager::CollectGarbage()
 			m_GrowthSinceLastCollect = 0;
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void ValueManager::CollectFull()
+{
+	// prepare
+	m_GCState = GC_TRACKING;
+	MarkAll(Value::MARK_WHITE);
+	AddRootsToGrayList();
+
+	// track all
+	while (TrackValues()) {};
+
+	// delete all
+	m_GCState = GC_DELETING;
+	while (DeleteValues()) {};
+
+	// finalize
+	m_GCState = GC_IDLE;
+	m_FramesSinceLastCollect = 0;
+	m_GrowthSinceLastCollect = 0;
+
+	AdjustLimits();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -175,6 +209,7 @@ bool ValueManager::TrackValues()
 		valToTrack->SetGCMark(Value::MARK_BLACK);
 
 		m_GrayList.pop_front();
+		toTrack--;
 	}
 	return true;
 }
@@ -251,6 +286,23 @@ void ValueManager::WriteBarrierCheck()
 #endif
 
 //////////////////////////////////////////////////////////////////////////
+void ValueManager::AdjustLimits()
+{
+	if (m_Values.size() >= m_MaxLimitHard)
+	{
+		m_MaxLimitHard = (size_t)((float)m_Values.size() * m_LimitGrowthRate);
+		m_MaxLimitSoft = (size_t)((float)m_MaxLimitHard * HARD_TO_SOFT_LIMIT_RATIO);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+float ValueManager::GetGrowthRate() const
+{
+	if (m_GrowthSinceLastCollect == 0) return 0.0f;
+	else return 1.0f + (float)m_Values.size() / (float)m_GrowthSinceLastCollect;
+}
+
+//////////////////////////////////////////////////////////////////////////
 WideString ValueManager::GetInfo() const
 {
 	WideString str = L"GC: ";
@@ -270,8 +322,10 @@ WideString ValueManager::GetInfo() const
 	str += L"  values: " + StringUtil::ToString(m_Values.size());
 	str += L"  peak: " + StringUtil::ToString(m_PeakNumValues);
 	str += L"  pool: " + StringUtil::ToString(m_ValuePool.size());
+	str += L"  limit: " + StringUtil::ToString(m_MaxLimitSoft) + L"/" + StringUtil::ToString(m_MaxLimitHard);
 
 	return str;
 }
+
 
 } // namespace Wme
