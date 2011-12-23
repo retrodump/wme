@@ -34,6 +34,9 @@ void Scene3DBar::Update()
 	m_Ui.MoveButton->setDefaultAction(am->GetAction("Scene.Transform.Move"));
 	m_Ui.RotateButton->setDefaultAction(am->GetAction("Scene.Transform.Rotate"));
 	m_Ui.ScaleButton->setDefaultAction(am->GetAction("Scene.Transform.Scale"));
+
+	m_Ui.LocalButton->setDefaultAction(am->GetAction("Scene.GizmoMode.Local"));
+	m_Ui.WorldButton->setDefaultAction(am->GetAction("Scene.GizmoMode.World"));
 }
 
 

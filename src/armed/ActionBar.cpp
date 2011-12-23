@@ -176,6 +176,9 @@ ActionBarItem* ActionBar::DefineStandardMenu(QObject* parent)
 	sceneMenu->AddItem("Scene.Transform.Move");
 	sceneMenu->AddItem("Scene.Transform.Rotate");
 	sceneMenu->AddItem("Scene.Transform.Scale");
+	sceneMenu->AddItem();
+	sceneMenu->AddItem("Scene.GizmoMode.Local");
+	sceneMenu->AddItem("Scene.GizmoMode.World");
 
 	return root;
 }

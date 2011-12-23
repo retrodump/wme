@@ -135,6 +135,29 @@ void DocScene::BuildActions()
 	m_TransformActionsMap[transRotate] = SceneNodeEditor::MODE_ROTATE;
 	m_TransformActionsMap[transScale] = SceneNodeEditor::MODE_SCALE;
 
+
+	// local / world
+	QAction* gizmoLocal = new QAction(tr("Local"), this);
+	gizmoLocal->setCheckable(true);
+	gizmoLocal->setShortcut(Qt::SHIFT + Qt::Key_L);
+	connect(gizmoLocal, SIGNAL(triggered()), this, SLOT(OnGizmoLocal()));
+	am->AddAction("Scene.GizmoMode.Local", gizmoLocal, ActionContext::CONTEXT_DOC);
+
+	QAction* gizmoWorld = new QAction(tr("World"), this);
+	gizmoWorld->setCheckable(true);
+	gizmoWorld->setShortcut(Qt::SHIFT + Qt::Key_W);
+	connect(gizmoWorld, SIGNAL(triggered()), this, SLOT(OnGizmoWorld()));
+	am->AddAction("Scene.GizmoMode.World", gizmoWorld, ActionContext::CONTEXT_DOC);
+
+
+	QActionGroup* coordGroup = new QActionGroup(this);
+	coordGroup->addAction(gizmoLocal);
+	coordGroup->addAction(gizmoWorld);
+
+	m_GizmoModeActionsMap[gizmoLocal] = true;
+	m_GizmoModeActionsMap[gizmoWorld] = false;
+
+
 	UpdateActions();
 }
 
@@ -145,6 +168,20 @@ void DocScene::OnTransfromChanged()
 	if (!act || m_TransformActionsMap.find(act) == m_TransformActionsMap.end()) return;
 
 	if (m_Editor) m_Editor->SetEditorMode(m_TransformActionsMap[act]);
+
+	UpdateActions();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::OnGizmoLocal()
+{
+	if (m_Editor) m_Editor->SetGizmoLocalMode(true);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::OnGizmoWorld()
+{
+	if (m_Editor) m_Editor->SetGizmoLocalMode(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -196,6 +233,13 @@ void DocScene::UpdateActions()
 		QAction* act = val.first;
 		act->setDisabled(m_Editor == NULL);
 		act->setChecked(m_Editor != NULL && m_Editor->GetEditorMode() == val.second);
+	}
+
+	foreach (GizmoModeActionsMap::value_type& val, m_GizmoModeActionsMap)
+	{
+		QAction* act = val.first;
+		act->setDisabled(m_Editor == NULL || m_Editor->GetEditorMode() == SceneNodeEditor::MODE_SCALE);
+		act->setChecked(m_Editor != NULL && m_Editor->GetGizmoLocalMode() == val.second);
 	}
 }
 

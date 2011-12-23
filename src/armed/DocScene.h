@@ -64,6 +64,8 @@ namespace Armed
 	private slots:
 		void OnMeshOrSkeletonChanged();
 		void OnTransfromChanged();
+		void OnGizmoLocal();
+		void OnGizmoWorld();
 
 	private:
 		WmeWidget* m_View;
@@ -80,6 +82,9 @@ namespace Armed
 
 		typedef std::map<QAction*, SceneNodeEditor::EditorMode> TransformActionsMap;
 		TransformActionsMap m_TransformActionsMap;
+
+		typedef std::map<QAction*, bool> GizmoModeActionsMap;
+		GizmoModeActionsMap m_GizmoModeActionsMap;
 
 
 		void UpdateActions();
