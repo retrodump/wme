@@ -21,6 +21,12 @@ namespace Armed
 		bool Initialize(const QString& projectPath);
 		void Shutdown();
 
+		void TouchFile(const QString& fileName);
+		QDateTime GetFileLastCheck(const QString& fileName);
+
+		void SaveFileThumbnail(const QString& fileName, const QImage& image);
+		QImage LoadFileThumbnail(const QString& fileName);
+
 	private:
 		QSqlDatabase m_Db;
 
@@ -28,11 +34,6 @@ namespace Armed
 
 		int AddFileToDb(const QString& fileName);
 		int GetFileId(const QString& fileName, bool autoCreate = false);
-		void TouchFile(const QString& fileName);
-		QDateTime GetFileLastCheck(const QString& fileName);
-
-		void SaveFileThumbnail(const QString& fileName, QImage* image);
-		QImage* LoadFileThumbnail(const QString& fileName);
 	};
 }
 

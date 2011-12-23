@@ -6,6 +6,7 @@
 #include "StringUtil.h"
 #include "Project.h"
 #include "KnownFileType.h"
+#include "FreeImage.h"
 
 using namespace Wme;
 
@@ -105,6 +106,38 @@ void QtUtil::FileTypeListToExtList(const QString& types, QSet<QString>& extensio
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+QImage QtUtil::LoadImage(const QString& fileName)
+{
+	QImage image;
+
+	image.load(fileName);
+	if (image.isNull())
+	{
+		// try loading via freeimage
+		QByteArray ba = fileName.toLocal8Bit();
+
+		FREE_IMAGE_FORMAT imgFormat = FreeImage_GetFileType(ba.data(), 0);
+		FIBITMAP* bitmap = FreeImage_Load(imgFormat, ba.data(), 0);
+		if (bitmap)
+		{
+			// create in-memory png
+			FIMEMORY* fiMem = FreeImage_OpenMemory();
+			FreeImage_SaveToMemory(FIF_PNG, bitmap, fiMem);
+			dword size;
+			byte* data;
+			FreeImage_AcquireMemory(fiMem, &data, &size);
+
+			// let Qt load it
+			image.loadFromData(data, size);
+
+			// release memory
+			FreeImage_CloseMemory(fiMem);
+			FreeImage_Unload(bitmap);
+		}
+	}
+	return image;
+}
 
 
 } // namespace Armed

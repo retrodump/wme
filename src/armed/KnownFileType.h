@@ -16,8 +16,11 @@ namespace Armed
 
 	public:
 		KnownFileType(QObject* parent = NULL);
-		KnownFileType(const QString& name, const QString& extensions = "", QObject* parent = NULL);
+		KnownFileType(const QString& type, const QString& name, const QString& extensions = "", QObject* parent = NULL);
 		~KnownFileType();
+
+		void SetType(const QString& type) { m_Type = type; }
+		QString GetType() const { return m_Type; }
 
 		void SetName(const QString& name) { m_Name = name; }
 		QString GetName() const { return m_Name; }
@@ -34,6 +37,7 @@ namespace Armed
 
 
 	private:
+		QString m_Type;
 		QString m_Name;
 		QSet<QString> m_Extensions;
 		QIcon* m_Icon;

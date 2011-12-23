@@ -104,74 +104,74 @@ void Project::RegisterKnownFileTypes()
 	{
 		extList << QtUtil::WideToQString(ext).mid(1);
 	}
-	type = new KnownFileType(tr("Textures"), extList.join(";"));
+	type = new KnownFileType("texture", tr("Textures"), extList.join(";"));
 	type->SetIcon(":/icons/picture.png");
-	m_FileTypes["texture"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// dds textures
-	type = new KnownFileType(tr("Compressed textures"), "dds");
+	type = new KnownFileType("dds", tr("Compressed textures"), "dds");
 	type->SetIcon(":/icons/picture.png");
-	m_FileTypes["dds"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// sprites
-	type = new KnownFileType(tr("Sprites"), "sprite");
+	type = new KnownFileType("sprite", tr("Sprites"), "sprite");
 	type->SetIcon(":/icons/film.png");
-	m_FileTypes["sprite"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// scenes
-	type = new KnownFileType(tr("Scenes"), "scene");
+	type = new KnownFileType("scene", tr("Scenes"), "scene");
 	type->SetIcon(":/icons/house.png");
-	m_FileTypes["scene"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// materials
-	type = new KnownFileType(tr("Material"), "wmemat");
+	type = new KnownFileType("material", tr("Material"), "wmemat");
 	type->SetIcon(":/icons/palette.png");
-	m_FileTypes["material"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// material types
-	type = new KnownFileType(tr("Material type"), "matdef");
+	type = new KnownFileType("matdef", tr("Material type"), "matdef");
 	type->SetIcon(":/icons/script_palette.png");
-	m_FileTypes["matdef"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// meshes
-	type = new KnownFileType(tr("Meshes"), "mesh");
+	type = new KnownFileType("mesh", tr("Meshes"), "mesh");
 	type->SetIcon(":/icons/status_offline.png");
-	m_FileTypes["mesh"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// skeletons
-	type = new KnownFileType(tr("Skeletons"), "skeleton");
+	type = new KnownFileType("skeleton", tr("Skeletons"), "skeleton");
 	type->SetIcon(":/icons/vector.png");
-	m_FileTypes["skeleton"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// windows
-	type = new KnownFileType(tr("Windows"), "window");
+	type = new KnownFileType("window", tr("Windows"), "window");
 	type->SetIcon(":/icons/application_form.png");
-	m_FileTypes["window"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// fonts
-	type = new KnownFileType(tr("Fonts"), "font");
+	type = new KnownFileType("font", tr("Fonts"), "font");
 	type->SetIcon(":/icons/font.png");
-	m_FileTypes["font"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// layouts
-	type = new KnownFileType(tr("Layouts"), "layout");
+	type = new KnownFileType("layout", tr("Layouts"), "layout");
 	type->SetIcon(":/icons/layout.png");
-	m_FileTypes["layout"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// scripts
-	type = new KnownFileType(tr("Scripts"), "script;inc");
+	type = new KnownFileType("script", tr("Scripts"), "script;inc");
 	type->SetIcon(":/icons/script.png");
-	m_FileTypes["script"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// sounds
-	type = new KnownFileType(tr("Sounds"), "ogg;wav");
+	type = new KnownFileType("sound", tr("Sounds"), "ogg;wav");
 	type->SetIcon(":/icons/sound.png");
-	m_FileTypes["sound"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 	// videos
-	type = new KnownFileType(tr("Videos"), "ogv");
+	type = new KnownFileType("video", tr("Videos"), "ogv");
 	type->SetIcon(":/icons/film_go.png");
-	m_FileTypes["video"] = type;
+	m_FileTypes[type->GetType()] = type;
 
 
 
@@ -207,6 +207,54 @@ QIcon* Project::GetFileIcon(const QString& fileName) const
 	QString ext = QFileInfo(fileName).suffix().toLower();
 	if (m_IconLookup.contains(ext)) return m_IconLookup[ext];
 	else return NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+QImage Project::GetFileThumbnail(const QString& fileName) const
+{	
+	QString absFileName = GetAbsoluteFileName(fileName);
+	QString relFileName = GetRelativeFileName(fileName);
+
+	QDateTime thumbDate = m_MetaData->GetFileLastCheck(relFileName);
+	QDateTime fileDate = QFileInfo(absFileName).lastModified();
+
+	QImage thumbnailImg;
+
+	if (!thumbDate.isNull() && thumbDate >= fileDate)
+	{
+		thumbnailImg = m_MetaData->LoadFileThumbnail(relFileName);
+	}
+
+	if (thumbnailImg.isNull())
+	{
+		thumbnailImg = GenerateThumbnail(absFileName);
+		if (!thumbnailImg.isNull())
+		{
+			m_MetaData->SaveFileThumbnail(relFileName, thumbnailImg);
+			m_MetaData->TouchFile(relFileName);
+		}
+	}
+
+	return thumbnailImg;
+}
+
+//////////////////////////////////////////////////////////////////////////
+QImage Project::GenerateThumbnail(const QString& fileName) const
+{
+	KnownFileType* fileType = GetFileType(fileName);
+
+	// normal images
+	if (fileType->GetType() == "texture" || fileType->GetType() == "dds")
+	{
+		QImage img = QtUtil::LoadImage(fileName);
+		if (!img.isNull())
+		{
+			return img.scaled(QSize(256, 256), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+		}
+	}
+
+	// unsupported types (for now)
+	return QImage();
 }
 
 

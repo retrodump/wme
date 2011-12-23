@@ -7,6 +7,7 @@
 #include <QtGui/QApplication>
 #include "WmeWidget.h"
 #include "EmbeddedWindow.h"
+#include "FreeImage.h"
 #include "QtWin.h"
 
 
@@ -23,6 +24,10 @@ using namespace Wme;
 //////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
+#ifndef Q_OS_WIN
+	FreeImage_Initialise();
+#endif
+
 	int ret;
 	QApplication app(argc, argv);
 
@@ -57,7 +62,10 @@ int main(int argc, char *argv[])
 	else ret = 1;
 
 	delete Game;
-	
+
+#ifndef Q_OS_WIN
+	FreeImage_DeInitialise();
+#endif
+
 	return ret;
 }
-

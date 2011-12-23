@@ -35,27 +35,11 @@ bool MetaData::Initialize(const QString& projectPath)
 	bool result = m_Db.open();
 	if (result)
 	{
-#if defined(Q_WS_WIN)
+#if defined(Q_OS_WIN)
 		SetFileAttributesW((LPCWSTR)dbPath.utf16(), FILE_ATTRIBUTE_HIDDEN);
 #endif
 		result = BuildDbSchema();
 	}
-
-	GetFileId("C:\\wme_dev\\wme_demo\\wme_demo.wpr", true);
-	TouchFile("C:\\wme_dev\\wme_demo\\wme_demo.wpr");
-
-	//QImage img("I:\\!cz.bmp");
-	//SaveFileThumbnail("C:\\wme_dev\\wme_demo\\wme_demo.wpr", &img);
-	QImage* img = LoadFileThumbnail("C:\\wme_dev\\wme_demo\\wme_demo.wpr");
-	if (img)
-	{
-		img->save("i:\\thumb.png");
-		delete img;
-	}
-
-
-	GetFileId("C:\\wme_dev\\wme_demo\\xxx.txt", true);
-	TouchFile("C:\\wme_dev\\wme_demo\\xxx.txt");
 
 	return result;
 }
@@ -170,7 +154,7 @@ QDateTime MetaData::GetFileLastCheck(const QString& fileName)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void MetaData::SaveFileThumbnail(const QString& fileName, QImage* image)
+void MetaData::SaveFileThumbnail(const QString& fileName, const QImage& image)
 {
 	int id = GetFileId(fileName);
 	if (id < 0) return;
@@ -178,7 +162,7 @@ void MetaData::SaveFileThumbnail(const QString& fileName, QImage* image)
 	QByteArray ba;
 	QBuffer buffer(&ba);
 	buffer.open(QIODevice::WriteOnly);
-	image->save(&buffer, "PNG");
+	image.save(&buffer, "PNG");
 
 	QSqlQuery query;
 	query.prepare("SELECT file FROM fileThumbnail WHERE file = ?");
@@ -200,10 +184,10 @@ void MetaData::SaveFileThumbnail(const QString& fileName, QImage* image)
 }
 
 //////////////////////////////////////////////////////////////////////////
-QImage* MetaData::LoadFileThumbnail(const QString& fileName)
+QImage MetaData::LoadFileThumbnail(const QString& fileName)
 {
 	int id = GetFileId(fileName);
-	if (id < 0) return NULL;
+	if (id < 0) return QImage();
 
 	QSqlQuery query;
 	query.prepare("SELECT data FROM fileThumbnail WHERE file = ?");
@@ -212,11 +196,11 @@ QImage* MetaData::LoadFileThumbnail(const QString& fileName)
 
 	if (query.next())
 	{
-		QImage* img = new QImage();
-		img->loadFromData(query.value(0).toByteArray());
+		QImage img;
+		img.loadFromData(query.value(0).toByteArray());
 		return img;
 	}
-	else return NULL;
+	else return QImage();
 }
 
 

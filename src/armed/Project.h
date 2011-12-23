@@ -39,11 +39,13 @@ namespace Armed
 		KnownFileType* GetFileType(const QString& fileName) const;
 		QIcon* GetFileIcon(const QString& fileName) const;
 
+		QImage GetFileThumbnail(const QString& fileName) const;
+
 	signals:
 		void ProjectChanged(const QString& fileName);
 
 	private:
-		MetaData* m_MetaData;
+		mutable MetaData* m_MetaData;
 
 		static Project* s_Instance;
 
@@ -52,6 +54,8 @@ namespace Armed
 		void RegisterKnownFileTypes();
 		QMap<QString, KnownFileType*> m_FileTypes;
 		QMap<QString, QIcon*> m_IconLookup;
+
+		QImage GenerateThumbnail(const QString& fileName) const;
 	};
 }
 

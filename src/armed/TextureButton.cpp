@@ -72,12 +72,7 @@ void TextureButton::SetImage(const QString& fileName)
 	if (fileName == m_FileName) return;
 
 	m_FileName = fileName;
-	QString fullFileName = Project::GetInstance()->GetAbsoluteFileName(fileName);
-
-	// TODO handle DDS textures
-	// TODO metadata thumbnails
-	m_Thumbnail = QImage();
-	m_Thumbnail.load(fullFileName);
+	m_Thumbnail = Project::GetInstance()->GetFileThumbnail(fileName);
 	
 	if (!m_Thumbnail.isNull()) m_Thumbnail = m_Thumbnail.scaled(imageSize, imageSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 	setToolTip(m_FileName);	

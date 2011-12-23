@@ -23,6 +23,8 @@ namespace Armed
 
 		static bool MimeDataToFileList(const QMimeData* data, const QString& allowedTypes, bool acceptMulti, QStringList& fileList);
 		static void FileTypeListToExtList(const QString& types, QSet<QString>& extensions);
+
+		static QImage LoadImage(const QString& fileName);
 	};
 }
 

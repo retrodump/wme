@@ -16,9 +16,10 @@ KnownFileType::KnownFileType(QObject* parent) : QObject(parent)
 }
 
 //////////////////////////////////////////////////////////////////////////
-KnownFileType::KnownFileType(const QString& name, const QString& extensions, QObject* parent) : QObject(parent)
+KnownFileType::KnownFileType(const QString& type, const QString& name, const QString& extensions, QObject* parent) : QObject(parent)
 {
 	m_Icon = NULL;
+	m_Type = type;
 	m_Name = name;
 
 	if (!extensions.isEmpty()) SetExtensions(extensions);
