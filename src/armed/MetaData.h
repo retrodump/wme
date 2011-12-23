@@ -31,6 +31,10 @@ namespace Armed
 		QSqlDatabase m_Db;
 
 		bool BuildDbSchema();
+		int GetSchemaVersion() const;
+		void SetSchemaVersion(int version);
+
+		bool ReportSqlError(const QSqlQuery& query) const;
 
 		int AddFileToDb(const QString& fileName);
 		int GetFileId(const QString& fileName, bool autoCreate = false);

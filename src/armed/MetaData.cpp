@@ -55,38 +55,69 @@ bool MetaData::BuildDbSchema()
 {
 	if (!m_Db.open()) return false;
 
+	int schemaVer = GetSchemaVersion();
 
 	bool result = true;
 	QSqlQuery query;
 
-	if (result)
+	switch (schemaVer)
 	{
-		result = query.exec("CREATE TABLE IF NOT EXISTS file (id INTEGER PRIMARY KEY AUTOINCREMENT, fullName TEXT UNIQUE, shortName TEXT, modTime INTEGER, lastCheck INTEGER)");
-	}
-	
-	if (result)
-	{
-		result = query.exec("CREATE INDEX IF NOT EXISTS fileNameIndex ON file (fullName)");
+	case 0:
+		{
+			result = query.exec("CREATE TABLE IF NOT EXISTS file (id INTEGER PRIMARY KEY AUTOINCREMENT, fullName TEXT UNIQUE, shortName TEXT, modTime INTEGER, lastCheck INTEGER)");
+			if (!result) return ReportSqlError(query);
+
+			result = query.exec("CREATE INDEX IF NOT EXISTS fileNameIndex ON file (fullName)");
+			if (!result) return ReportSqlError(query);
+
+			result = query.exec("CREATE TABLE IF NOT EXISTS fileThumbnail (file INTEGER, data BLOB)");
+			if (!result) return ReportSqlError(query);
+
+			result = query.exec("CREATE TRIGGER IF NOT EXISTS fileDeleted AFTER DELETE ON file"
+								" FOR EACH ROW BEGIN"
+								"  DELETE FROM fileThumbnail WHERE file = OLD.id;"
+								" END");
+			if (!result) return ReportSqlError(query);
+
+			schemaVer = 1;
+			SetSchemaVersion(schemaVer);
+		}
+		// fall through
+	case 1:
+		{
+
+		}
 	}
 
-	if (result)
-	{
-		result = query.exec("CREATE TABLE IF NOT EXISTS fileThumbnail (file INTEGER, data BLOB)");
-	}
+	return true;
+}
 
-	if (result)
-	{
-		result = query.exec("CREATE TRIGGER IF NOT EXISTS fileDeleted AFTER DELETE ON file"
-							" FOR EACH ROW BEGIN"
-							"  DELETE FROM fileThumbnail WHERE file = OLD.id;"
-							" END");
-	}
-
+//////////////////////////////////////////////////////////////////////////
+bool MetaData::ReportSqlError(const QSqlQuery& query) const
+{
 #ifdef _DEBUG
-	if (!result) QMessageBox::critical(NULL, "Schema error", query.lastError().text());
+	QMessageBox::critical(NULL, "Schema error", QString("Error: %1\n\nQuery: %2").arg(query.lastError().text()).arg(query.lastQuery()));
 #endif
+	return false;
+}
 
-	return result;
+//////////////////////////////////////////////////////////////////////////
+int MetaData::GetSchemaVersion() const
+{
+	QSqlQuery query;
+	query.prepare("PRAGMA user_version");
+	query.exec();
+
+	if (query.next()) return query.value(0).toInt();
+	else return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MetaData::SetSchemaVersion(int version)
+{
+	QSqlQuery query;
+	query.prepare(QString("PRAGMA user_version = %1").arg(version));
+	query.exec();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,7 +128,7 @@ int MetaData::AddFileToDb(const QString& fileName)
 	query.addBindValue(QtUtil::NormalizeFileName(fileName));
 	query.addBindValue(QFileInfo(fileName).fileName().toLower());
 	query.exec();
-
+	
 	return query.lastInsertId().toInt();
 }
 
@@ -156,7 +187,7 @@ QDateTime MetaData::GetFileLastCheck(const QString& fileName)
 //////////////////////////////////////////////////////////////////////////
 void MetaData::SaveFileThumbnail(const QString& fileName, const QImage& image)
 {
-	int id = GetFileId(fileName);
+	int id = GetFileId(fileName, true);
 	if (id < 0) return;
 
 	QByteArray ba;
