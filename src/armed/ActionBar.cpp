@@ -171,6 +171,12 @@ ActionBarItem* ActionBar::DefineStandardMenu(QObject* parent)
 	editMenu->AddItem("Edit.FindNext");
 	editMenu->AddItem("Edit.FindPrev");
 
+	ActionBarItem* sceneMenu = root->AddSub("SceneMenu", tr("Scene"));
+	sceneMenu->AddItem("Scene.Transform.Select");
+	sceneMenu->AddItem("Scene.Transform.Move");
+	sceneMenu->AddItem("Scene.Transform.Rotate");
+	sceneMenu->AddItem("Scene.Transform.Scale");
+
 	return root;
 }
 

@@ -31,5 +31,9 @@
         <file>icons/film_go.png</file>
         <file>icons/script_palette.png</file>
         <file>icons/user.png</file>
+        <file>icons/gizmo_move.png</file>
+        <file>icons/gizmo_rotate.png</file>
+        <file>icons/gizmo_scale.png</file>
+        <file>icons/pointer_black.png</file>
     </qresource>
 </RCC>

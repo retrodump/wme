@@ -22,11 +22,14 @@
 #include "PropMesh.h"
 #include "PropCamera.h"
 #include "PropLight.h"
+#include "Scene3DBar.h"
+#include "ActionManager.h"
 
 // temp
 #include "Game.h"
 #include "ContentManager.h"
 #include "FullScene.h"
+
 
 
 namespace Armed
@@ -38,11 +41,16 @@ DocScene::DocScene(QWidget* parent) : DocumentView(parent)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->setMargin(0);
+	layout->setSpacing(0);
+
+	m_SceneBar = new Scene3DBar(this);
 
 	m_View = new WmeWidget(this);
 	m_View->CreateWmeView();
 	m_View->AddIgnoredKeySequence(QKeySequence::NextChild);
 	m_View->AddIgnoredKeySequence(QKeySequence::PreviousChild);
+
+	layout->addWidget(m_SceneBar);
 	layout->addWidget(m_View);
 
 	m_Scene = NULL;
@@ -70,6 +78,73 @@ void DocScene::OnActivate()
 	MainWindow::GetInstance()->GetNavigator()->SetNavigator(m_NodeNav);
 	NodeSelectionChanged();
 	m_View->setFocus(Qt::OtherFocusReason);
+
+	// update scene toolbar
+	m_SceneBar->Update();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::BuildActions()
+{
+	DocumentView::BuildActions();
+
+	ActionManager* am = ActionManager::GetInstance();
+
+	// transform actions
+	QAction* transSelection = new QAction(tr("Selection"), this);
+	transSelection->setCheckable(true);
+	transSelection->setStatusTip(tr("Selection"));
+	transSelection->setIcon(QIcon(":/icons/pointer_black.png"));
+	transSelection->setShortcut(Qt::SHIFT + Qt::Key_E);
+	connect(transSelection, SIGNAL(triggered()), this, SLOT(OnTransfromChanged()));
+	am->AddAction("Scene.Transform.Select", transSelection, ActionContext::CONTEXT_DOC);
+
+	QAction* transMove = new QAction(tr("Move"), this);
+	transMove->setCheckable(true);
+	transMove->setStatusTip(tr("Move"));
+	transMove->setIcon(QIcon(":/icons/gizmo_move.png"));
+	transMove->setShortcut(Qt::SHIFT + Qt::Key_T);
+	connect(transMove, SIGNAL(triggered()), this, SLOT(OnTransfromChanged()));
+	am->AddAction("Scene.Transform.Move", transMove, ActionContext::CONTEXT_DOC);
+
+	QAction* transRotate = new QAction(tr("Rotate"), this);
+	transRotate->setCheckable(true);
+	transRotate->setStatusTip(tr("Rotate"));
+	transRotate->setIcon(QIcon(":/icons/gizmo_rotate.png"));
+	transRotate->setShortcut(Qt::SHIFT + Qt::Key_R);
+	connect(transRotate, SIGNAL(triggered()), this, SLOT(OnTransfromChanged()));
+	am->AddAction("Scene.Transform.Rotate", transRotate, ActionContext::CONTEXT_DOC);
+
+	QAction* transScale = new QAction(tr("Scale"), this);
+	transScale->setCheckable(true);
+	transScale->setStatusTip(tr("Scale"));
+	transScale->setIcon(QIcon(":/icons/gizmo_scale.png"));
+	transScale->setShortcut(Qt::SHIFT + Qt::Key_S);
+	connect(transScale, SIGNAL(triggered()), this, SLOT(OnTransfromChanged()));
+	am->AddAction("Scene.Transform.Scale", transScale, ActionContext::CONTEXT_DOC);
+
+
+	QActionGroup* transformGroup = new QActionGroup(this);
+	transformGroup->addAction(transSelection);
+	transformGroup->addAction(transMove);
+	transformGroup->addAction(transRotate);
+	transformGroup->addAction(transScale);
+
+	m_TransformActionsMap[transSelection] = SceneNodeEditor::MODE_NONE;
+	m_TransformActionsMap[transMove] = SceneNodeEditor::MODE_MOVE;
+	m_TransformActionsMap[transRotate] = SceneNodeEditor::MODE_ROTATE;
+	m_TransformActionsMap[transScale] = SceneNodeEditor::MODE_SCALE;
+
+	UpdateActions();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::OnTransfromChanged()
+{
+	QAction* act = qobject_cast<QAction*>(sender());
+	if (!act || m_TransformActionsMap.find(act) == m_TransformActionsMap.end()) return;
+
+	if (m_Editor) m_Editor->SetEditorMode(m_TransformActionsMap[act]);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,8 +180,22 @@ void DocScene::SetScene(Scene3DBase* scene)
 		// update model
 		m_SceneNodeModel->SetScene(this);
 		m_NodeNav->FitColumns();
+
+		// update actions
+		UpdateActions();
 	
 		emit SceneChanged();	
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::UpdateActions()
+{
+	foreach (TransformActionsMap::value_type& val, m_TransformActionsMap)
+	{
+		QAction* act = val.first;
+		act->setDisabled(m_Editor == NULL);
+		act->setChecked(m_Editor != NULL && m_Editor->GetEditorMode() == val.second);
 	}
 }
 

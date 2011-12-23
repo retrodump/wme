@@ -7,6 +7,7 @@
 
 #include "DocumentView.h"
 #include "NodeSelection.h"
+#include "SceneNodeEditor.h"
 
 
 using namespace Wme;
@@ -14,7 +15,6 @@ using namespace Wme;
 namespace Wme
 {
 	class Scene3DBase;
-	class SceneNodeEditor;
 }
 
 
@@ -24,6 +24,7 @@ namespace Armed
 	class SceneNodeNavigator;
 	class SceneNodeModel;
 	class PropTransform;
+	class Scene3DBar;
 	
 	class DocScene : public DocumentView, public NodeSelection::Listener
 	{
@@ -42,6 +43,7 @@ namespace Armed
 		virtual QString GetDefaultName() const { return tr("Scene"); }
 
 		void OnActivate();
+		void BuildActions();
 
 		void SetScene(Scene3DBase* scene);
 		Scene3DBase* GetScene() const { return m_Scene; }
@@ -61,9 +63,11 @@ namespace Armed
 
 	private slots:
 		void OnMeshOrSkeletonChanged();
+		void OnTransfromChanged();
 
 	private:
 		WmeWidget* m_View;
+		Scene3DBar* m_SceneBar;
 		SceneNodeNavigator* m_NodeNav;
 
 		Scene3DBase* m_Scene;
@@ -73,6 +77,12 @@ namespace Armed
 
 		void CreateSceneNodeEditor();
 		PropTransform* m_PropTransform;
+
+		typedef std::map<QAction*, SceneNodeEditor::EditorMode> TransformActionsMap;
+		TransformActionsMap m_TransformActionsMap;
+
+
+		void UpdateActions();
 	
 	};
 }
