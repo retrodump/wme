@@ -241,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\AttachmentPoint.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\BoneMask.cpp"
 				>
 			</File>
@@ -1020,6 +1024,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\AnimTreePin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\AttachmentPoint.h"
 				>
 			</File>
 			<File

@@ -17,6 +17,7 @@ namespace Wme
 	class Animation;
 	class SimpleAnimTree;
 	class MaterialInstance;
+	class AttachmentPoint;
 
 	//////////////////////////////////////////////////////////////////////////
 	/** Abstraction of a mesh-based 3D object */
@@ -66,6 +67,14 @@ namespace Wme
 		WideString GetSkeletonFileName() const;
 
 		bool SupportsSkeletalAnimation() const;
+
+
+		// bone attachments
+		void AddAttachment(Entity3DBase* entity, const WideString& boneName);
+		void RemoveAttachment(Entity3DBase* entity);
+		void RemoveAttachmentsFromBone(const WideString& boneName);
+		void RemoveAllAttachments();
+
 
 		// editor support
 		virtual bool IsEditorScalable() const { return true; }
@@ -120,6 +129,8 @@ namespace Wme
 
 		bool m_HighlightMatAfterChange;
 
+		typedef std::map<Entity3DBase*, AttachmentPoint*> AttachmentMap;
+		AttachmentMap m_Attachments;
 	};
 }
 

@@ -11,6 +11,7 @@
 namespace Wme
 {
 	class Scene3DBase;
+	class AttachmentPoint;
 
 	//////////////////////////////////////////////////////////////////////////
 	/** Abstraction of a 3D object that can be added to a scene graph or attached to a bone */
@@ -49,6 +50,11 @@ namespace Wme
 
 		Ogre::SceneNode* GetSceneNode() const { return m_SceneNode; }
 
+		AttachmentPoint* GetAttachedTo() const { return m_AttachedTo; }
+		void SetAttachedTo(AttachmentPoint* attachTo);
+		void DetachIfAttached();
+
+
 		// editor support
 		virtual bool IsEditorMovable() const { return true; }
 		virtual bool IsEditorRotatable() const { return true; }
@@ -69,6 +75,8 @@ namespace Wme
 		Scene3DBase* m_Stage;
 		bool m_IsOwnedByStage;		
 		Ogre::SceneNode* m_SceneNode;
+
+		AttachmentPoint* m_AttachedTo;
 
 		mutable Ogre::Vector3 m_Position;
 		mutable Ogre::Quaternion m_Orientation;

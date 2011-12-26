@@ -6,6 +6,8 @@
 #include "Scene3DBase.h"
 #include "StringUtil.h"
 #include "XmlUtil.h"
+#include "AttachmentPoint.h"
+#include "MeshEntity.h"
 
 
 namespace Wme
@@ -18,6 +20,7 @@ Entity3DBase::Entity3DBase()
 	m_SceneNode = NULL;
 	m_Stage = NULL;
 	m_IsOwnedByStage = false;
+	m_AttachedTo = NULL;
 
 	m_Position = Ogre::Vector3::ZERO;
 	m_Orientation = Ogre::Quaternion::IDENTITY;
@@ -54,7 +57,9 @@ void Entity3DBase::PutToStage(Scene3DBase* stage, Entity3DBase* parentEntity)
 
 //////////////////////////////////////////////////////////////////////////
 void Entity3DBase::RemoveFromStage()
-{	
+{
+	DetachIfAttached();
+
 	if (m_SceneNode)
 	{
 		m_Position = GetPosition();
@@ -137,7 +142,6 @@ Entity3DBase* Entity3DBase::OgreEntityToEntity(Ogre::Entity* entity)
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////
 void Entity3DBase::SetPosition(const Ogre::Vector3& pos)
 {
@@ -178,6 +182,22 @@ const Ogre::Vector3& Entity3DBase::GetScale() const
 {
 	if (m_SceneNode) return m_SceneNode->getScale();
 	else return m_Scale;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Entity3DBase::DetachIfAttached()
+{
+	if (m_AttachedTo)
+	{
+		m_AttachedTo->GetAttachedTo()->RemoveAttachment(this);
+		SetAttachedTo(NULL);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Entity3DBase::SetAttachedTo(AttachmentPoint* attachTo)
+{
+	m_AttachedTo = attachTo;
 }
 
 //////////////////////////////////////////////////////////////////////////

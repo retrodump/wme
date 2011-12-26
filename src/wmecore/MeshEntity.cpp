@@ -17,6 +17,8 @@
 #include "MaterialUtil.h"
 #include "XmlUtil.h"
 #include "NodeSelection.h"
+#include "AttachmentPoint.h"
+#include "OgreTagPoint.h"
 
 
 namespace Wme
@@ -83,6 +85,11 @@ void MeshEntity::Update()
 	UpdateTasks();
 
 	if (m_AnimTree) m_AnimTree->Update();
+
+	foreach (AttachmentMap::value_type val, m_Attachments)
+	{
+		val.second->Update();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -115,7 +122,8 @@ void MeshEntity::RemoveFromStage()
 	Scene3DBase* stage = m_Stage;
 
 	Entity3DBase::RemoveFromStage();
-
+	
+	RemoveAllAttachments();
 	KillAnimations();
 	SAFE_DELETE(m_AnimTree);
 
@@ -443,6 +451,70 @@ void MeshEntity::ScheduleOgreEntityRebuild()
 {
 	if (IsInStage()) m_Stage->AddPreFindVisibleNotifyRequest(this);
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::AddAttachment(Entity3DBase* entity, const WideString& boneName)
+{
+	if (!IsInStage() || !SupportsSkeletalAnimation()) return;
+
+	entity->DetachIfAttached();
+
+	Utf8String boneNameUtf8 = StringUtil::WideToUtf8(boneName);
+	if (!GetSkeleton()->GetOgreSkeleton()->hasBone(boneNameUtf8)) return;
+
+	Ogre::Bone* bone = GetOgreEntity()->getSkeleton()->getBone(boneNameUtf8);
+	AttachmentPoint* ap = new AttachmentPoint(entity, this, bone);
+	m_Attachments[entity] = ap;
+
+	entity->SetAttachedTo(ap);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::RemoveAttachment(Entity3DBase* entity)
+{
+	AttachmentMap::iterator it = m_Attachments.find(entity);
+	if (it != m_Attachments.end())
+	{
+		AttachmentPoint* ap = it->second;
+		ap->GetAttachment()->SetAttachedTo(NULL);
+		delete ap;
+
+		m_Attachments.erase(it);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::RemoveAttachmentsFromBone(const WideString& boneName)
+{
+	Utf8String boneNameUtf8 = StringUtil::WideToUtf8(boneName);
+
+	for (AttachmentMap::iterator it = m_Attachments.begin(); it != m_Attachments.end(); ++it)
+	{
+		AttachmentPoint* ap = it->second;
+		
+		if (ap->GetBone()->getName() == boneNameUtf8)
+		{
+			ap->GetAttachment()->SetAttachedTo(NULL);
+			delete ap;
+
+			m_Attachments.erase(it);			
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::RemoveAllAttachments()
+{
+	foreach (AttachmentMap::value_type val, m_Attachments)
+	{
+		AttachmentPoint* ap = val.second;
+		ap->GetAttachment()->SetAttachedTo(NULL);
+		delete ap;
+	}
+	m_Attachments.clear();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Ogre::MovableObject::Listener

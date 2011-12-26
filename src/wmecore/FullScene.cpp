@@ -157,6 +157,9 @@ void FullScene::Create()
 	val2->SetValue(m_Actor2);
 
 
+	m_Actor->AddAttachment(m_Actor2, L"Head");
+
+
 	Game::GetInstance()->m_TestInfo = L"Game mode (press F1 to switch to editor mode)";
 
 

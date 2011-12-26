@@ -3,6 +3,7 @@
 
 #include "Wme.h"
 #include "OgreUtil.h"
+#include "OgreTagPoint.h"
 
 
 namespace Wme
@@ -197,6 +198,39 @@ void OgreUtil::GetMeshInformation(Ogre::Entity* entity, bool getUV, size_t& vert
 	}
 
 } 
+
+//////////////////////////////////////////////////////////////////////////
+void OgreUtil::GetBoneWorldPosition(Ogre::Entity* entity, Ogre::Bone* bone, Ogre::Vector3& worldPosition, Ogre::Quaternion& worldOrientation)
+{
+	worldPosition = bone->_getDerivedPosition();
+	worldOrientation = bone->_getDerivedOrientation();
+
+	// multiply with the parent derived transformation
+	Ogre::Node* parentNode = entity->getParentNode();
+	Ogre::SceneNode* parentSceneNode = entity->getParentSceneNode();
+	
+	while (parentNode != NULL)
+	{
+		if (parentNode != parentSceneNode)
+		{
+			// attached to a tag point
+			Ogre::TagPoint* tagPoint = static_cast<Ogre::TagPoint*>(parentNode);
+			
+			worldPosition = tagPoint->_getFullLocalTransform() * worldPosition;
+			worldOrientation = tagPoint->_getDerivedOrientation() * worldOrientation;
+			
+			parentNode = tagPoint->getParent();
+		}
+		else
+		{
+			// attached to a scene node
+			worldPosition = parentNode->_getFullTransform() * worldPosition;
+			worldOrientation = parentNode->_getDerivedOrientation() * worldOrientation;
+
+			break;
+		}
+	}
+}
 
 
 } // namespace Wme
