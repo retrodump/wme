@@ -8,11 +8,17 @@
 #include <QAbstractItemModel>
 #include "Scene3DBase.h"
 
+using namespace Wme;
+
+namespace Wme
+{
+	class MeshEntity;
+}
 
 namespace Armed
 {
 	class DocScene;
-	class SceneNode;
+	class SceneNode;	
 
 	class SceneNodeModel : public QAbstractItemModel, Wme::Scene3DBase::SceneGraphListener
 	{
@@ -67,7 +73,7 @@ namespace Armed
 
 		void BuildSceneTree();
 		void PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode);
-		void PopulateNode(SceneNode* parentNode, Ogre::Bone* bone);
+		void PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone);
 
 		QList<SceneNode*> m_DroppedNodes;
 	};

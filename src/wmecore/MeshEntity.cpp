@@ -119,11 +119,11 @@ void MeshEntity::PutToStage(Scene3DBase* stage, Entity3DBase* parentEntity)
 //////////////////////////////////////////////////////////////////////////
 void MeshEntity::RemoveFromStage()
 {
-	Scene3DBase* stage = m_Stage;
-
-	Entity3DBase::RemoveFromStage();
-	
 	RemoveAllAttachments();
+
+	Scene3DBase* stage = m_Stage;
+	Entity3DBase::RemoveFromStage();
+		
 	KillAnimations();
 	SAFE_DELETE(m_AnimTree);
 
@@ -465,7 +465,7 @@ void MeshEntity::AddAttachment(Entity3DBase* entity, const WideString& boneName)
 
 	Ogre::Bone* bone = GetOgreEntity()->getSkeleton()->getBone(boneNameUtf8);
 	AttachmentPoint* ap = new AttachmentPoint(entity, this, bone);
-	m_Attachments[entity] = ap;
+	m_Attachments.insert(AttachmentMap::value_type(boneName, ap));
 
 	entity->SetAttachedTo(ap);
 }
@@ -473,27 +473,11 @@ void MeshEntity::AddAttachment(Entity3DBase* entity, const WideString& boneName)
 //////////////////////////////////////////////////////////////////////////
 void MeshEntity::RemoveAttachment(Entity3DBase* entity)
 {
-	AttachmentMap::iterator it = m_Attachments.find(entity);
-	if (it != m_Attachments.end())
-	{
-		AttachmentPoint* ap = it->second;
-		ap->GetAttachment()->SetAttachedTo(NULL);
-		delete ap;
-
-		m_Attachments.erase(it);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void MeshEntity::RemoveAttachmentsFromBone(const WideString& boneName)
-{
-	Utf8String boneNameUtf8 = StringUtil::WideToUtf8(boneName);
-
 	for (AttachmentMap::iterator it = m_Attachments.begin(); it != m_Attachments.end(); ++it)
 	{
 		AttachmentPoint* ap = it->second;
-		
-		if (ap->GetBone()->getName() == boneNameUtf8)
+
+		if (ap->GetAttachment() == entity)
 		{
 			ap->GetAttachment()->SetAttachedTo(NULL);
 			delete ap;
@@ -501,6 +485,22 @@ void MeshEntity::RemoveAttachmentsFromBone(const WideString& boneName)
 			m_Attachments.erase(it);			
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::RemoveAttachmentsFromBone(const WideString& boneName)
+{
+	std::pair<AttachmentMap::iterator, AttachmentMap::iterator> range;
+	range = m_Attachments.equal_range(boneName);
+
+	for (AttachmentMap::iterator it = range.first; it != range.second; ++it) 
+	{
+		AttachmentPoint* ap = it->second;
+		ap->GetAttachment()->SetAttachedTo(NULL);
+		delete ap;
+	}
+
+	m_Attachments.erase(range.first, range.second);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -513,6 +513,18 @@ void MeshEntity::RemoveAllAttachments()
 		delete ap;
 	}
 	m_Attachments.clear();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::GetAttachmentsForBone(const WideString& boneName, AttachmentList& attachments) const
+{
+	std::pair<AttachmentMap::const_iterator, AttachmentMap::const_iterator> range;
+	range = m_Attachments.equal_range(boneName);
+
+	for (AttachmentMap::const_iterator it = range.first; it != range.second; ++it) 
+	{
+		attachments.push_back(it->second);
+	}
 }
 
 

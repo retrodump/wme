@@ -7,6 +7,7 @@
 
 #include "Entity3DBase.h"
 #include "AnimProp.h"
+#include "AttachmentPoint.h"
 
 
 namespace Wme
@@ -17,7 +18,7 @@ namespace Wme
 	class Animation;
 	class SimpleAnimTree;
 	class MaterialInstance;
-	class AttachmentPoint;
+	
 
 	//////////////////////////////////////////////////////////////////////////
 	/** Abstraction of a mesh-based 3D object */
@@ -75,6 +76,8 @@ namespace Wme
 		void RemoveAttachmentsFromBone(const WideString& boneName);
 		void RemoveAllAttachments();
 
+		void GetAttachmentsForBone(const WideString& boneName, AttachmentList& attachments) const;
+
 
 		// editor support
 		virtual bool IsEditorScalable() const { return true; }
@@ -129,7 +132,7 @@ namespace Wme
 
 		bool m_HighlightMatAfterChange;
 
-		typedef std::map<Entity3DBase*, AttachmentPoint*> AttachmentMap;
+		typedef std::multimap<WideString, AttachmentPoint*> AttachmentMap;
 		AttachmentMap m_Attachments;
 	};
 }

@@ -10,6 +10,7 @@
 #include "MeshEntity.h"
 #include "QtUtil.h"
 #include "Skeleton.h"
+#include "StringUtil.h"
 
 
 namespace Armed
@@ -73,14 +74,16 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSc
 			// bones
 			if (entity->IsMeshBased())
 			{
-				Skeleton* skeleton = static_cast<MeshEntity*>(entity)->GetSkeleton();
+				MeshEntity* meshEntity = static_cast<MeshEntity*>(entity);
+
+				Skeleton* skeleton = meshEntity->GetSkeleton();
 				if (skeleton)
 				{
 					Ogre::SkeletonPtr ogreSkeleton = skeleton->GetOgreSkeleton();
 					Ogre::Skeleton::BoneIterator boneIter = ogreSkeleton->getRootBoneIterator();
 					while (boneIter.hasMoreElements())
 					{
-						PopulateNode(newNode, boneIter.getNext());
+						PopulateNode(newNode, meshEntity, boneIter.getNext());
 					}
 				}
 			}
@@ -94,13 +97,24 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSc
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::Bone* bone)
+void SceneNodeModel::PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone)
 {
 	SceneNode* newNode = new SceneNode(bone, parentNode);
 
+	// attachments
+	AttachmentList attachments;
+	meshEntity->GetAttachmentsForBone(StringUtil::Utf8ToWide(bone->getName()), attachments);
+
+	foreach (AttachmentPoint* ap, attachments)
+	{
+		PopulateNode(newNode, ap->GetNode());
+	}
+
+
+	// child bones
 	for (unsigned short i = 0; i < bone->numChildren(); i++)
 	{
-		PopulateNode(newNode, static_cast<Ogre::Bone*>(bone->getChild(i)));
+		PopulateNode(newNode, meshEntity, static_cast<Ogre::Bone*>(bone->getChild(i)));
 	}
 }
 

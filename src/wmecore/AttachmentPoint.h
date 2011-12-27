@@ -12,7 +12,12 @@ namespace Wme
 {
 	class Entity3DBase;
 	class MeshEntity;
+	class AttachmentPoint;
 
+	
+	typedef std::list<AttachmentPoint*> AttachmentList;
+
+	
 	class AttachmentPoint : public Object, public Ogre::Node::Listener
 	{
 	public:
@@ -22,6 +27,7 @@ namespace Wme
 		MeshEntity* GetAttachedTo() const { return m_AttachedTo; }
 		Entity3DBase* GetAttachment() const { return m_Attachment; }
 		Ogre::Bone* GetBone() const { return m_Bone; }
+		Ogre::SceneNode* GetNode() const { return m_Node; }
 
 		void Update();
 
@@ -32,6 +38,8 @@ namespace Wme
 		MeshEntity* m_AttachedTo;
 		Entity3DBase* m_Attachment;
 		Ogre::Bone* m_Bone;
+
+		Ogre::SceneNode* m_Node;
 	};
 }
 

@@ -47,6 +47,7 @@ void Entity3DBase::PutToStage(Scene3DBase* stage, Entity3DBase* parentEntity)
 
 	m_SceneNode->getUserObjectBindings().setUserAny("Entity3DBase", Ogre::Any(this));
 
+
 	SetPosition(m_Position);
 	SetScale(m_Scale);
 	SetOrientation(m_Orientation);

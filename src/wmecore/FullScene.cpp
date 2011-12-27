@@ -230,7 +230,7 @@ void FullScene::Shutdown()
 	Scene3DBase::Shutdown();
 
 	m_Actor = NULL;
-	m_Actor2 = NULL;
+	//m_Actor2 = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
