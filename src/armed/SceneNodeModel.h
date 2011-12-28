@@ -37,6 +37,8 @@ namespace Armed
 		Ogre::SceneNode* GetRealRootNode() const;
 		SceneNode* GetRootNode() const { return m_RootNode; }
 
+		void RegisterNode(SceneNode* node, Ogre::SceneNode* ogreNode);
+		void UnregisterNode(Ogre::SceneNode* ogreNode);
 
 		// QAbstractItemModel
 		Qt::ItemFlags flags(const QModelIndex& index) const;
@@ -67,7 +69,7 @@ namespace Armed
 		DocScene* m_Scene;
 		SceneNode* m_RootNode;
 
-		static const int ColumnCount = 2;
+		static const int ColumnCount = 1;
 		static const QString MimeType;
 		enum Column { Name, Type };
 
@@ -75,7 +77,10 @@ namespace Armed
 		void PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode);
 		void PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone);
 
+		QMap<Ogre::SceneNode*, SceneNode*> m_NodeMap;
+
 		QList<SceneNode*> m_DroppedNodes;
+
 	};
 }
 

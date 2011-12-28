@@ -10,19 +10,22 @@ namespace Wme
 {
 	class Scene3DBase;
 	class Entity3DBase;
+	class MeshEntity;
 }
 
 
 
 namespace Armed
 {
+	class SceneNodeModel;
+
 	class SceneNode
 	{
 	public:
-		SceneNode(Ogre::SceneNode* node, SceneNode* parent = NULL);
-		SceneNode(Scene3DBase* scene, SceneNode* parent = NULL);
-		SceneNode(Entity3DBase* entity, SceneNode* parent = NULL);
-		SceneNode(Ogre::Bone* bone, SceneNode* parent = NULL);
+		SceneNode(SceneNodeModel* parentModel, Ogre::SceneNode* node, SceneNode* parent = NULL);
+		SceneNode(SceneNodeModel* parentModel, Scene3DBase* scene, SceneNode* parent = NULL);
+		SceneNode(SceneNodeModel* parentModel, Entity3DBase* entity, SceneNode* parent = NULL);
+		SceneNode(SceneNodeModel* parentModel, MeshEntity* boneOwner, Ogre::Bone* bone, SceneNode* parent = NULL);
 		~SceneNode();
 
 		enum NodeType
@@ -52,12 +55,15 @@ namespace Armed
 		Entity3DBase* GetEntity() const { return m_Entity; }
 		Scene3DBase* GetScene() const { return m_Scene; }
 		Ogre::Bone* GetBone() const { return m_Bone; }
+		MeshEntity* GetBoneOwner() const { return m_BoneOwner; }
 
 		Ogre::SceneNode* GetOgreSceneNode() const;
 		SceneNode* GetChildFromOgreSceneNode(Ogre::SceneNode* ogreSceneNode) const;
 
 	private:
 		void GetEntityTypeAndIcon(Entity3DBase* entity, QString& typeName, QString& iconName) const;
+
+		SceneNodeModel* m_ParentModel;
 
 		SceneNode* m_Parent;
 		QList<SceneNode*> m_Children;
@@ -68,6 +74,7 @@ namespace Armed
 		Ogre::SceneNode* m_GenericNode;
 		Entity3DBase* m_Entity;
 		Ogre::Bone* m_Bone;
+		MeshEntity* m_BoneOwner;
 	};
 }
 

@@ -482,7 +482,8 @@ void MeshEntity::RemoveAttachment(Entity3DBase* entity)
 			ap->GetAttachment()->SetAttachedTo(NULL);
 			delete ap;
 
-			m_Attachments.erase(it);			
+			m_Attachments.erase(it);
+			return;
 		}
 	}
 }

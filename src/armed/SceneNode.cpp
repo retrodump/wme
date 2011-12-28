@@ -3,6 +3,7 @@
 
 #include "StdAfx.h"
 #include "SceneNode.h"
+#include "SceneNodeModel.h"
 #include "Scene3DBase.h"
 #include "Entity3DBase.h"
 #include "QtUtil.h"
@@ -15,8 +16,10 @@ namespace Armed
 
 
 //////////////////////////////////////////////////////////////////////////
-SceneNode::SceneNode(Ogre::SceneNode* node, SceneNode* parent)
+SceneNode::SceneNode(SceneNodeModel* parentModel, Ogre::SceneNode* node, SceneNode* parent)
 {
+	m_ParentModel = parentModel;
+
 	m_Parent = parent;
 	m_GenericNode = node;
 	m_Type = NODE_GENERIC;	
@@ -24,13 +27,18 @@ SceneNode::SceneNode(Ogre::SceneNode* node, SceneNode* parent)
 	m_Scene = NULL;
 	m_Entity = NULL;
 	m_Bone = NULL;
+	m_BoneOwner = NULL;
 
 	if (m_Parent) m_Parent->AddChild(this);
+
+	m_ParentModel->RegisterNode(this, GetOgreSceneNode());
 }
 
 //////////////////////////////////////////////////////////////////////////
-SceneNode::SceneNode(Scene3DBase* scene, SceneNode* parent)
+SceneNode::SceneNode(SceneNodeModel* parentModel, Scene3DBase* scene, SceneNode* parent)
 {
+	m_ParentModel = parentModel;
+
 	m_Parent = parent;
 	m_Scene = scene;
 	m_Type = NODE_SCENE;	
@@ -38,13 +46,18 @@ SceneNode::SceneNode(Scene3DBase* scene, SceneNode* parent)
 	m_GenericNode = NULL;
 	m_Entity = NULL;
 	m_Bone = NULL;
+	m_BoneOwner = NULL;
 
 	if (m_Parent) m_Parent->AddChild(this);
+
+	m_ParentModel->RegisterNode(this, GetOgreSceneNode());
 }
 
 //////////////////////////////////////////////////////////////////////////
-SceneNode::SceneNode(Entity3DBase* entity, SceneNode* parent)
+SceneNode::SceneNode(SceneNodeModel* parentModel, Entity3DBase* entity, SceneNode* parent)
 {
+	m_ParentModel = parentModel;
+
 	m_Parent = parent;
 	m_Entity = entity;
 	m_Type = NODE_ENTITY;	
@@ -52,15 +65,21 @@ SceneNode::SceneNode(Entity3DBase* entity, SceneNode* parent)
 	m_GenericNode = NULL;
 	m_Scene = NULL;
 	m_Bone = NULL;
+	m_BoneOwner = NULL;
 
 	if (m_Parent) m_Parent->AddChild(this);
+
+	m_ParentModel->RegisterNode(this, GetOgreSceneNode());
 }
 
 //////////////////////////////////////////////////////////////////////////
-SceneNode::SceneNode(Ogre::Bone* bone, SceneNode* parent)
+SceneNode::SceneNode(SceneNodeModel* parentModel, MeshEntity* boneOwner, Ogre::Bone* bone, SceneNode* parent)
 {
+	m_ParentModel = parentModel;
+
 	m_Parent = parent;
 	m_Bone = bone;
+	m_BoneOwner = boneOwner;
 	m_Type = NODE_BONE;	
 
 	m_GenericNode = NULL;
@@ -68,11 +87,15 @@ SceneNode::SceneNode(Ogre::Bone* bone, SceneNode* parent)
 	m_Entity = NULL;
 
 	if (m_Parent) m_Parent->AddChild(this);
+
+	m_ParentModel->RegisterNode(this, GetOgreSceneNode());
 }
 
 //////////////////////////////////////////////////////////////////////////
 SceneNode::~SceneNode()
 {
+	m_ParentModel->UnregisterNode(GetOgreSceneNode());
+
 	qDeleteAll(m_Children);
 }
 

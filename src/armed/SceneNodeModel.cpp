@@ -50,10 +50,10 @@ void SceneNodeModel::BuildSceneTree()
 {
 	if (m_RootNode) delete m_RootNode;
 
-	m_RootNode = new SceneNode((Ogre::SceneNode*)NULL);
+	m_RootNode = new SceneNode(this, (Ogre::SceneNode*)NULL);
 	if (m_Scene)
 	{
-		SceneNode* scene = new SceneNode(m_Scene->GetScene(), m_RootNode);
+		SceneNode* scene = new SceneNode(this, m_Scene->GetScene(), m_RootNode);
 		PopulateNode(scene, m_Scene->GetScene()->GetRootNode());
 	}
 }
@@ -69,7 +69,7 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSc
 		Entity3DBase* entity = Entity3DBase::NodeToEntity(childSceneNode);
 		if (entity)
 		{
-			newNode = new SceneNode(entity, parentNode);
+			newNode = new SceneNode(this, entity, parentNode);
 
 			// bones
 			if (entity->IsMeshBased())
@@ -90,7 +90,7 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSc
 		}
 		else
 		{
-			newNode = new SceneNode(childSceneNode, parentNode);
+			newNode = new SceneNode(this, childSceneNode, parentNode);
 		}
 		PopulateNode(newNode, childSceneNode);
 	}
@@ -99,7 +99,7 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSc
 //////////////////////////////////////////////////////////////////////////
 void SceneNodeModel::PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone)
 {
-	SceneNode* newNode = new SceneNode(bone, parentNode);
+	SceneNode* newNode = new SceneNode(this, meshEntity, bone, parentNode);
 
 	// attachments
 	AttachmentList attachments;
@@ -116,6 +116,20 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity,
 	{
 		PopulateNode(newNode, meshEntity, static_cast<Ogre::Bone*>(bone->getChild(i)));
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::RegisterNode(SceneNode* node, Ogre::SceneNode* ogreNode)
+{
+	if (!ogreNode) return;
+
+	m_NodeMap[ogreNode] = node;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::UnregisterNode(Ogre::SceneNode* ogreNode)
+{
+	m_NodeMap.remove(ogreNode);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -155,26 +169,8 @@ QModelIndex SceneNodeModel::IndexFromNode(SceneNode* node) const
 //////////////////////////////////////////////////////////////////////////
 QModelIndex SceneNodeModel::IndexFromNode(Ogre::SceneNode* node) const
 {
-	if (!node) return QModelIndex();
-
-	QList<Ogre::SceneNode*> path;
-
-	path.prepend(node);
-
-	while (node != m_Scene->GetScene()->GetRootNode())
-	{
-		node = static_cast<Ogre::SceneNode*>(node->getParent());
-		if (node) path.prepend(node);
-		else break;
-	}
-
-	SceneNode* current = m_RootNode;
-	qforeach (Ogre::SceneNode* sceneNode, path)
-	{
-		current = current->GetChildFromOgreSceneNode(sceneNode);
-		if (!current) break;
-	}
-	return IndexFromNode(current);
+	if (!node || !m_NodeMap.contains(node)) return QModelIndex();
+	else return IndexFromNode(m_NodeMap[node]);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -210,7 +206,8 @@ QVariant SceneNodeModel::data(const QModelIndex& index, int role) const
 			switch (index.column())
 			{
 			case Name:
-				return node->GetName();
+				if (role == Qt::ToolTipRole) return QString(tr("%1 (%2)")).arg(node->GetName()).arg(node->GetTypeName());
+				else return node->GetName();
 			case Type:
 				return node->GetTypeName();
 			default:
@@ -345,7 +342,7 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 	if (!parentNode) return false;
 
 	Ogre::SceneNode* parentSceneNode = parentNode->GetOgreSceneNode();
-	if (!parentSceneNode) return false;
+	if (!parentSceneNode && parentNode->GetType() != SceneNode::NODE_BONE) return false;
 
 
 	Ogre::SceneManager* sceneMgr = m_Scene->GetScene()->GetSceneMgr();
@@ -371,8 +368,10 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 			Ogre::SceneNode* childSceneNode = sceneMgr->getSceneNode(nodeName.toUtf8().constData());
 			SceneNode* childNode = NodeForIndex(IndexFromNode(childSceneNode));
 
+			// dropped to our own parent -> means the user wants to go one lever higher in the hierarchy
 			if (childSceneNode->getParentSceneNode() == parentSceneNode)
 			{
+				// if our parent is the scene we can't go any higher, so ignore
 				if (parentNode->GetParent() == GetRootNode())
 				{
 					m_DroppedNodes.append(childNode);
@@ -381,24 +380,68 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 				else unparent = true;
 			}
 
-			Ogre::SceneNode* targetSceneNode = unparent ? parentSceneNode->getParentSceneNode() : parentSceneNode;			
-			SceneNode* targetNode = NodeForIndex(IndexFromNode(targetSceneNode));
+			Ogre::SceneNode* targetSceneNode = NULL;
+			SceneNode* targetNode = NULL;
+			if (parentSceneNode)
+			{
+				targetSceneNode = unparent ? parentSceneNode->getParentSceneNode() : parentSceneNode;			
+				targetNode = NodeForIndex(IndexFromNode(targetSceneNode));
+			}
+			else
+			{
+				targetSceneNode = NULL;
+				targetNode = parentNode;
+			}
+
+			// bones can only accept entities
+			if (targetNode->GetType() == SceneNode::NODE_BONE && childNode->GetType() != SceneNode::NODE_ENTITY)
+			{
+				m_DroppedNodes.append(childNode);
+				continue;
+			}
+
 
 			int oldPos = childNode->GetParent()->GetRowOfChild(childNode);
 			int newPos = targetNode->GetNumChildren();
 
-			beginMoveRows(IndexFromNode(childNode), oldPos, oldPos, IndexFromNode(targetNode), newPos);
+			beginMoveRows(IndexFromNode(childNode->GetParent()), oldPos, oldPos, IndexFromNode(targetNode), newPos);
 
-
+			// remember the world position so that we can restore it
 			Ogre::Vector3 pos = childSceneNode->_getDerivedPosition();
 			Ogre::Quaternion rot = childSceneNode->_getDerivedOrientation();
 
-			childSceneNode->getParentSceneNode()->removeChild(childSceneNode);
-			targetSceneNode->addChild(childSceneNode);
+			// move the node to a new parent
 
-			childSceneNode->_setDerivedPosition(pos);
-			childSceneNode->_setDerivedOrientation(rot);
+			// is the old parent a bone?
+			SceneNode* oldParent = childNode->GetParent();
+			if (oldParent && oldParent->GetType() == SceneNode::NODE_BONE && childNode->GetType() == SceneNode::NODE_ENTITY)
+			{
+				oldParent->GetBoneOwner()->RemoveAttachment(childNode->GetEntity());
+			}
+			else
+			{
+				childSceneNode->getParentSceneNode()->removeChild(childSceneNode);
+			}
 
+
+			if (targetSceneNode)
+			{
+				// target is a scene node
+				targetSceneNode->addChild(childSceneNode);
+
+				// restore original world position
+				childSceneNode->_setDerivedPosition(pos);
+				childSceneNode->_setDerivedOrientation(rot);
+			}
+			else
+			{
+				// target is a bone
+				WideString boneName = StringUtil::Utf8ToWide(targetNode->GetBone()->getName());
+				targetNode->GetBoneOwner()->AddAttachment(childNode->GetEntity(), boneName);
+			}
+			
+
+			// project changes to scene model
 			childNode->GetParent()->RemoveChild(childNode);
 			targetNode->AddChild(childNode);
 						
@@ -443,7 +486,7 @@ void SceneNodeModel::OnSceneNodeAdded(Ogre::SceneNode* node)
 	SceneNode* parentNode = NodeForIndex(parentIndex);
 	if (!parentNode) return;
 
-	SceneNode* newNode = new SceneNode(node, parentNode);
+	SceneNode* newNode = new SceneNode(this, node, parentNode);
 	int row = parentNode->GetRowOfChild(newNode);
 
 	beginInsertRows(parentIndex, row, row);

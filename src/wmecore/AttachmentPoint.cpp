@@ -26,7 +26,10 @@ AttachmentPoint::AttachmentPoint(Entity3DBase* attachment, MeshEntity* attachedT
 		// create a new scene node and attach the attachment to it
 		m_Node = stage->GetSystemRootNode()->createChildSceneNode();
 
-		m_Attachment->GetSceneNode()->getParentSceneNode()->removeChild(m_Attachment->GetSceneNode());
+		// detach from old parent
+		Ogre::SceneNode* oldParent = m_Attachment->GetSceneNode()->getParentSceneNode();
+		if (oldParent) oldParent->removeChild(m_Attachment->GetSceneNode());
+
 		m_Node->addChild(m_Attachment->GetSceneNode());
 
 		m_Attachment->SetPosition(Ogre::Vector3::ZERO);
@@ -35,6 +38,8 @@ AttachmentPoint::AttachmentPoint(Entity3DBase* attachment, MeshEntity* attachedT
 		// setup a listener to track the entity and bone transform changes
 		m_AttachedTo->GetSceneNode()->setListener(this);
 		m_Bone->setListener(this);
+
+		nodeUpdated(m_AttachedTo->GetSceneNode());
 	}
 	else m_Node = NULL;
 
