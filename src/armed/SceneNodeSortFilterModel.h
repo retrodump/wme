@@ -19,6 +19,7 @@ namespace Armed
 		~SceneNodeSortFilterModel();
 
 		bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
+		bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
 
 	private:
 		bool MatchChildren(const QModelIndex& parent) const;

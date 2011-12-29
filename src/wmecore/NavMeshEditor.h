@@ -23,6 +23,8 @@ namespace Wme
 		NavMeshEditor(Scene3DBase* stage);
 		~NavMeshEditor();
 
+		RTTI(NavMeshEditor);
+
 		void Create();
 		bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
 		bool HandleKeyboardEvent(Viewport* viewport, KeyboardEvent& event);

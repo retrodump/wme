@@ -64,7 +64,7 @@ void Actor3D::Update()
 		StartAnimation(idleAnim);
 	}
 
-	if (m_AnimTree) m_AnimTree->Update();
+	if (m_AnimTree && !IsAnimFrozen()) m_AnimTree->Update();
 }
 
 //////////////////////////////////////////////////////////////////////////

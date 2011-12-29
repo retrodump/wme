@@ -35,6 +35,8 @@ namespace Wme
 		SceneNodeEditor(Scene3DBase* stage);
 		~SceneNodeEditor();
 
+		RTTI(SceneNodeEditor);
+
 		void Create();
 		bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
 		bool HandleKeyboardEvent(Viewport* viewport, KeyboardEvent& event);

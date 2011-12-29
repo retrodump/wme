@@ -8,6 +8,8 @@
 #include "XmlUtil.h"
 #include "AttachmentPoint.h"
 #include "MeshEntity.h"
+#include "SceneNodeEditor.h"
+#include "NodeSelection.h"
 
 
 namespace Wme
@@ -20,6 +22,7 @@ Entity3DBase::Entity3DBase()
 	m_SceneNode = NULL;
 	m_Stage = NULL;
 	m_IsOwnedByStage = false;
+	m_AnimFrozen = false;
 	m_AttachedTo = NULL;
 
 	m_Position = Ogre::Vector3::ZERO;
@@ -142,6 +145,34 @@ Entity3DBase* Entity3DBase::OgreEntityToEntity(Ogre::Entity* entity)
 	else return NULL;
 }
 
+//////////////////////////////////////////////////////////////////////////
+bool Entity3DBase::IsSelectedInEditor() const
+{
+	if (!IsInStage()) return false;
+	if (m_Stage && m_Stage->GetEditor() && m_Stage->GetEditor()->GetClassID() == L"SceneNodeEditor")
+	{
+		SceneNodeEditor* editor = static_cast<SceneNodeEditor*>(m_Stage->GetEditor());
+		return editor->GetSelection()->IsSelected(GetSceneNode());
+	}
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool Entity3DBase::IsChildSelectedInEditor() const
+{
+	if (!IsInStage()) return false;
+
+	for (word i = 0; i < GetNumChildren(); i++)
+	{
+		Entity3DBase* childEnt = GetChildEntity(i);
+		if (childEnt)
+		{
+			if (childEnt->IsSelectedInEditor() || childEnt->IsChildSelectedInEditor()) return true;
+		}
+	}
+
+	return false;
+}
 
 //////////////////////////////////////////////////////////////////////////
 void Entity3DBase::SetPosition(const Ogre::Vector3& pos)

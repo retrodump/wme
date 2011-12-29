@@ -455,6 +455,9 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 		}
 	}
 
+	// refresh gizmos and data display
+	m_Scene->RefreshEditor();
+
 	// emit event after the drag&drop is over (QTreeView won't auto-expand selection parents if d&d is in progress)
 	QTimer::singleShot(0, this, SLOT(SelectItemsAfterDrop()));
 

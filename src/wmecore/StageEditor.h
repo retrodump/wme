@@ -21,6 +21,8 @@ namespace Wme
 		StageEditor(Stage* stage);
 		virtual ~StageEditor();
 
+		RTTI(StageEditor);
+
 		Stage* GetStage() { return m_Stage; }
 
 		virtual void Create() = 0;

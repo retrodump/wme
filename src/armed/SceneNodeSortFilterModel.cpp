@@ -61,5 +61,25 @@ bool SceneNodeSortFilterModel::MatchChildren(const QModelIndex& parent) const
 	return false;
 }
 
+//////////////////////////////////////////////////////////////////////////
+bool SceneNodeSortFilterModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
+{
+	if (left.column() == SceneNodeModel::Name)
+	{
+		SceneNodeModel* model = qobject_cast<SceneNodeModel*>(sourceModel());
+		if (!model) return false;
+		
+		SceneNode* leftNode = model->NodeForIndex(left);
+		SceneNode* rightNode = model->NodeForIndex(right);
+
+		// bones always come after other node types
+		if (leftNode->GetType() == SceneNode::NODE_BONE && rightNode->GetType() != SceneNode::NODE_BONE) return false;
+		else if (leftNode->GetType() != SceneNode::NODE_BONE && rightNode->GetType() == SceneNode::NODE_BONE) return true;
+
+		return QString::localeAwareCompare(leftNode->GetName(), rightNode->GetName()) < 0;
+	}
+	else return QSortFilterProxyModel::lessThan(left, right);
+}
+
 
 } // namespace Armed

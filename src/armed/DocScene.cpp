@@ -374,13 +374,21 @@ void DocScene::SelectNodes(const QList<Ogre::SceneNode*>& nodes)
 //////////////////////////////////////////////////////////////////////////
 void DocScene::OnMeshOrSkeletonChanged()
 {
+	RefreshEditor();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::RefreshEditor()
+{
 	// refresh all properties
 	MainWindow::GetInstance()->GetPropWindow()->DisplayData();
-	
-	// refresh editor selection (the bounding box likely changed)
-	m_Editor->GetSelection()->Refresh();
 
-	m_Editor->UpdateGizmos();
+	// refresh editor selection (the bounding box likely changed)
+	if (m_Editor)
+	{
+		m_Editor->GetSelection()->Refresh();
+		m_Editor->UpdateGizmos();
+	}
 }
 
 

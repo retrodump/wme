@@ -52,6 +52,9 @@ namespace Armed
 
 		void SelectNodes(const QList<Ogre::SceneNode*>& nodes);
 
+		void RefreshEditor();
+
+
 		// NodeSelection::Listener
 		void NodeSelectionChanged();
 		void NodeSelectionPositionChanged();

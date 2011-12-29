@@ -44,6 +44,12 @@ namespace Wme
 		bool IsOwnedByStage() const { return m_IsOwnedByStage; }
 		void SetOwnedByStage(bool val) { m_IsOwnedByStage = val; }
 
+		virtual bool IsAnimFrozen() const { return m_AnimFrozen; }
+		void SetAnimFrozen(bool val) { m_AnimFrozen = val; }
+
+		virtual bool IsSelectedInEditor() const;
+		virtual bool IsChildSelectedInEditor() const;
+
 		Entity3DBase* GetParentEntity() const;
 		word GetNumChildren() const;
 		Entity3DBase* GetChildEntity(word index) const;
@@ -77,6 +83,8 @@ namespace Wme
 		Ogre::SceneNode* m_SceneNode;
 
 		AttachmentPoint* m_AttachedTo;
+
+		bool m_AnimFrozen;
 
 		mutable Ogre::Vector3 m_Position;
 		mutable Ogre::Quaternion m_Orientation;

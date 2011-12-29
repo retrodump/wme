@@ -84,7 +84,7 @@ void MeshEntity::Update()
 
 	UpdateTasks();
 
-	if (m_AnimTree) m_AnimTree->Update();
+	if (m_AnimTree && !IsAnimFrozen()) m_AnimTree->Update();
 
 	foreach (AttachmentMap::value_type val, m_Attachments)
 	{
@@ -416,6 +416,25 @@ bool MeshEntity::IsAnyAnimationPlaying()
 {
 	if (!m_AnimTree) return false;
 	return m_AnimTree->IsAnyAnimationPlaying();
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool MeshEntity::IsAnimFrozen() const
+{
+	return IsChildSelectedInEditor();
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool MeshEntity::IsChildSelectedInEditor() const
+{
+	if (Entity3DBase::IsChildSelectedInEditor()) return true;
+
+	foreach (AttachmentMap::value_type val, m_Attachments)
+	{
+		AttachmentPoint* ap = val.second;
+		if (ap->GetAttachment()->IsSelectedInEditor() || ap->GetAttachment()->IsChildSelectedInEditor()) return true;
+	}
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////

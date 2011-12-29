@@ -49,6 +49,9 @@ namespace Wme
 		bool IsAnimationPlaying(const AnimProp& animProp, bool includeFadingIn = true);
 		bool IsAnyAnimationPlaying();
 
+		virtual bool IsAnimFrozen() const;
+		virtual bool IsChildSelectedInEditor() const;
+
 		bool HasAnimation(const WideString& animName) const;
 
 		void SetName(const WideString& name);

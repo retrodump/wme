@@ -28,6 +28,8 @@ namespace Armed
 		SceneNodeModel(QObject* parent);
 		~SceneNodeModel();
 
+		enum Column { Name, Type };
+
 		void SetScene(DocScene* scene);
 
 		SceneNode* NodeForIndex(const QModelIndex& index) const;
@@ -71,8 +73,7 @@ namespace Armed
 
 		static const int ColumnCount = 1;
 		static const QString MimeType;
-		enum Column { Name, Type };
-
+		
 		void BuildSceneTree();
 		void PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode);
 		void PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone);
