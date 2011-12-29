@@ -9,6 +9,7 @@
 #include "Actor3D.h"
 #include "CameraEntity.h"
 #include "LightEntity.h"
+#include "HelperEntity3D.h"
 
 
 
@@ -24,6 +25,7 @@ EntityFactory::EntityFactory()
 	Register("WmeActor3D", Actor3D::CreateInstance);
 	Register("WmeCamera", CameraEntity::CreateInstance);
 	Register("WmeLight", LightEntity::CreateInstance);
+	Register("WmeHelper3D", HelperEntity3D::CreateInstance);
 }
 
 //////////////////////////////////////////////////////////////////////////

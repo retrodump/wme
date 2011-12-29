@@ -206,6 +206,11 @@ void SceneNode::GetEntityTypeAndIcon(Entity3DBase* entity, QString& typeName, QS
 		typeName = qApp->translate("SceneNode", "Actor");
 		iconName = ":/icons/user.png";
 	}
+	else if (entity->GetEntitySubtype() == L"Helper3D")
+	{
+		typeName = qApp->translate("SceneNode", "Helper");
+		iconName = ":/icons/chart_organisation.png";
+	}
 	else
 	{
 		typeName = qApp->translate("SceneNode", "Entity");

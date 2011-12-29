@@ -437,6 +437,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\HelperEntity3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\HelperGizmo.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\HybridCamera.cpp"
 				>
 			</File>
@@ -1204,6 +1212,14 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\GuiStage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\HelperEntity3D.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\HelperGizmo.h"
 				>
 			</File>
 			<File
