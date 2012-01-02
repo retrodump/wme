@@ -4,6 +4,7 @@
 #include "Wme.h"
 #include "Object.h"
 
+
 namespace Wme
 {
 

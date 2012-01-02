@@ -269,6 +269,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\Canvas2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\CardinalSpline.cpp"
 				>
 			</File>
@@ -677,6 +681,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\SceneNode2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\SceneNodeEditor.cpp"
 				>
 			</File>
@@ -802,6 +810,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Timer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Transform2D.cpp"
 				>
 			</File>
 			<File
@@ -1060,6 +1072,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\CameraGizmo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Canvas2D.h"
 				>
 			</File>
 			<File
@@ -1483,6 +1499,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\SceneNode2D.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\SceneNodeEditor.h"
 				>
 			</File>
@@ -1612,6 +1632,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Timer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Transform2D.h"
 				>
 			</File>
 			<File
