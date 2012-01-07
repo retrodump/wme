@@ -40,6 +40,8 @@
 #include "Font.h"
 #include "Timer.h"
 
+#include "SceneNode2D.h"
+
 
 namespace Wme
 {
@@ -428,6 +430,24 @@ template <class Archive>void Game::serialize(Archive& ar, const unsigned int ver
 //////////////////////////////////////////////////////////////////////////
 void Game::Tests()
 {
+	SceneNode2D root;
+	root.SetPosition(100, 100);
+	root.SetRotation(90.0f);
+	root.SetScale(0.5f, 0.5f);
+
+	SceneNode2D node;
+	node.SetPosition(10, 0);
+
+	root.AddChild(&node);
+
+	root.UpdateTransform();
+	Ogre::Vector2 pos = node.GetDerivedPosition();
+
+	node.SetDerivedPosition(pos);
+
+	pos = node.GetPosition();
+
+	int i = 10;
 
 	/*
 	Font* f = new Font();

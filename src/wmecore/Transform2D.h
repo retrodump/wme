@@ -22,15 +22,21 @@ namespace Wme
 
 		Transform2D& operator=(const Transform2D& trans);
 
+		Ogre::Vector2 operator* (const Ogre::Vector2 &v) const;
+
 
 		Transform2D& Translate(float x, float y);
-		Transform2D& Rotate(float degrees);
+		Transform2D& Rotate(const Ogre::Degree& angle);
 		Transform2D& Scale(float x, float y);
 
 		Transform2D& Reset();
 
 		const Ogre::Matrix4& GetMatrix() const { return m_Matrix; }
 		void SetMatrix(const Ogre::Matrix4& matrix) { m_Matrix = matrix; }
+
+		Transform2D Inverted() const;
+
+		Ogre::Vector2 GetTranslation() const;
 
 	private:
 		Ogre::Matrix4 m_Matrix;

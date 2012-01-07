@@ -337,6 +337,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\Element2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\ElementCollection.cpp"
 				>
 			</File>
@@ -1124,6 +1128,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\DynamicBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Element2D.h"
 				>
 			</File>
 			<File
