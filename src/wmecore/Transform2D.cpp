@@ -73,7 +73,7 @@ Transform2D& Transform2D::Translate(float x, float y)
 	Ogre::Matrix4 matTrans;
 	matTrans.makeTrans(x, y, 0.0f);
 
-	m_Matrix = m_Matrix * matTrans;
+	m_Matrix = matTrans * m_Matrix;
 
 	return *this;
 }
@@ -82,7 +82,7 @@ Transform2D& Transform2D::Translate(float x, float y)
 Transform2D& Transform2D::Rotate(const Ogre::Degree& angle)
 {
 	Ogre::Matrix4 matRotation(Ogre::Quaternion(Ogre::Radian(angle), Ogre::Vector3::UNIT_Z));
-	m_Matrix = m_Matrix * matRotation;
+	m_Matrix = matRotation * m_Matrix;
 
 	return *this;
 }
@@ -91,8 +91,8 @@ Transform2D& Transform2D::Rotate(const Ogre::Degree& angle)
 Transform2D& Transform2D::Scale(float x, float y)
 {
 	Ogre::Matrix4 matScale = Ogre::Matrix4::IDENTITY;
-	matScale.setScale(Ogre::Vector3(x, y, 0.0f));
-	m_Matrix = m_Matrix * matScale;
+	matScale.setScale(Ogre::Vector3(x, y, 1.0f));
+	m_Matrix = matScale * m_Matrix;
 
 	return *this;
 }
@@ -109,7 +109,6 @@ Transform2D& Transform2D::Reset()
 Transform2D Transform2D::Inverted() const
 {
 	Transform2D ret;
-	float f = m_Matrix.determinant();
 	ret.SetMatrix(m_Matrix.inverse());
 
 	return ret;

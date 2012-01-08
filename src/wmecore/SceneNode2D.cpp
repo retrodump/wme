@@ -271,21 +271,15 @@ void SceneNode2D::UpdateTransfromInternal()
 
 	m_SceneTransform.Reset();
 	
-	m_SceneTransform.Translate(m_Position.x, m_Position.y);
-	m_SceneTransform.Rotate(m_DerivedRotation);
 	m_SceneTransform.Scale(m_DerivedScale.x, m_DerivedScale.y);	
+	m_SceneTransform.Rotate(m_DerivedRotation);
+	m_SceneTransform.Translate(m_Position.x, m_Position.y);	
 }
 
 //////////////////////////////////////////////////////////////////////////
 Ogre::Vector2 SceneNode2D::PositionSceneToLocal(const Ogre::Vector2& pos) const
 {
-	Transform2D invTrans;
-	invTrans.Reset();
-	invTrans.Scale(1.0f / m_DerivedScale.x, 1.0f / m_DerivedScale.y);
-	invTrans.Rotate(-m_DerivedRotation);
-	invTrans.Translate(-m_Position.x, -m_Position.y);
-
-	return invTrans * pos;
+	return m_SceneTransform.Inverted() * pos;
 }
 
 //////////////////////////////////////////////////////////////////////////
