@@ -48,13 +48,14 @@ namespace Wme
 
 		void OnRenderQueueStart(Ogre::uint8 renderQueueId, Ogre::Viewport* viewport);
 
+		Viewport* OgreToWmeViewport(Ogre::Viewport* ogreViewport);
+
 		// Ogre::RenderTargetListener implementation
 		virtual void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt);
 		virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt);
 
 
-	protected:
-		Viewport* OgreToWmeViewport(Ogre::Viewport* ogreViewport);
+	protected:		
 		WideString m_Name;
 		bool m_TopLevelWindow;
 		ViewportLayout* m_ViewportLayout;

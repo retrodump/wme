@@ -30,6 +30,19 @@ namespace Wme
 
 	typedef std::vector<Ogre::Vector3> PointVector;
 
+	typedef struct
+	{
+		Ogre::Vector2 pos;
+		Ogre::ColourValue color;
+	} Vertex2D;
+
+	typedef struct
+	{
+		Ogre::Vector2 pos;
+		Ogre::ColourValue color;
+		Ogre::Vector2 texCoord;
+	} Vertex2DTex;
+
 
 	typedef struct
 	{

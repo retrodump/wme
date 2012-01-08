@@ -489,6 +489,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\LineElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\LineElement3D.cpp"
 				>
 			</File>
@@ -642,6 +646,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Region.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\RenderBatch2D.cpp"
 				>
 			</File>
 			<File
@@ -1303,6 +1311,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\LineElement2D.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\LineElement3D.h"
 				>
 			</File>
@@ -1460,6 +1472,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Region.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\RenderBatch2D.h"
 				>
 			</File>
 			<File

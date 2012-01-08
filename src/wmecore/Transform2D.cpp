@@ -61,7 +61,7 @@ Transform2D& Transform2D::operator=(const Transform2D& trans)
 }
 
 //////////////////////////////////////////////////////////////////////////
-Ogre::Vector2 Transform2D::operator* (const Ogre::Vector2& v) const
+Ogre::Vector2 Transform2D::operator*(const Ogre::Vector2& v) const
 {
 	Ogre::Vector3 ret = m_Matrix * Ogre::Vector3(v.x, v.y, 0.0f);
 	return Ogre::Vector2(ret.x, ret.y);

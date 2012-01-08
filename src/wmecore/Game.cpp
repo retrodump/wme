@@ -430,17 +430,16 @@ template <class Archive>void Game::serialize(Archive& ar, const unsigned int ver
 //////////////////////////////////////////////////////////////////////////
 void Game::Tests()
 {
-	SceneNode2D root;
+	SceneNode2D root(NULL);
 	root.SetPosition(100, 100);
 	root.SetRotation(90.0f);
 	root.SetScale(0.5f, 0.5f);
 
-	SceneNode2D node;
+	SceneNode2D node(NULL);
 	node.SetPosition(10, 0);
 
 	root.AddChild(&node);
 
-	root.UpdateTransform();
 	Ogre::Vector2 pos = node.GetDerivedPosition();
 
 	node.SetDerivedPosition(pos);

@@ -27,6 +27,9 @@
 #include "FontManager.h"
 #include "View.h"
 #include "EmbeddedWindow.h"
+#include "Canvas2D.h"
+#include "SceneNode2D.h"
+#include "LineElement2D.h"
 
 
 namespace Wme
@@ -48,6 +51,7 @@ DebugHUD::DebugHUD()
 	m_TestRegion = NULL;
 	m_Window = NULL;
 	m_Font = NULL;
+	m_Canvas = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -64,6 +68,7 @@ DebugHUD::~DebugHUD()
 	SAFE_DELETE(m_Back);
 	SAFE_DELETE(m_TestObj);
 	SAFE_DELETE(m_TestRegion);
+	SAFE_DELETE(m_Canvas);
 
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 }
@@ -109,10 +114,10 @@ void DebugHUD::Create()
 	m_Info->SetPosY(20);
 	m_Info->SetFont(m_Font);
 
-
+/*
 	m_Lines = new LineElement();
 	m_Lines->SetColor(Ogre::ColourValue(1, 0, 1, 1));
-
+*/
 	m_TestRegion = new Region();
 	m_TestRegion->AddPoint(222, 246);
 	m_TestRegion->AddPoint(312, 241);
@@ -120,7 +125,7 @@ void DebugHUD::Create()
 	m_TestRegion->AddPoint(222, 417);
 	//reg.AddPoint(300, 100);
 
-	m_Lines->AddRegion(*m_TestRegion);
+	//m_Lines->AddRegion(*m_TestRegion);
 
 
 	/*
@@ -169,6 +174,23 @@ void DebugHUD::Create()
 	//button->SetDisabled(true);
 	m_Window->SaveToFile(L"c:/test.window");
 	*/
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DebugHUD::CreateCanvas(Viewport* viewport)
+{
+	m_Canvas = new Canvas2D(L"canvas", viewport);
+	m_Canvas->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
+
+	m_Lines = new LineElement2D();
+	m_Canvas->GetRootNode()->AttachElement(m_Lines);
+
+	m_Canvas->GetRootNode()->SetRotation(45);
+	m_Canvas->GetRootNode()->SetPosition(100, 100);
+	m_Canvas->GetRootNode()->SetScale(2, 1);
+	
+
+	m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -251,7 +273,7 @@ void DebugHUD::Render(Viewport* viewport, Camera* camera)
 	m_ElementCol->AddElement(m_Info);
 
 
-	m_Lines->UpdateGeometry(viewport, false);
+	//m_Lines->UpdateGeometry(viewport, false);
 	//m_ElementCol->AddElement(m_Lines);
 	//viewport->AddActiveSpot(new ActiveSpotRegion(viewport, m_TestObj, m_TestRegion, false));
 

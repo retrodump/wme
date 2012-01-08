@@ -10,15 +10,21 @@
 
 namespace Wme
 {
+	class Canvas2D;
 	class Element2D;
+	class RenderBatch2D;
+	class Viewport;
 
 	class WmeDllExport SceneNode2D
 	{
 	public:
-		SceneNode2D();
+		SceneNode2D(Canvas2D* canvas);
 		virtual ~SceneNode2D();
 
 		typedef std::list<SceneNode2D*> NodeList;
+
+		Canvas2D* GetCanvas() const { return m_Canvas; }
+		Viewport* GetViewport() const;
 
 		void AddChild(SceneNode2D* child, int zOrder = 0);
 		void RemoveChild(SceneNode2D* child);
@@ -44,31 +50,37 @@ namespace Wme
 		void SetScale(const Ogre::Vector2& scale);
 		void SetScale(float x, float y);
 
-		const Ogre::Vector2& GetDerivedPosition() const { return m_DerivedPosition; }
+		const Ogre::Vector2& GetDerivedPosition();
 		void SetDerivedPosition(const Ogre::Vector2& pos);
 		void SetDerivedPosition(float x, float y);
 
-		const Ogre::Degree& GetDerivedRotation() const { return m_DerivedRotation; }
+		const Ogre::Degree& GetDerivedRotation();
 		void SetDerivedRotation(const Ogre::Degree& angle);
 		void SetDerivedRotation(float degrees);
 
-		const Ogre::Vector2& GetDerivedScale() const { return m_DerivedScale; }
+		const Ogre::Vector2& GetDerivedScale();
 		void SetDerivedScale(const Ogre::Vector2& scale);
 		void SetDerivedScale(float x, float y);
 
-		const Transform2D& GetSceneTransform() const { return m_SceneTransform; }
+		const Transform2D& GetSceneTransform();
 
 		void AttachElement(Element2D* element);
 		void DetachElement();
 		Element2D* GetAttachedElement() const { return m_AttachedElement; }
 
-		void UpdateTransform(bool forceUpdate = false, bool updateChildren = true);
-
 		Ogre::Vector2 PositionSceneToLocal(const Ogre::Vector2& pos) const;
 		Ogre::Degree RotationSceneToLocal(const Ogre::Degree& angle) const;
 		Ogre::Vector2 ScaleSceneToLocal(const Ogre::Vector2& scale) const;
 
+		void Render(Ogre::RenderQueue* renderQueue, byte queueId, word& priority);
+		void VisitRenderables(Ogre::Renderable::Visitor* visitor);
+
+		void AddGeometry(Vertex2D* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
+		void AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
+
 	private:
+		Canvas2D* m_Canvas;
+
 		mutable NodeList m_Children;
 		SceneNode2D* m_ParentNode;
 		
@@ -91,11 +103,22 @@ namespace Wme
 		bool m_GeometryDirty;
 
 		void SetTransformDirty();
-		void SetGeometryDirty();
+		void SetGeometryDirty(bool includeChildren = false);
 
+		void UpdateTransform(bool forceUpdate = false, bool updateChildren = true);
 		void UpdateTransfromInternal();
 
+		void UpdateGeometry();
+		size_t m_BatchesUsed;
+
 		Element2D* m_AttachedElement;
+
+		typedef std::list<RenderBatch2D*> RenderBatchList;
+		RenderBatchList m_RenderBatches;
+
+		void RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word& priority);
+
+		RenderBatch2D* GetFreeRenderBatch();
 	};
 }
 

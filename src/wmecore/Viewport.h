@@ -40,8 +40,9 @@ namespace Wme
 		void SetScrollOffsetX(int newOffset);
 		void SetScrollOffsetY(int newOffset);
 
-		ViewportLayout* GetParentLayout() { return m_ParentLayout; }
-		Ogre::Viewport* GetOgreViewport() { return m_OgreViewport; }
+		ViewportLayout* GetParentLayout() const { return m_ParentLayout; }
+		View* GetParentView() const;
+		Ogre::Viewport* GetOgreViewport() const { return m_OgreViewport; }
 
 		void SetCamera(Camera* camera);
 		Camera* GetCamera() const { return m_Camera; }

@@ -4,6 +4,7 @@
 #ifndef __WmeElement2D_H__
 #define __WmeElement2D_H__
 
+
 namespace Wme
 {
 	class SceneNode2D;
@@ -21,6 +22,8 @@ namespace Wme
 		void DetachFromParent();
 
 		bool IsAttached() const;
+
+		virtual void AddGeometry() {};
 
 	protected:
 		SceneNode2D* m_ParentNode;

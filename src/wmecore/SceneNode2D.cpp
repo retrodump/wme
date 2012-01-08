@@ -3,7 +3,10 @@
 
 #include "Wme.h"
 #include "SceneNode2D.h"
+#include "Canvas2D.h"
 #include "Element2D.h"
+#include "RenderBatch2D.h"
+#include "Viewport.h"
 #include "MathUtil.h"
 
 
@@ -12,8 +15,10 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-SceneNode2D::SceneNode2D()
+SceneNode2D::SceneNode2D(Canvas2D* canvas)
 {
+	m_Canvas = canvas;
+
 	m_SortNeeded = false;
 
 	m_ParentNode = NULL;
@@ -27,12 +32,26 @@ SceneNode2D::SceneNode2D()
 	m_GeometryDirty = true;
 
 	m_AttachedElement = NULL;
+
+	m_BatchesUsed = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
 SceneNode2D::~SceneNode2D()
 {
 	DetachElement();
+
+	foreach (RenderBatch2D* batch, m_RenderBatches)
+	{
+		SAFE_DELETE(batch);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+Viewport* SceneNode2D::GetViewport() const
+{
+	if (m_Canvas) return m_Canvas->GetViewport();
+	else return NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,10 +162,24 @@ void SceneNode2D::SetScale(float x, float y)
 }
 
 //////////////////////////////////////////////////////////////////////////
+const Ogre::Vector2& SceneNode2D::GetDerivedPosition()
+{
+	UpdateTransform();
+	return m_DerivedPosition;
+}
+
+//////////////////////////////////////////////////////////////////////////
 void SceneNode2D::SetDerivedPosition(const Ogre::Vector2& pos)
 {
 	if (!m_ParentNode) SetPosition(pos);
 	else SetPosition(m_ParentNode->PositionSceneToLocal(pos));
+}
+
+//////////////////////////////////////////////////////////////////////////
+const Ogre::Degree& SceneNode2D::GetDerivedRotation()
+{
+	UpdateTransform();
+	return m_DerivedRotation;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -169,6 +202,13 @@ void SceneNode2D::SetDerivedRotation(float degrees)
 }
 
 //////////////////////////////////////////////////////////////////////////
+const Ogre::Vector2& SceneNode2D::GetDerivedScale()
+{
+	UpdateTransform();
+	return m_DerivedScale;
+}
+
+//////////////////////////////////////////////////////////////////////////
 void SceneNode2D::SetDerivedScale(const Ogre::Vector2& scale)
 {
 	if (!m_ParentNode) SetScale(scale);
@@ -179,6 +219,13 @@ void SceneNode2D::SetDerivedScale(const Ogre::Vector2& scale)
 void SceneNode2D::SetDerivedScale(float x, float y)
 {
 	SetDerivedScale(Ogre::Vector2(x, y));
+}
+
+//////////////////////////////////////////////////////////////////////////
+const Transform2D& SceneNode2D::GetSceneTransform()
+{
+	UpdateTransform();
+	return m_SceneTransform;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -201,13 +248,21 @@ bool SceneNode2D::ZOrderComparer(SceneNode2D* node1, SceneNode2D* node2)
 void SceneNode2D::SetTransformDirty()
 {
 	m_TransformDirty = true;
-	m_GeometryDirty = true;
+	SetGeometryDirty(true);
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SceneNode2D::SetGeometryDirty()
+void SceneNode2D::SetGeometryDirty(bool includeChildren)
 {
 	m_GeometryDirty = true;
+
+	if (includeChildren)
+	{
+		foreach (SceneNode2D* child, m_Children)
+		{
+			child->SetGeometryDirty(true);
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -277,6 +332,60 @@ void SceneNode2D::UpdateTransfromInternal()
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SceneNode2D::UpdateGeometry()
+{
+	if (!m_GeometryDirty) return;
+
+	m_BatchesUsed = 0;
+
+	// reguest geometry from attached object
+	if (m_AttachedElement) m_AttachedElement->AddGeometry();
+
+	// delete unneeded render batches
+	while (m_RenderBatches.size() > m_BatchesUsed)
+	{
+		delete m_RenderBatches.back();
+		m_RenderBatches.pop_back();
+	}
+
+	m_GeometryDirty = false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::AddGeometry(Vertex2D* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
+{
+	RenderBatch2D* batch = GetFreeRenderBatch();
+	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
+{
+	RenderBatch2D* batch = GetFreeRenderBatch();
+	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType);
+}
+
+//////////////////////////////////////////////////////////////////////////
+RenderBatch2D* SceneNode2D::GetFreeRenderBatch()
+{
+	size_t counter = 0;
+	foreach (RenderBatch2D* batch, m_RenderBatches)
+	{
+		if (counter == m_BatchesUsed)
+		{
+			m_BatchesUsed++;
+			return batch;
+		}
+	}
+
+	m_BatchesUsed++;
+	RenderBatch2D* newBatch = new RenderBatch2D;
+	m_RenderBatches.push_back(newBatch);
+
+	return newBatch;
+}
+
+//////////////////////////////////////////////////////////////////////////
 Ogre::Vector2 SceneNode2D::PositionSceneToLocal(const Ogre::Vector2& pos) const
 {
 	return m_SceneTransform.Inverted() * pos;
@@ -292,6 +401,52 @@ Ogre::Degree SceneNode2D::RotationSceneToLocal(const Ogre::Degree& angle) const
 Ogre::Vector2 SceneNode2D::ScaleSceneToLocal(const Ogre::Vector2& scale) const
 {
 	return scale / m_Scale;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
+{
+	SortChildren();
+	UpdateGeometry();
+	
+	bool renderedSelf = false;
+	int prevZOrder = -1;
+	
+	foreach (SceneNode2D* child, m_Children)
+	{
+		if (child->GetZOrder() >= 0 && prevZOrder < 0)
+		{
+			RenderSelf(renderQueue, queueId, priority);
+			renderedSelf = true;
+		}
+		child->Render(renderQueue, queueId, priority);
+		prevZOrder = child->GetZOrder();
+	}
+	if (!renderedSelf) RenderSelf(renderQueue, queueId, priority);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
+{
+	foreach (RenderBatch2D* batch, m_RenderBatches)
+	{
+		priority++;
+		renderQueue->addRenderable(batch, queueId, priority);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::VisitRenderables(Ogre::Renderable::Visitor* visitor)
+{
+	foreach (RenderBatch2D* batch, m_RenderBatches)
+	{
+		visitor->visit(batch, 0, false);
+	}
+
+	foreach (SceneNode2D* child, m_Children)
+	{
+		child->VisitRenderables(visitor);
+	}
 }
 
 

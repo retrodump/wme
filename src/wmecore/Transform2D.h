@@ -22,7 +22,7 @@ namespace Wme
 
 		Transform2D& operator=(const Transform2D& trans);
 
-		Ogre::Vector2 operator* (const Ogre::Vector2 &v) const;
+		Ogre::Vector2 operator*(const Ogre::Vector2 &v) const;
 
 
 		Transform2D& Translate(float x, float y);

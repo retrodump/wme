@@ -166,6 +166,8 @@ void ContentManager::TestData(View* testView)
 	//vp->SetScrollOffsetX(0);
 	//vp->SetScrollOffsetY(0);
 
+	hud->CreateCanvas(vp);
+
 
 
 	//m_TestCamera->AdjustToViewport(vp);

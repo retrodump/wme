@@ -81,6 +81,13 @@ void Viewport::Update()
 }
 
 //////////////////////////////////////////////////////////////////////////
+View* Viewport::GetParentView() const
+{
+	if (m_ParentLayout) return m_ParentLayout->GetParentView();
+	else return NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
 void Viewport::SetCamera(Camera* camera)
 {
 	m_Camera = camera;

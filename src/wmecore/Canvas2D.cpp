@@ -3,7 +3,11 @@
 
 #include "Wme.h"
 #include "Canvas2D.h"
+#include "Viewport.h"
+#include "View.h"
 #include "Transform2D.h"
+#include "SceneNode2D.h"
+#include "StringUtil.h"
 
 
 namespace Wme
@@ -11,31 +15,75 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-Canvas2D::Canvas2D()
+	Canvas2D::Canvas2D(const WideString& name, Viewport* viewport) : Ogre::MovableObject(StringUtil::WideToUtf8(name))
 {
+	m_Viewport = viewport;
+	m_RootNode = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
 Canvas2D::~Canvas2D()
 {
+	SAFE_DELETE(m_RootNode);
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Canvas2D::SetTransform(const Transform2D& transform)
+SceneNode2D* Canvas2D::GetRootNode()
 {
-	m_Transform = transform;
+	if (!m_RootNode)
+	{
+		m_RootNode = new SceneNode2D(this);
+	}
+	return m_RootNode;
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Canvas2D::ResetTransform()
+bool Canvas2D::IsCurrentViewport() const
 {
-	m_Transform.Reset();
+	View* view = m_Viewport->GetParentView();
+	if (!view) return false;
+
+	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
+	return view->OgreToWmeViewport(rs->_getViewport()) == m_Viewport;
 }
 
 //////////////////////////////////////////////////////////////////////////
-const Transform2D& Canvas2D::GetTransform() const
+// Ogre::MovableObject
+//////////////////////////////////////////////////////////////////////////
+const Ogre::String& Canvas2D::getMovableType(void) const
 {
-	return m_Transform;
+	static Ogre::String movType = "Canvas2D";
+	return movType;
+}
+
+//////////////////////////////////////////////////////////////////////////
+const Ogre::AxisAlignedBox& Canvas2D::getBoundingBox(void) const
+{
+	static Ogre::AxisAlignedBox box;
+	box.setInfinite();
+
+	return box;
+}
+
+//////////////////////////////////////////////////////////////////////////
+Ogre::Real Canvas2D::getBoundingRadius(void) const
+{
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Canvas2D::_updateRenderQueue(Ogre::RenderQueue* queue)
+{
+	if (!IsCurrentViewport()) return;
+
+	word priority = 0;
+	if (m_RootNode) m_RootNode->Render(queue, mRenderQueueID, priority);	
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Canvas2D::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
+{
+	if (m_RootNode) m_RootNode->VisitRenderables(visitor);
 }
 
 
