@@ -8,6 +8,9 @@
 namespace Wme
 {
 	class SceneNode2D;
+	class Element2D;
+
+	typedef std::list<Element2D*> Element2DList;
 
 	class WmeDllExport Element2D
 	{
@@ -23,10 +26,16 @@ namespace Wme
 
 		bool IsAttached() const;
 
+		bool IsVisible() const { return m_IsVisible; }
+		void SetVisible(bool visible) { m_IsVisible = visible; }
+
+		virtual bool IsTransparentAt(float x, float y) { return true; }
+
 		virtual void AddGeometry() {};
 
 	protected:
 		SceneNode2D* m_ParentNode;
+		bool m_IsVisible;
 	};
 }
 

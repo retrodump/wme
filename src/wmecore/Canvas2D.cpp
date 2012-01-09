@@ -15,7 +15,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-	Canvas2D::Canvas2D(const WideString& name, Viewport* viewport) : Ogre::MovableObject(StringUtil::WideToUtf8(name))
+Canvas2D::Canvas2D(const WideString& name, Viewport* viewport) : Ogre::MovableObject(StringUtil::WideToUtf8(name))
 {
 	m_Viewport = viewport;
 	m_RootNode = NULL;
@@ -45,6 +45,12 @@ bool Canvas2D::IsCurrentViewport() const
 
 	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 	return view->OgreToWmeViewport(rs->_getViewport()) == m_Viewport;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Canvas2D::GetElementsAt(float x, float y, Element2DList& elements) const
+{
+	if (m_RootNode) m_RootNode->GetElementsAt(x, y, elements);
 }
 
 //////////////////////////////////////////////////////////////////////////

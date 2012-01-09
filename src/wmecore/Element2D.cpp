@@ -14,6 +14,7 @@ namespace Wme
 Element2D::Element2D()
 {
 	m_ParentNode = NULL;
+	m_IsVisible = true;
 }
 
 //////////////////////////////////////////////////////////////////////////

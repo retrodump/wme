@@ -5,6 +5,7 @@
 #include "RenderBatch2D.h"
 #include "Transform2D.h"
 #include "Viewport.h"
+#include "BoundingRect.h"
 
 
 namespace Wme
@@ -33,7 +34,7 @@ RenderBatch2D::~RenderBatch2D()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
+void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType, BoundingRect& boundingRect)
 {
 	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 
@@ -61,6 +62,7 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t
 		rs->convertColourValue(vertexData[i].color, &color); // convert color to platform native format
 
 		Ogre::Vector2 pos = transform * vertexData[i].pos;
+		boundingRect.AddPoint(pos);
 
 		verts[i].pos = Ogre::Vector3(pos.x, pos.y, -1.0f);
 		verts[i].color = color;
@@ -80,7 +82,7 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t
 }
 
 //////////////////////////////////////////////////////////////////////////
-void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2DTex* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
+void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2DTex* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType, BoundingRect& boundingRect)
 {
 	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 
@@ -107,6 +109,7 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2DTex* vertexData, siz
 		rs->convertColourValue(vertexData[i].color, &color); // convert color to platform native format
 
 		Ogre::Vector2 pos = transform * vertexData[i].pos;
+		boundingRect.AddPoint(pos);
 
 		verts[i].pos = Ogre::Vector3(pos.x, pos.y, -1.0f);
 		verts[i].color = color;

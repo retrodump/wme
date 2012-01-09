@@ -284,6 +284,12 @@ void DebugHUD::Render(Viewport* viewport, Camera* camera)
 	params.Color = Ogre::ColourValue(1, 1, 1, 1);
 	params.AbsolutePos = true;
 	m_Arrow->Display(m_ElementCol, mouseX, mouseY, params);
+
+	if (m_Canvas)
+	{
+		Element2DList elements;
+		m_Canvas->GetElementsAt(100, 100, elements);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

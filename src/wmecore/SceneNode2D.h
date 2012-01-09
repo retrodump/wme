@@ -6,12 +6,13 @@
 
 
 #include "Transform2D.h"
+#include "BoundingRect.h"
+#include "Element2D.h"
 
 
 namespace Wme
 {
 	class Canvas2D;
-	class Element2D;
 	class RenderBatch2D;
 	class Viewport;
 
@@ -63,6 +64,8 @@ namespace Wme
 		void SetDerivedScale(float x, float y);
 
 		const Transform2D& GetSceneTransform();
+		
+		const BoundingRect& GetBoundingRect() const { return m_BoundingRect; }
 
 		void AttachElement(Element2D* element);
 		void DetachElement();
@@ -77,6 +80,8 @@ namespace Wme
 
 		void AddGeometry(Vertex2D* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
 		void AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
+
+		void GetElementsAt(float x, float y, Element2DList& elements) const;
 
 	private:
 		Canvas2D* m_Canvas;
@@ -94,6 +99,8 @@ namespace Wme
 		Ogre::Vector2 m_DerivedScale;
 
 		Transform2D m_SceneTransform;
+
+		BoundingRect m_BoundingRect;
 
 		mutable bool m_SortNeeded;
 		void SortChildren() const;
@@ -119,6 +126,8 @@ namespace Wme
 		void RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word& priority);
 
 		RenderBatch2D* GetFreeRenderBatch();
+
+		bool HitTest(float x, float y) const;
 	};
 }
 

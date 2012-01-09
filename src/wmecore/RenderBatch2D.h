@@ -9,6 +9,7 @@ namespace Wme
 {
 	class Viewport;
 	class Transform2D;
+	class BoundingRect;
 
 	class WmeDllExport RenderBatch2D : public Ogre::Renderable
 	{
@@ -16,8 +17,8 @@ namespace Wme
 		RenderBatch2D();
 		virtual ~RenderBatch2D();
 
-		void SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
-		void SetVertices(Viewport* viewport, Vertex2DTex* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
+		void SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType, BoundingRect& boundingRect);
+		void SetVertices(Viewport* viewport, Vertex2DTex* vertexData, size_t numVerts, const Transform2D& transform, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType, BoundingRect& boundingRect);
 
 		// Ogre::Renderable
 		virtual const Ogre::MaterialPtr& getMaterial(void) const;

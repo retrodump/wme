@@ -5,11 +5,14 @@
 #define __WmeCanvas2D_H__
 
 
+#include "Element2D.h"
+
+
 namespace Wme
 {
 	class Viewport;
 	class SceneNode2D;
-
+	
 	class WmeDllExport Canvas2D : public Ogre::MovableObject
 	{
 	public:
@@ -19,6 +22,8 @@ namespace Wme
 		Viewport* GetViewport() const { return m_Viewport; }
 
 		SceneNode2D* GetRootNode();
+
+		void GetElementsAt(float x, float y, Element2DList& elements) const;
 
 
 		// Ogre::MovableObject implementation

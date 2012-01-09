@@ -4,7 +4,6 @@
 #include "Wme.h"
 #include "SceneNode2D.h"
 #include "Canvas2D.h"
-#include "Element2D.h"
 #include "RenderBatch2D.h"
 #include "Viewport.h"
 #include "MathUtil.h"
@@ -336,6 +335,7 @@ void SceneNode2D::UpdateGeometry()
 {
 	if (!m_GeometryDirty) return;
 
+	m_BoundingRect.Clear();
 	m_BatchesUsed = 0;
 
 	// reguest geometry from attached object
@@ -355,14 +355,14 @@ void SceneNode2D::UpdateGeometry()
 void SceneNode2D::AddGeometry(Vertex2D* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
 {
 	RenderBatch2D* batch = GetFreeRenderBatch();
-	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType);
+	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType, m_BoundingRect);
 }
 
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType)
 {
 	RenderBatch2D* batch = GetFreeRenderBatch();
-	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType);
+	batch->SetVertices(GetViewport(), vertexData, numVerts, GetSceneTransform(), material, operType, m_BoundingRect);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -428,6 +428,8 @@ void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& pri
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
+	if (m_AttachedElement && !m_AttachedElement->IsVisible()) return;
+
 	foreach (RenderBatch2D* batch, m_RenderBatches)
 	{
 		priority++;
@@ -447,6 +449,38 @@ void SceneNode2D::VisitRenderables(Ogre::Renderable::Visitor* visitor)
 	{
 		child->VisitRenderables(visitor);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::GetElementsAt(float x, float y, Element2DList& elements) const
+{
+	bool testedSelf = false;
+	int prevZOrder = -1;
+
+	foreach (SceneNode2D* child, m_Children)
+	{
+		if (child->GetZOrder() >= 0 && prevZOrder < 0)
+		{
+			if (HitTest(x, y)) elements.push_back(m_AttachedElement);
+			testedSelf = true;
+		}
+		child->GetElementsAt(x, y, elements);
+		prevZOrder = child->GetZOrder();
+	}
+	if (!testedSelf)
+	{
+		if (HitTest(x, y)) elements.push_back(m_AttachedElement);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool SceneNode2D::HitTest(float x, float y) const
+{
+	if (!m_AttachedElement) return false;
+	if (!m_BoundingRect.ContainsPoint(x, y)) return false;
+
+	Ogre::Vector2 localPos = PositionSceneToLocal(Ogre::Vector2(x, y));
+	return !m_AttachedElement->IsTransparentAt(localPos.x, localPos.y);
 }
 
 
