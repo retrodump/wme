@@ -151,6 +151,13 @@ void SceneNodeModel::UnregisterNode(Ogre::SceneNode* ogreNode)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::RebuildNodeIndex()
+{
+	m_NodeMap.clear();
+	if (m_RootNode) m_RootNode->RegisterNode(this);
+}
+
+//////////////////////////////////////////////////////////////////////////
 Ogre::SceneNode* SceneNodeModel::GetRealRootNode() const
 {
 	if (!m_Scene || !m_Scene->GetScene() || !m_Scene->GetScene()->GetSceneMgr()) return NULL;
@@ -567,6 +574,8 @@ void SceneNodeModel::OnSceneNodeChanged(Ogre::SceneNode* node)
 		beginInsertRows(nodeIndex, 0, sceneNode->GetNumChildren() - 1);
 		endInsertRows();
 	}
+
+	RebuildNodeIndex();
 
 	emit dataChanged(nodeIndex, nodeIndex);
 }

@@ -61,6 +61,8 @@ namespace Armed
 		Ogre::SceneNode* GetOgreSceneNode() const;
 		SceneNode* GetChildFromOgreSceneNode(Ogre::SceneNode* ogreSceneNode) const;
 
+		void RegisterNode(SceneNodeModel* parentModel);
+
 	private:
 		void GetEntityTypeAndIcon(Entity3DBase* entity, QString& typeName, QString& iconName) const;
 

@@ -41,6 +41,7 @@ namespace Armed
 
 		void RegisterNode(SceneNode* node, Ogre::SceneNode* ogreNode);
 		void UnregisterNode(Ogre::SceneNode* ogreNode);
+		void RebuildNodeIndex();
 
 		// QAbstractItemModel
 		Qt::ItemFlags flags(const QModelIndex& index) const;

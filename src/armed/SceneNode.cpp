@@ -252,5 +252,15 @@ QIcon* SceneNode::GetIcon() const
 	else return NULL;
 }
 
+//////////////////////////////////////////////////////////////////////////
+void SceneNode::RegisterNode(SceneNodeModel* parentModel)
+{
+	parentModel->RegisterNode(this, GetOgreSceneNode());
+	qforeach (SceneNode* child, m_Children)
+	{
+		child->RegisterNode(parentModel);
+	}
+}
+
 
 } // namespace Armed
