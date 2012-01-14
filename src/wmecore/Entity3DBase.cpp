@@ -230,6 +230,14 @@ void Entity3DBase::DetachIfAttached()
 void Entity3DBase::SetAttachedTo(AttachmentPoint* attachTo)
 {
 	m_AttachedTo = attachTo;
+
+	if (!m_AttachedTo)
+	{
+		GetStage()->GetRootNode()->addChild(m_SceneNode);
+		GetStage()->OnSceneNodeCreated(m_SceneNode);
+		SetPosition(Ogre::Vector3::ZERO);
+		SetOrientation(Ogre::Quaternion::IDENTITY);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

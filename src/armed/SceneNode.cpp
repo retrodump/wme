@@ -95,8 +95,7 @@ SceneNode::SceneNode(SceneNodeModel* parentModel, MeshEntity* boneOwner, Ogre::B
 SceneNode::~SceneNode()
 {
 	m_ParentModel->UnregisterNode(GetOgreSceneNode());
-
-	qDeleteAll(m_Children);
+	RemoveChildren();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -117,6 +116,13 @@ void SceneNode::RemoveChild(SceneNode* child)
 
 	m_Children.removeOne(child);
 	child->SetParent(NULL);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode::RemoveChildren()
+{
+	qDeleteAll(m_Children);
+	m_Children.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////

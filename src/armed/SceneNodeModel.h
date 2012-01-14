@@ -60,9 +60,14 @@ namespace Armed
 		// Wme::Scene3DBase::SceneGraphListener
 		void OnSceneNodeAdded(Ogre::SceneNode* node);
 		void OnSceneNodeRemoving(Ogre::SceneNode* node);
+		void OnSceneNodeChanged(Ogre::SceneNode* node);
+		void OnSceneGraphDirty();
 
 	signals:
 		void IndexesDropped(const QModelIndexList& indexList);
+
+	public slots:
+		void RefreshAll();
 
 	private slots:
 		void SelectItemsAfterDrop();
@@ -77,10 +82,15 @@ namespace Armed
 		void BuildSceneTree();
 		void PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode);
 		void PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone);
+		SceneNode* AddChildNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode);
+		void AddBones(SceneNode* parentNode);
 
 		QMap<Ogre::SceneNode*, SceneNode*> m_NodeMap;
 
 		QList<SceneNode*> m_DroppedNodes;
+
+		bool m_DropInProgress;
+		bool m_IsDirty;
 
 	};
 }

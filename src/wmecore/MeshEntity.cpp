@@ -149,8 +149,17 @@ bool MeshEntity::SetSkeleton(const WideString& skeletonFile, bool highlightMat)
 {
 	if (m_Mesh)
 	{
+		KillAnimations();
+		SAFE_DELETE(m_AnimTree);
+
+		RemoveAllAttachments();
+
 		m_HighlightMatAfterChange = highlightMat;
-		return m_Mesh->SetSkeleton(skeletonFile);
+		bool ret = m_Mesh->SetSkeleton(skeletonFile);
+		
+		EmitNodeChanged();
+
+		return ret;
 	}
 	else return false;
 }
@@ -161,7 +170,11 @@ bool MeshEntity::AddSkeleton(const WideString& skeletonFile, const WideString& a
 	if (m_Mesh)
 	{
 		ScheduleOgreEntityRebuild();
-		return m_Mesh->AddSkeleton(skeletonFile, animsToMerge);
+		bool ret = m_Mesh->AddSkeleton(skeletonFile, animsToMerge);
+
+		EmitNodeChanged();
+		
+		return ret;
 	}
 	else return false;
 }
@@ -171,8 +184,15 @@ void MeshEntity::RemoveSkeleton(bool highlightMat)
 {
 	if (m_Mesh)
 	{
+		KillAnimations();
+		SAFE_DELETE(m_AnimTree);
+
+		RemoveAllAttachments();
+
 		m_HighlightMatAfterChange = highlightMat;
 		m_Mesh->RemoveSkeleton();
+
+		EmitNodeChanged();
 	}
 }
 
@@ -209,6 +229,8 @@ bool MeshEntity::SetMesh(const WideString& meshFile, bool highlightMat)
 			// which will destroy material assignment
 			// so we need to subscribe to the scene manager event and re-apply the materials
 			ScheduleOgreEntityRebuild();
+
+			EmitNodeChanged();
 		}
 		return true;
 	}
@@ -221,6 +243,8 @@ void MeshEntity::RemoveMesh()
 	KillAnimations();
 	SAFE_DELETE(m_AnimTree);
 
+	RemoveAllAttachments();
+
 	if (m_OgreEntity)
 	{
 		if (m_Stage) m_Stage->GetSceneMgr()->destroyEntity(m_OgreEntity);
@@ -231,6 +255,8 @@ void MeshEntity::RemoveMesh()
 	{
 		Game::GetInstance()->GetMeshMgr()->ReleaseMesh(m_Mesh, this);
 	}
+
+	EmitNodeChanged();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -498,7 +524,6 @@ void MeshEntity::RemoveAttachment(Entity3DBase* entity)
 
 		if (ap->GetAttachment() == entity)
 		{
-			ap->GetAttachment()->SetAttachedTo(NULL);
 			delete ap;
 
 			m_Attachments.erase(it);
@@ -516,7 +541,6 @@ void MeshEntity::RemoveAttachmentsFromBone(const WideString& boneName)
 	for (AttachmentMap::iterator it = range.first; it != range.second; ++it) 
 	{
 		AttachmentPoint* ap = it->second;
-		ap->GetAttachment()->SetAttachedTo(NULL);
 		delete ap;
 	}
 
@@ -529,7 +553,6 @@ void MeshEntity::RemoveAllAttachments()
 	foreach (AttachmentMap::value_type val, m_Attachments)
 	{
 		AttachmentPoint* ap = val.second;
-		ap->GetAttachment()->SetAttachedTo(NULL);
 		delete ap;
 	}
 	m_Attachments.clear();
@@ -547,6 +570,11 @@ void MeshEntity::GetAttachmentsForBone(const WideString& boneName, AttachmentLis
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+void MeshEntity::EmitNodeChanged()
+{
+	if (IsInStage()) m_Stage->OnSceneNodeChanged(m_SceneNode);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Ogre::MovableObject::Listener

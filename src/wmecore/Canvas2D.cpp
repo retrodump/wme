@@ -18,6 +18,8 @@ namespace Wme
 Canvas2D::Canvas2D(const WideString& name, Viewport* viewport) : Ogre::MovableObject(StringUtil::WideToUtf8(name))
 {
 	m_Viewport = viewport;
+	m_LastViewportWidth = m_LastViewportHeight = 0;
+	
 	m_RootNode = NULL;
 }
 
@@ -81,6 +83,15 @@ Ogre::Real Canvas2D::getBoundingRadius(void) const
 void Canvas2D::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	if (!IsCurrentViewport()) return;
+
+	if (m_LastViewportWidth != m_Viewport->GetOgreViewport()->getActualWidth() || m_LastViewportHeight != m_Viewport->GetOgreViewport()->getActualHeight())
+	{
+		if (m_RootNode) m_RootNode->SetGeometryDirty(true);
+
+		m_LastViewportWidth = m_Viewport->GetOgreViewport()->getActualWidth();
+		m_LastViewportHeight = m_Viewport->GetOgreViewport()->getActualHeight();
+	}
+
 
 	word priority = 0;
 	if (m_RootNode) m_RootNode->Render(queue, mRenderQueueID, priority);	

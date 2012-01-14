@@ -24,6 +24,8 @@ SceneNodeModel::SceneNodeModel(QObject* parent) : QAbstractItemModel(parent)
 {
 	m_Scene = NULL;
 	m_RootNode = NULL;
+	m_IsDirty = false;
+	m_DropInProgress = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,39 +64,13 @@ void SceneNodeModel::BuildSceneTree()
 void SceneNodeModel::PopulateNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode)
 {
 	for (unsigned short i = 0; i < ogreSceneNode->numChildren(); i++)
-	{
-		SceneNode* newNode;
+	{		
 		Ogre::SceneNode* childSceneNode = static_cast<Ogre::SceneNode*>(ogreSceneNode->getChild(i));
-
-		Entity3DBase* entity = Entity3DBase::NodeToEntity(childSceneNode);
-		if (entity)
-		{
-			newNode = new SceneNode(this, entity, parentNode);
-
-			// bones
-			if (entity->IsMeshBased())
-			{
-				MeshEntity* meshEntity = static_cast<MeshEntity*>(entity);
-
-				Skeleton* skeleton = meshEntity->GetSkeleton();
-				if (skeleton)
-				{
-					Ogre::SkeletonPtr ogreSkeleton = skeleton->GetOgreSkeleton();
-					Ogre::Skeleton::BoneIterator boneIter = ogreSkeleton->getRootBoneIterator();
-					while (boneIter.hasMoreElements())
-					{
-						PopulateNode(newNode, meshEntity, boneIter.getNext());
-					}
-				}
-			}
-		}
-		else
-		{
-			newNode = new SceneNode(this, childSceneNode, parentNode);
-		}
-		PopulateNode(newNode, childSceneNode);
+		AddChildNode(parentNode, childSceneNode);
 	}
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 void SceneNodeModel::PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity, Ogre::Bone* bone)
@@ -115,6 +91,48 @@ void SceneNodeModel::PopulateNode(SceneNode* parentNode, MeshEntity* meshEntity,
 	for (unsigned short i = 0; i < bone->numChildren(); i++)
 	{
 		PopulateNode(newNode, meshEntity, static_cast<Ogre::Bone*>(bone->getChild(i)));
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+SceneNode* SceneNodeModel::AddChildNode(SceneNode* parentNode, Ogre::SceneNode* ogreSceneNode)
+{
+	SceneNode* newNode;
+
+	Entity3DBase* entity = Entity3DBase::NodeToEntity(ogreSceneNode);
+	if (entity)
+	{
+		newNode = new SceneNode(this, entity, parentNode);
+		AddBones(newNode);
+	}
+	else
+	{
+		newNode = new SceneNode(this, ogreSceneNode, parentNode);
+	}
+	PopulateNode(newNode, ogreSceneNode);
+
+	return newNode;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::AddBones(SceneNode* parentNode)
+{
+	Entity3DBase* entity = parentNode->GetEntity();
+
+	if (entity && entity->IsMeshBased())
+	{
+		MeshEntity* meshEntity = static_cast<MeshEntity*>(entity);
+
+		Skeleton* skeleton = meshEntity->GetSkeleton();
+		if (skeleton)
+		{
+			Ogre::SkeletonPtr ogreSkeleton = skeleton->GetOgreSkeleton();
+			Ogre::Skeleton::BoneIterator boneIter = ogreSkeleton->getRootBoneIterator();
+			while (boneIter.hasMoreElements())
+			{
+				PopulateNode(parentNode, meshEntity, boneIter.getNext());
+			}
+		}
 	}
 }
 
@@ -344,6 +362,7 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 	Ogre::SceneNode* parentSceneNode = parentNode->GetOgreSceneNode();
 	if (!parentSceneNode && parentNode->GetType() != SceneNode::NODE_BONE) return false;
 
+	m_DropInProgress = true;
 
 	Ogre::SceneManager* sceneMgr = m_Scene->GetScene()->GetSceneMgr();
 
@@ -416,9 +435,11 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 			SceneNode* oldParent = childNode->GetParent();
 			if (oldParent && oldParent->GetType() == SceneNode::NODE_BONE && childNode->GetType() == SceneNode::NODE_ENTITY)
 			{
-				oldParent->GetBoneOwner()->RemoveAttachment(childNode->GetEntity());
+				oldParent->GetBoneOwner()->RemoveAttachment(childNode->GetEntity());				
 			}
-			else
+
+			// detach from the original parent, if any
+			if (childSceneNode->getParentSceneNode())
 			{
 				childSceneNode->getParentSceneNode()->removeChild(childSceneNode);
 			}
@@ -461,6 +482,8 @@ bool SceneNodeModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction acti
 	// emit event after the drag&drop is over (QTreeView won't auto-expand selection parents if d&d is in progress)
 	QTimer::singleShot(0, this, SLOT(SelectItemsAfterDrop()));
 
+	m_DropInProgress = false;
+
 	return true;
 }
 
@@ -482,6 +505,8 @@ void SceneNodeModel::SelectItemsAfterDrop()
 //////////////////////////////////////////////////////////////////////////
 void SceneNodeModel::OnSceneNodeAdded(Ogre::SceneNode* node)
 {
+	if (m_DropInProgress) return;
+
 	Ogre::SceneNode* parentSceneNode = node->getParentSceneNode();
 	if (!parentSceneNode) return;
 
@@ -489,7 +514,7 @@ void SceneNodeModel::OnSceneNodeAdded(Ogre::SceneNode* node)
 	SceneNode* parentNode = NodeForIndex(parentIndex);
 	if (!parentNode) return;
 
-	SceneNode* newNode = new SceneNode(this, node, parentNode);
+	SceneNode* newNode = AddChildNode(parentNode, node);
 	int row = parentNode->GetRowOfChild(newNode);
 
 	beginInsertRows(parentIndex, row, row);
@@ -501,6 +526,8 @@ void SceneNodeModel::OnSceneNodeAdded(Ogre::SceneNode* node)
 //////////////////////////////////////////////////////////////////////////
 void SceneNodeModel::OnSceneNodeRemoving(Ogre::SceneNode* node)
 {
+	if (m_DropInProgress) return;
+
 	QModelIndex nodeIndex = IndexFromNode(node);
 	if (!nodeIndex.isValid()) return;
 	SceneNode* sceneNode = NodeForIndex(nodeIndex);
@@ -511,9 +538,57 @@ void SceneNodeModel::OnSceneNodeRemoving(Ogre::SceneNode* node)
 	int row = parentNode->GetRowOfChild(sceneNode);
 
 	beginRemoveRows(parentIndex, row, row);
+	parentNode->RemoveChild(sceneNode);
 	endRemoveRows();
 }
 
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::OnSceneNodeChanged(Ogre::SceneNode* node)
+{
+	if (m_DropInProgress) return;
+
+	QModelIndex nodeIndex = IndexFromNode(node);
+	if (!nodeIndex.isValid()) return;
+	
+	SceneNode* sceneNode = NodeForIndex(nodeIndex);
+	
+	if (sceneNode->GetNumChildren() > 0)
+	{
+		beginRemoveRows(nodeIndex, 0, sceneNode->GetNumChildren() - 1);
+		sceneNode->RemoveChildren();
+		endRemoveRows();
+	}
+	
+	AddBones(sceneNode);
+	PopulateNode(sceneNode, sceneNode->GetOgreSceneNode());
+
+	if (sceneNode->GetNumChildren() > 0)
+	{
+		beginInsertRows(nodeIndex, 0, sceneNode->GetNumChildren() - 1);
+		endInsertRows();
+	}
+
+	emit dataChanged(nodeIndex, nodeIndex);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::OnSceneGraphDirty()
+{
+	if (!m_IsDirty)
+	{
+		m_IsDirty = true;
+		QTimer::singleShot(0, this, SLOT(RefreshAll()));
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNodeModel::RefreshAll()
+{
+	BuildSceneTree();
+	reset();
+
+	m_IsDirty = false;
+}
 
 
 } // namespace Armed

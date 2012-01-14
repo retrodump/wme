@@ -40,19 +40,6 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t
 
 	InitHWBuffer(RENDER_BATCH_COLOR, numVerts, operType);
 
-
-	// deal with resolution changes
-	Ogre::Real widthRatio, heightRatio;
-	widthRatio = viewport->GetScaleX() * (float)viewport->GetOgreViewport()->getActualWidth();
-	heightRatio = viewport->GetScaleY() * (float)viewport->GetOgreViewport()->getActualHeight();
-
-	// correction for different texel origin in D3D/OGL
-	Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5f * viewport->GetOgreViewport()->getActualWidth());
-	Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5f * viewport->GetOgreViewport()->getActualHeight());
-
-	float halfHeight = viewport->GetOgreViewport()->getHeight() / 2.0f;
-
-
 	// copy vertices to hw buffer
 	VertexColor* verts = reinterpret_cast<VertexColor*>(m_HardwareBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
 
@@ -66,15 +53,10 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2D* vertexData, size_t
 
 		verts[i].pos = Ogre::Vector3(pos.x, pos.y, -1.0f);
 		verts[i].color = color;
-
-		// convert to viewport scale
-		verts[i].pos.x = verts[i].pos.x / widthRatio;
-		verts[i].pos.y = verts[i].pos.y / heightRatio;
-
-		// convert to Ogre screen coordinates
-		verts[i].pos.x = verts[i].pos.x * 2 - 1          + hOffset;
-		verts[i].pos.y = 1 - verts[i].pos.y / halfHeight - vOffset;
 	}
+
+	viewport->Transform2DVertices(reinterpret_cast<byte*>(verts), numVerts, sizeof(VertexColor));
+
 	m_HardwareBuffer->unlock();
 
 	m_CurrentNumVerts = numVerts;
@@ -87,18 +69,6 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2DTex* vertexData, siz
 	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 
 	InitHWBuffer(RENDER_BATCH_TEXTURE, numVerts, operType);
-
-	// deal with resolution changes
-	Ogre::Real widthRatio, heightRatio;
-	widthRatio = viewport->GetScaleX() * (float)viewport->GetOgreViewport()->getActualWidth();
-	heightRatio = viewport->GetScaleY() * (float)viewport->GetOgreViewport()->getActualHeight();
-
-	// correction for different texel origin in D3D/OGL
-	Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5f * viewport->GetOgreViewport()->getActualWidth());
-	Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5f * viewport->GetOgreViewport()->getActualHeight());
-
-	float halfHeight = viewport->GetOgreViewport()->getHeight() / 2.0f;
-
 
 	// copy vertices to hw buffer
 	VertexTexture* verts = reinterpret_cast<VertexTexture*>(m_HardwareBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
@@ -114,15 +84,10 @@ void RenderBatch2D::SetVertices(Viewport* viewport, Vertex2DTex* vertexData, siz
 		verts[i].pos = Ogre::Vector3(pos.x, pos.y, -1.0f);
 		verts[i].color = color;
 		verts[i].texCoord = vertexData[i].texCoord;
-
-		// convert to viewport scale
-		verts[i].pos.x = verts[i].pos.x / widthRatio;
-		verts[i].pos.y = verts[i].pos.y / heightRatio;
-
-		// convert to Ogre screen coordinates
-		verts[i].pos.x = verts[i].pos.x * 2 - 1          + hOffset;
-		verts[i].pos.y = 1 - verts[i].pos.y / halfHeight - vOffset;
 	}
+
+	viewport->Transform2DVertices(reinterpret_cast<byte*>(verts), numVerts, sizeof(VertexTexture));
+
 	m_HardwareBuffer->unlock();
 
 	m_CurrentNumVerts = numVerts;

@@ -293,7 +293,7 @@ void SceneNode2D::UpdateTransform(bool forceUpdate, bool updateChildren)
 {
 	if (!forceUpdate && !m_TransformDirty) return;
 
-	UpdateTransfromInternal();
+	UpdateTransformInternal();
 
 	m_TransformDirty = false;
 
@@ -307,7 +307,7 @@ void SceneNode2D::UpdateTransform(bool forceUpdate, bool updateChildren)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SceneNode2D::UpdateTransfromInternal()
+void SceneNode2D::UpdateTransformInternal()
 {
 	if (m_ParentNode)
 	{
@@ -476,7 +476,7 @@ void SceneNode2D::GetElementsAt(float x, float y, Element2DList& elements) const
 //////////////////////////////////////////////////////////////////////////
 bool SceneNode2D::HitTest(float x, float y) const
 {
-	if (!m_AttachedElement) return false;
+	if (!m_AttachedElement || !m_AttachedElement->IsVisible()) return false;
 	if (!m_BoundingRect.ContainsPoint(x, y)) return false;
 
 	Ogre::Vector2 localPos = PositionSceneToLocal(Ogre::Vector2(x, y));

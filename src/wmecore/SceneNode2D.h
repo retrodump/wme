@@ -83,6 +83,9 @@ namespace Wme
 
 		void GetElementsAt(float x, float y, Element2DList& elements) const;
 
+		void SetTransformDirty();
+		void SetGeometryDirty(bool includeChildren = false);
+
 	private:
 		Canvas2D* m_Canvas;
 
@@ -109,11 +112,8 @@ namespace Wme
 		bool m_TransformDirty;
 		bool m_GeometryDirty;
 
-		void SetTransformDirty();
-		void SetGeometryDirty(bool includeChildren = false);
-
 		void UpdateTransform(bool forceUpdate = false, bool updateChildren = true);
-		void UpdateTransfromInternal();
+		void UpdateTransformInternal();
 
 		void UpdateGeometry();
 		size_t m_BatchesUsed;

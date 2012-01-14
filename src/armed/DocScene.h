@@ -53,8 +53,7 @@ namespace Armed
 		void SelectNodes(const QList<Ogre::SceneNode*>& nodes);
 
 		void RefreshEditor();
-
-
+	
 		// NodeSelection::Listener
 		void NodeSelectionChanged();
 		void NodeSelectionPositionChanged();
@@ -69,6 +68,8 @@ namespace Armed
 		void OnTransfromChanged();
 		void OnGizmoLocal();
 		void OnGizmoWorld();
+		void OnModelReset();
+		void RefreshSelection();
 
 	private:
 		WmeWidget* m_View;

@@ -117,6 +117,8 @@ void Viewport::SetClearBeforePaint(bool val)
 //////////////////////////////////////////////////////////////////////////
 void Viewport::TransformVertices(SpriteVertex* vertices, size_t numVertices, bool absolutePos)
 {
+	// OBSOLETE
+
 	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 
 
@@ -154,6 +156,41 @@ void Viewport::TransformVertices(SpriteVertex* vertices, size_t numVertices, boo
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+void Viewport::Transform2DVertices(byte* vertexData, size_t numVertices, size_t vertexSize)
+{
+	// transforms pretransformed screen-space 2D vertices to Ogre viewport-space
+
+	Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
+
+	// deal with resolution changes
+	Ogre::Real widthRatio, heightRatio;
+	widthRatio = GetScaleX();
+	heightRatio = GetScaleY();
+
+
+	// correction for different texel origin in D3D/OGL
+	Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5f * m_OgreViewport->getActualWidth());
+	Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5f * m_OgreViewport->getActualHeight());
+
+	float halfHeight = m_OgreViewport->getHeight() / 2.0f;
+
+
+	// process vertices
+	for (size_t i = 0; i < numVertices; i++)
+	{
+		Ogre::Vector2* vertices = reinterpret_cast<Ogre::Vector2*>(vertexData);
+
+		vertices->x = vertices->x / (float)m_OgreViewport->getActualWidth()  * widthRatio;
+		vertices->y = vertices->y / (float)m_OgreViewport->getActualHeight() * heightRatio;
+
+		// convert to Ogre screen coordinates
+		vertices->x = vertices->x * 2 - 1          + hOffset;
+		vertices->y = 1 - vertices->y / halfHeight - vOffset;
+
+		vertexData += vertexSize;
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////
 void Viewport::RotateVertices(SpriteVertex* verts, size_t numVerts, const Ogre::Vector2& centerPoint, float angle)

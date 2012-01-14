@@ -149,6 +149,32 @@ void Scene3DBase::OnSceneNodeDestroyed(Ogre::SceneNode* node)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void Scene3DBase::OnSceneNodeChanged(Ogre::SceneNode* node)
+{
+	if (m_Editor && m_Editor->Is3DEditor())
+	{
+		static_cast<Scene3DEditor*>(m_Editor)->OnSceneNodeChanged(node);
+	}
+	foreach (SceneGraphListener* listener, m_SceneGraphListeners)
+	{
+		listener->OnSceneNodeChanged(node);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Scene3DBase::OnSceneGraphDirty()
+{
+	if (m_Editor && m_Editor->Is3DEditor())
+	{
+		static_cast<Scene3DEditor*>(m_Editor)->OnSceneGraphDirty();
+	}
+	foreach (SceneGraphListener* listener, m_SceneGraphListeners)
+	{
+		listener->OnSceneGraphDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void Scene3DBase::AddSceneGraphListener(SceneGraphListener* listener)
 {
 	if (std::find(m_SceneGraphListeners.begin(), m_SceneGraphListeners.end(), listener) == m_SceneGraphListeners.end())

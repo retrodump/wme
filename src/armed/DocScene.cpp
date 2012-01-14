@@ -58,6 +58,8 @@ DocScene::DocScene(QWidget* parent) : DocumentView(parent)
 	m_PropTransform = NULL;
 
 	m_SceneNodeModel = new SceneNodeModel(this);		
+	connect(m_SceneNodeModel, SIGNAL(modelReset()), this, SLOT(OnModelReset()));
+
 	m_NodeNav = new SceneNodeNavigator(this, this);
 
 	SetScene(Game::GetInstance()->GetContentMgr()->GetTestScene());
@@ -81,6 +83,12 @@ void DocScene::OnActivate()
 
 	// update scene toolbar
 	m_SceneBar->Update();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::OnModelReset()
+{
+	QTimer::singleShot(0, this, SLOT(RefreshSelection()));			
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -254,7 +262,7 @@ void DocScene::CreateSceneNodeEditor()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void DocScene::NodeSelectionChanged()
+void DocScene::RefreshSelection()
 {
 	QModelIndexList indexList;
 
@@ -265,6 +273,12 @@ void DocScene::NodeSelectionChanged()
 		if (index.isValid()) indexList.append(index);
 	}
 	m_NodeNav->SelectIndexRange(indexList);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void DocScene::NodeSelectionChanged()
+{
+	RefreshSelection();
 
 	PropWindow* propWindow = MainWindow::GetInstance()->GetPropWindow();
 

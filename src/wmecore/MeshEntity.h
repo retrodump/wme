@@ -119,6 +119,8 @@ namespace Wme
 		void RebuildOgreEntity();
 		void ScheduleOgreEntityRebuild();
 
+		void EmitNodeChanged();
+
 		SimpleAnimTree* m_AnimTree;
 
 		typedef std::map<WideString, Animation*> AnimationMap;

@@ -56,6 +56,8 @@ AttachmentPoint::~AttachmentPoint()
 		m_Node->removeAllChildren();
 		m_Node->getCreator()->destroySceneNode(m_Node);
 	}
+
+	m_Attachment->SetAttachedTo(NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////

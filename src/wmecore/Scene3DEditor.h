@@ -20,6 +20,8 @@ namespace Wme
 
 		virtual void OnSceneNodeCreated(Ogre::SceneNode* node) {};
 		virtual void OnSceneNodeDestroyed(Ogre::SceneNode* node) {};
+		virtual void OnSceneNodeChanged(Ogre::SceneNode* node) {};
+		virtual void OnSceneGraphDirty() {};
 
 		virtual bool Is3DEditor() { return true; }
 	};

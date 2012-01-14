@@ -26,6 +26,8 @@ namespace Wme
 
 			virtual void OnSceneNodeAdded(Ogre::SceneNode* node) {}
 			virtual void OnSceneNodeRemoving(Ogre::SceneNode* node) {}
+			virtual void OnSceneNodeChanged(Ogre::SceneNode* node) {}
+			virtual void OnSceneGraphDirty() {}
 		};
 
 
@@ -47,6 +49,8 @@ namespace Wme
 
 		virtual void OnSceneNodeCreated(Ogre::SceneNode* node);
 		virtual void OnSceneNodeDestroyed(Ogre::SceneNode* node);
+		virtual void OnSceneNodeChanged(Ogre::SceneNode* node);
+		virtual void OnSceneGraphDirty();
 
 		void AddSceneGraphListener(SceneGraphListener* listener);
 		void RemoveSceneGraphListener(SceneGraphListener* listener);
@@ -95,9 +99,6 @@ namespace Wme
 		bool ScTest(Script* script, const WideString& methodName, bool async);
 
 	protected:
-		void OnSceneNodeAdded(Ogre::SceneNode* node);
-		void OnSceneNodeRemoving(Ogre::SceneNode* node);
-
 		bool SaveNodeToXml(TiXmlElement* rootNode, Ogre::SceneNode* sceneNode);
 		bool LoadNodeFromXml(TiXmlElement* rootNode, Ogre::SceneNode* parentSceneNode);
 		

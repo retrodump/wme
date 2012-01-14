@@ -32,6 +32,7 @@ namespace Wme
 		virtual ~Viewport();
 
 		void TransformVertices(SpriteVertex* vertices, size_t numVertices, bool absolutePos = false);
+		void Transform2DVertices(byte* vertexData, size_t numVertices, size_t vertexSize);
 		void RotateVertices(SpriteVertex* verts, size_t numVerts, const Ogre::Vector2& centerPoint, float angle);
 
 		void TransformClippingRect(Rect& rect, bool absolutePos);

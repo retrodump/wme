@@ -39,6 +39,9 @@ namespace Wme
 
 		bool IsCurrentViewport() const;
 
+		int m_LastViewportWidth;
+		int m_LastViewportHeight;
+
 	};
 }
 

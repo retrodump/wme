@@ -45,6 +45,7 @@ namespace Armed
 		bool HasChildren() const { return !m_Children.isEmpty(); }
 		void AddChild(SceneNode* child);
 		void RemoveChild(SceneNode* child);
+		void RemoveChildren();
 		NodeType GetType() const { return m_Type; }
 
 		QString GetName() const;
