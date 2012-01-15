@@ -50,9 +50,24 @@ bool Canvas2D::IsCurrentViewport() const
 }
 
 //////////////////////////////////////////////////////////////////////////
+float Canvas2D::GetWidth() const
+{
+	return (float)m_Viewport->GetOgreViewport()->getActualWidth() / m_Viewport->GetScaleX();
+}
+
+//////////////////////////////////////////////////////////////////////////
+float Canvas2D::GetHeight() const
+{
+	return (float)m_Viewport->GetOgreViewport()->getActualHeight() / m_Viewport->GetScaleY();
+}
+
+//////////////////////////////////////////////////////////////////////////
 void Canvas2D::GetElementsAt(float x, float y, Element2DList& elements) const
 {
-	if (m_RootNode) m_RootNode->GetElementsAt(x, y, elements);
+	if (m_RootNode)
+	{
+		m_RootNode->GetElementsAt(x, y, Rect(0, 0, GetWidth(), GetHeight()), elements);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -30,10 +30,12 @@ namespace Wme
 		float GetBottom() const { return y + height; }
 
 		void Clone(const Rect& r);
-		bool IsEmpty() const { return *this == EMPTY_RECT; }
+		bool IsEmpty() const;
 		Rect GetIntersection(const Rect& r) const;
 		bool Intersects(const Rect& r) const;
 		void UnionWith(const Rect& r);
+
+		bool ContainsPoint(float testX, float testY) const;
 
 		static const Rect EMPTY_RECT;
 	};

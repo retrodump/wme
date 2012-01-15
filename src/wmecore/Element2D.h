@@ -29,7 +29,7 @@ namespace Wme
 		bool IsVisible() const { return m_IsVisible; }
 		void SetVisible(bool visible) { m_IsVisible = visible; }
 
-		virtual bool IsTransparentAt(float x, float y) { return true; }
+		virtual bool IsTransparentAt(float x, float y) { return false; }
 
 		virtual void AddGeometry() {};
 

@@ -7,6 +7,7 @@
 #include "RenderBatch2D.h"
 #include "Viewport.h"
 #include "MathUtil.h"
+#include "RenderModifier.h"
 
 
 namespace Wme
@@ -30,6 +31,10 @@ SceneNode2D::SceneNode2D(Canvas2D* canvas)
 	m_TransformDirty = true;
 	m_GeometryDirty = true;
 
+	m_ClippingRect = Rect::EMPTY_RECT;
+	m_Clipper = m_UnClipper = NULL;
+	m_ClipChildrenBehind = false;
+
 	m_AttachedElement = NULL;
 
 	m_BatchesUsed = 0;
@@ -44,6 +49,9 @@ SceneNode2D::~SceneNode2D()
 	{
 		SAFE_DELETE(batch);
 	}
+
+	SAFE_DELETE(m_Clipper);
+	SAFE_DELETE(m_UnClipper);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -411,6 +419,8 @@ void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& pri
 	
 	bool renderedSelf = false;
 	int prevZOrder = -1;
+
+	if (m_ClipChildrenBehind) StartClipping(renderQueue, queueId, priority);
 	
 	foreach (SceneNode2D* child, m_Children)
 	{
@@ -423,11 +433,15 @@ void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& pri
 		prevZOrder = child->GetZOrder();
 	}
 	if (!renderedSelf) RenderSelf(renderQueue, queueId, priority);
+
+	StopClipping(renderQueue, queueId, priority);
 }
 
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
+	if (!m_ClipChildrenBehind) StartClipping(renderQueue, queueId, priority);
+
 	if (m_AttachedElement && !m_AttachedElement->IsVisible()) return;
 
 	foreach (RenderBatch2D* batch, m_RenderBatches)
@@ -452,35 +466,89 @@ void SceneNode2D::VisitRenderables(Ogre::Renderable::Visitor* visitor)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SceneNode2D::GetElementsAt(float x, float y, Element2DList& elements) const
+void SceneNode2D::GetElementsAt(float x, float y, const Rect& clippingRect, Element2DList& elements)
 {
 	bool testedSelf = false;
 	int prevZOrder = -1;
+
+	Rect selfClipRect = GetTransformedClippingRect();
+	if (selfClipRect.IsEmpty()) selfClipRect = clippingRect;
+	else selfClipRect = clippingRect.GetIntersection(selfClipRect);
+
 
 	foreach (SceneNode2D* child, m_Children)
 	{
 		if (child->GetZOrder() >= 0 && prevZOrder < 0)
 		{
-			if (HitTest(x, y)) elements.push_back(m_AttachedElement);
+			if (HitTest(x, y, selfClipRect)) elements.push_back(m_AttachedElement);
 			testedSelf = true;
 		}
-		child->GetElementsAt(x, y, elements);
+
+		bool clipChild = m_ClipChildrenBehind && child->GetZOrder() < 0;
+
+		child->GetElementsAt(x, y, clipChild ? selfClipRect : clippingRect, elements);
 		prevZOrder = child->GetZOrder();
 	}
 	if (!testedSelf)
 	{
-		if (HitTest(x, y)) elements.push_back(m_AttachedElement);
+		if (HitTest(x, y, selfClipRect)) elements.push_back(m_AttachedElement);
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool SceneNode2D::HitTest(float x, float y) const
+bool SceneNode2D::HitTest(float x, float y, const Rect& clippingRect) const
 {
 	if (!m_AttachedElement || !m_AttachedElement->IsVisible()) return false;
+	if (!clippingRect.IsEmpty() && !clippingRect.ContainsPoint(x, y)) return false;
 	if (!m_BoundingRect.ContainsPoint(x, y)) return false;
 
 	Ogre::Vector2 localPos = PositionSceneToLocal(Ogre::Vector2(x, y));
 	return !m_AttachedElement->IsTransparentAt(localPos.x, localPos.y);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::SetClippingRect(const Rect& rect)
+{
+	m_ClippingRect = rect;
+	if (!m_ClippingRect.IsEmpty())
+	{
+		if (!m_Clipper) m_Clipper = new RenderModifier();
+		if (!m_UnClipper) m_UnClipper = new RenderModifier();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+Rect SceneNode2D::GetTransformedClippingRect()
+{
+	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return Rect();
+	else
+	{
+		Ogre::Vector2 clipPos = GetSceneTransform() * Ogre::Vector2(m_ClippingRect.x, m_ClippingRect.y);
+		return Rect(clipPos.x, clipPos.y, m_ClippingRect.width * GetDerivedScale().x, m_ClippingRect.height * GetDerivedScale().y);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::StartClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
+{
+	// we don't support rotated clipping rectanges
+	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return;
+		
+	m_Clipper->SetClipping(true, m_Canvas->GetViewport(), m_Canvas->GetViewport()->GetClippingRect().GetIntersection(GetTransformedClippingRect()));
+
+	priority++;
+	renderQueue->addRenderable(m_Clipper, queueId, priority);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::StopClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
+{
+	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return;
+
+	m_UnClipper->SetClipping(false, m_Canvas->GetViewport());
+
+	priority++;
+	renderQueue->addRenderable(m_UnClipper, queueId, priority);
 }
 
 

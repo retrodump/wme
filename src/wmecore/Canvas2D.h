@@ -21,6 +21,9 @@ namespace Wme
 
 		Viewport* GetViewport() const { return m_Viewport; }
 
+		float GetWidth() const;
+		float GetHeight() const;
+
 		SceneNode2D* GetRootNode();
 
 		void GetElementsAt(float x, float y, Element2DList& elements) const;

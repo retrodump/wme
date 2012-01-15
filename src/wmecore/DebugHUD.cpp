@@ -185,9 +185,11 @@ void DebugHUD::CreateCanvas(Viewport* viewport)
 	m_Lines = new LineElement2D();
 	m_Canvas->GetRootNode()->AttachElement(m_Lines);
 
-	m_Canvas->GetRootNode()->SetRotation(45);
+	//m_Canvas->GetRootNode()->SetRotation(45);
 	m_Canvas->GetRootNode()->SetPosition(100, 100);
 	m_Canvas->GetRootNode()->SetScale(2, 1);
+
+	m_Canvas->GetRootNode()->SetClippingRect(Rect(-25, -50, 25, 50));
 	
 
 	m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);

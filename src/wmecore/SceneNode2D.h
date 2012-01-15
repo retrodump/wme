@@ -8,6 +8,7 @@
 #include "Transform2D.h"
 #include "BoundingRect.h"
 #include "Element2D.h"
+#include "Rect.h"
 
 
 namespace Wme
@@ -15,6 +16,8 @@ namespace Wme
 	class Canvas2D;
 	class RenderBatch2D;
 	class Viewport;
+	class RenderModifier;
+
 
 	class WmeDllExport SceneNode2D
 	{
@@ -81,10 +84,16 @@ namespace Wme
 		void AddGeometry(Vertex2D* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
 		void AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Ogre::MaterialPtr& material, Ogre::RenderOperation::OperationType operType);
 
-		void GetElementsAt(float x, float y, Element2DList& elements) const;
+		void GetElementsAt(float x, float y, const Rect& clippingRect, Element2DList& elements);
 
 		void SetTransformDirty();
 		void SetGeometryDirty(bool includeChildren = false);
+
+		void SetClippingRect(const Rect& rect);
+		const Rect& GetClippingRect() const { return m_ClippingRect; }
+
+		void SetClipChildrenBehind(bool val) { m_ClipChildrenBehind = val; }
+		bool GetClipChildrenBehind() const { return m_ClipChildrenBehind; }
 
 	private:
 		Canvas2D* m_Canvas;
@@ -127,7 +136,17 @@ namespace Wme
 
 		RenderBatch2D* GetFreeRenderBatch();
 
-		bool HitTest(float x, float y) const;
+		bool HitTest(float x, float y, const Rect& clippingRect) const;
+
+		Rect m_ClippingRect;
+		RenderModifier* m_Clipper;
+		RenderModifier* m_UnClipper;
+
+		bool m_ClipChildrenBehind;
+
+		void StartClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority);
+		void StopClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority);
+		Rect GetTransformedClippingRect();
 	};
 }
 

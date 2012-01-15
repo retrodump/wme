@@ -67,11 +67,17 @@ void Rect::Clone(const Rect& r)
 }
 
 //////////////////////////////////////////////////////////////////////////
+bool Rect::IsEmpty() const
+{
+	return width == 0 && height == 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
 Rect Rect::GetIntersection(const Rect& r) const
 {
 	Rect ret;
 
-	if(Intersects(r))
+	if (Intersects(r))
 	{
 		ret.x = std::max(x, r.x);
 		ret.y = std::max(y, r.y);
@@ -85,10 +91,10 @@ Rect Rect::GetIntersection(const Rect& r) const
 //////////////////////////////////////////////////////////////////////////
 bool Rect::Intersects(const Rect& r) const
 {
-	if((x > (r.x + r.width)) || ((x + width) < r.x))
+	if ((x > (r.x + r.width)) || ((x + width) < r.x))
 		return false;
 
-	if((y > (r.y + r.height)) || ((y + height) < r.y))
+	if ((y > (r.y + r.height)) || ((y + height) < r.y))
 		return false;
 
 	return true;
@@ -104,5 +110,10 @@ void Rect::UnionWith(const Rect& r)
 	y = std::min(y, r.y);	
 }
 
+//////////////////////////////////////////////////////////////////////////
+bool Rect::ContainsPoint(float testX, float testY) const
+{
+	return testX >= x && testX <= x + width && testY >= y && testY <= y + height;
+}
 
 } // namespace Wme
