@@ -817,6 +817,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\TextureElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\TheoraAudioBridge.cpp"
 				>
 			</File>
@@ -1652,6 +1656,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\TextElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\TextureElement2D.h"
 				>
 			</File>
 			<File

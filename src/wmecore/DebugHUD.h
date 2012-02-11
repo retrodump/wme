@@ -14,6 +14,7 @@ namespace Wme
 	class Viewport;
 	class Canvas2D;
 	class LineElement2D;
+	class TextureElement2D;
 
 	class WmeDllExport DebugHUD : public GuiStage
 	{
@@ -37,6 +38,7 @@ namespace Wme
 		TextElement* m_Fps;
 		TextElement* m_Info;
 		LineElement2D* m_Lines;
+		TextureElement2D* m_Tex;
 		Font* m_Font;
 
 		Entity3D* m_TestObj;
