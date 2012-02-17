@@ -37,6 +37,12 @@ namespace Wme
 
 		void GetBoundingRect(Rect& rect) const;
 
+		bool GetMirrorHorizontal() const { return m_MirrorHorizontal; }
+		void SetMirrorHorizontal(bool val) { m_MirrorHorizontal = val; }
+
+		bool GetMirrorVertical() const { return m_MirrorVertical; }
+		void SetMirrorVertical(bool val) { m_MirrorVertical = val; }
+
 		const SpriteVertex* GetVertices() const { return m_Vertices; }
 
 		// ScriptableObject
@@ -66,8 +72,8 @@ namespace Wme
 		Ogre::Vector2 m_BasePoint;		
 		SpriteTexture* m_Texture;
 
-		bool m_MirrorX;
-		bool m_MirrorY;
+		bool m_MirrorHorizontal;
+		bool m_MirrorVertical;
 		Ogre::ColourValue m_ColorKey;
 		
 		Ogre::MaterialPtr m_EmptyMaterial;

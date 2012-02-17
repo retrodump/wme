@@ -19,7 +19,7 @@ SpriteSubFrame::SpriteSubFrame()
 	m_BasePoint = Ogre::Vector2(0.0, 0.0);
 	m_Texture = NULL;
 
-	m_MirrorX = m_MirrorY = false;
+	m_MirrorHorizontal = m_MirrorVertical = false;
 	m_ColorKey = Ogre::ColourValue::ZERO;
 
 	mUseIdentityProjection = true;
@@ -60,8 +60,8 @@ void SpriteSubFrame::GetBoundingRect(Rect& rect) const
 void SpriteSubFrame::Display(ElementCollection* elementCol, int targetX, int targetY, const SpriteDrawingParams& params)
 {
 	SpriteDrawingParams newParams = params;
-	newParams.MirrorX = m_MirrorX;
-	newParams.MirrorY = m_MirrorY;
+	newParams.MirrorX = m_MirrorVertical;
+	newParams.MirrorY = m_MirrorHorizontal;
 
 	Game::GetInstance()->GetSpriteMgr()->PrepareSpriteVertices(m_Vertices, targetX, targetY, this, newParams);
 
@@ -121,13 +121,13 @@ bool SpriteSubFrame::LoadFromXml(TiXmlElement* rootNode)
 		{
 			colorKey = XmlUtil::GetColor(elem);
 		}
-		else if (elem->ValueStr() == "MirrorX")
+		else if (elem->ValueStr() == "MirrorVertical")
 		{
-			m_MirrorX = XmlUtil::TextToBool(elem);
+			m_MirrorVertical = XmlUtil::TextToBool(elem);
 		}
-		else if (elem->ValueStr() == "MirrorY")
+		else if (elem->ValueStr() == "MirrorHorizontal")
 		{
-			m_MirrorY = XmlUtil::TextToBool(elem);
+			m_MirrorHorizontal = XmlUtil::TextToBool(elem);
 		}
 	}
 
@@ -159,11 +159,11 @@ bool SpriteSubFrame::SaveToXml(TiXmlElement* rootNode)
 	elem = XmlUtil::AddElem("ColorKey", subFrameNode);
 	XmlUtil::SetColor(elem, m_Texture->GetColorKey());
 
-	elem = XmlUtil::AddElem("MirrorX", subFrameNode);
-	XmlUtil::SetText(elem, m_MirrorX);
+	elem = XmlUtil::AddElem("MirrorVertical", subFrameNode);
+	XmlUtil::SetText(elem, m_MirrorVertical);
 
-	elem = XmlUtil::AddElem("MirrorY", subFrameNode);
-	XmlUtil::SetText(elem, m_MirrorY);
+	elem = XmlUtil::AddElem("MirrorHorizontal", subFrameNode);
+	XmlUtil::SetText(elem, m_MirrorHorizontal);
 
 
 	return true;
