@@ -9,18 +9,17 @@
 #include "StringUtil.h"
 #include "Sound.h"
 
-#ifdef WIN32
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #	include <al.h>
 #	include <alc.h>
-#endif
-
-#ifdef __GNUC__ // might need editing to not screw Mac building
-#	include <al.h>
-#	include <alc.h>
-#else
+#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #	include <OpenAL/al.h>
 #	include <OpenAL/alc.h>
+#else
+#	include <AL/al.h>
+#	include <AL/alc.h>
 #endif
+
 
 namespace Wme
 {

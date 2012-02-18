@@ -4,12 +4,8 @@
 #include "Wme.h"
 #include "KeyboardEvent.h"
 #include "StringUtil.h"
-
-#ifdef __GNUC__
 #include <OIS.h>
-#else
-#include <ois.h>
-#endif
+
 
 namespace Wme
 {

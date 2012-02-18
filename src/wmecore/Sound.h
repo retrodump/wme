@@ -7,14 +7,12 @@
 
 #include "Object.h"
 
-#ifdef WIN32
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #	include <al.h>
-#endif
-
-#ifdef __GNUC__ // might need editing to not screw Mac building
-#	include <al.h>
-#else
+#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #	include <OpenAL/al.h>
+#else
+#	include <AL/al.h>
 #endif
 
 

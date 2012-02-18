@@ -245,4 +245,4 @@ void Win32WindowExt::ReleaseMouse()
 
 } // namespace Wme
 
-#endif
+#endif // WIN32
