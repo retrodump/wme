@@ -109,7 +109,7 @@ namespace Wme
 		typedef std::multimap<WideString, Entity*> EntityNameMap;
 		typedef std::map<WideString, EntityNameMap*> EntityTypeMap;
 
-		typedef std::set<Entity*> EntitySet;
+		//typedef std::set<Entity*> EntitySet;
 		EntitySet m_PreFindVisibleNotifyRequests;
 		EntitySet m_PostFindVisibleNotifyRequests;
 

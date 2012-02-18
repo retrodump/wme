@@ -8,7 +8,13 @@
 #include "Object.h"
 #include "StringUtil.h"
 #include "Sound.h"
+
 #ifdef WIN32
+#	include <al.h>
+#	include <alc.h>
+#endif
+
+#ifdef __GNUC__ // might need editing to not screw Mac building
 #	include <al.h>
 #	include <alc.h>
 #else

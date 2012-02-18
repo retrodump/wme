@@ -385,7 +385,7 @@ bool Game::SaveGame(const WideString& fileName) const
 {
 	try
 	{
-		std::ofstream ofs(fileName.c_str(), std::ios::binary);
+		std::ofstream ofs(fileName.c_str(), std::ios::binary);	// nejde cpat wchar_t do charu...
 		boost::archive::binary_oarchive oa(ofs);
 		oa << *this;
 
@@ -404,7 +404,7 @@ bool Game::LoadGame(const WideString& fileName)
 {
 	try
 	{
-		std::ifstream ifs(fileName.c_str(), std::ios::binary);
+		std::ifstream ifs(fileName.c_str(), std::ios::binary);	// to samy
 		boost::archive::binary_iarchive ia(ifs);
 		ia >> *this;
 

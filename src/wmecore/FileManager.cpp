@@ -278,7 +278,7 @@ void FileManager::ScanPackages()
 
 	for (it = m_PackageSearchPaths.begin(); it != m_PackageSearchPaths.end(); it++)
 	{
-		wdirectory_iterator endIter;
+		wdirectory_iterator endIter;	// DEPRECATED - rewrite using something else
 		for (wdirectory_iterator dit((*it)); dit != endIter; dit++)
 		{
 			if (!is_directory(dit->status()))

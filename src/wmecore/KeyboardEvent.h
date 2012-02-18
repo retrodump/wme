@@ -4,8 +4,11 @@
 #ifndef __WmeKeyboardEvent_H__
 #define __WmeKeyboardEvent_H__
 
-
+#ifdef __GNUC__
+#include <OIS.h>
+#else
 #include <ois.h>
+#endif
 
 
 namespace Wme

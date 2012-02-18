@@ -24,7 +24,7 @@ namespace Wme
 
 		WideString GetFileName() const { return m_FileName; }
 
-		Ogre::MeshPtr GetOgreMesh() const { return m_OgreMesh; }
+		Ogre::MeshPtr GetOgreMesh() const { return static_cast<Ogre::MeshPtr>(m_OgreMesh); } // BAD
 
 		void AddOwner(MeshEntity* entity);
 		void RemoveOwner(MeshEntity* entity);

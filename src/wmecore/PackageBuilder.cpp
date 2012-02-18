@@ -153,7 +153,7 @@ bool PackageBuilder::ProcessDirectory(const WideString& packageDir, const WideSt
 //////////////////////////////////////////////////////////////////////////
 void PackageBuilder::ProcessFiles(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream)
 {
-	wdirectory_iterator endIter;
+	wdirectory_iterator endIter;	// DEPRECATED - pouzit neco jinyho
 	for (wdirectory_iterator it(currentPath); it != endIter; it++)
 	{
 		if (is_directory(it->status()))
@@ -170,7 +170,7 @@ void PackageBuilder::ProcessFiles(const wpath& currentPath, const WideString& ba
 //////////////////////////////////////////////////////////////////////////
 void PackageBuilder::ProcessSingleFile(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream)
 {
-	WideString fullPath = currentPath.string();
+	WideString fullPath = currentPath.string();	// neexistujici operace prirazeni
 
 
 	FilterList::const_iterator it;

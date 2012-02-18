@@ -6,7 +6,12 @@
 
 #include "Object.h"
 #include "MouseEvent.h"
+
+#ifdef __GNUC__
+#include <OIS.h>
+#else
 #include <ois.h>
+#endif
 
 namespace Wme
 {

@@ -1,7 +1,7 @@
 // This file is part of Wintermute Engine
 // For conditions of distribution and use, see copyright notice in license.txt
 
-#include "wme.h"
+#include "Wme.h"
 #include <algorithm>
 #include <string>
 #include <sstream>

@@ -8,10 +8,10 @@
 #include "ContentManager.h"
 #include "OgreRenderWindow.h"
 #include "MouseEvent.h"
-#include <windowsx.h>
 
 
 #ifdef WIN32
+#include <windowsx.h>
 
 namespace Wme
 {

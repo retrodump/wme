@@ -351,7 +351,8 @@ bool OgreSceneLoader::LoadEnvironment(TiXmlElement* envElem)
 	{
 		if (elem->ValueStr() == "colourAmbient")
 		{
-			m_Stage->SetAmbientLightColor(GetColor(elem));
+			Ogre::ColourValue colourValue = GetColor(elem);
+			m_Stage->SetAmbientLightColor(colourValue);
 		}
 	}
 

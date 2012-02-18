@@ -6,7 +6,12 @@
 
 
 #include "Object.h"
+
 #ifdef WIN32
+#	include <al.h>
+#endif
+
+#ifdef __GNUC__ // might need editing to not screw Mac building
 #	include <al.h>
 #else
 #	include <OpenAL/al.h>
