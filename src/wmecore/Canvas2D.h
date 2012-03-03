@@ -16,10 +16,11 @@ namespace Wme
 	class WmeDllExport Canvas2D : public Ogre::MovableObject
 	{
 	public:
-		Canvas2D(const WideString& name, Viewport* viewport);
+		Canvas2D(const WideString& name, Viewport* viewport = NULL);
 		virtual ~Canvas2D();
 
 		Viewport* GetViewport() const { return m_Viewport; }
+		void SetViewport(Viewport* viewport);
 
 		float GetWidth() const;
 		float GetHeight() const;

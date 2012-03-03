@@ -40,8 +40,19 @@ SceneNode2D* Canvas2D::GetRootNode()
 }
 
 //////////////////////////////////////////////////////////////////////////
+void Canvas2D::SetViewport(Viewport* viewport)
+{
+	if (viewport == m_Viewport) return;
+	
+	m_Viewport = viewport;
+	m_LastViewportWidth = m_LastViewportHeight = 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
 bool Canvas2D::IsCurrentViewport() const
 {
+	if (!m_Viewport) return false;
+
 	View* view = m_Viewport->GetParentView();
 	if (!view) return false;
 
@@ -52,13 +63,15 @@ bool Canvas2D::IsCurrentViewport() const
 //////////////////////////////////////////////////////////////////////////
 float Canvas2D::GetWidth() const
 {
-	return (float)m_Viewport->GetOgreViewport()->getActualWidth() / m_Viewport->GetScaleX();
+	if (!m_Viewport) return 0.0f;
+	else return (float)m_Viewport->GetOgreViewport()->getActualWidth() / m_Viewport->GetScaleX();
 }
 
 //////////////////////////////////////////////////////////////////////////
 float Canvas2D::GetHeight() const
 {
-	return (float)m_Viewport->GetOgreViewport()->getActualHeight() / m_Viewport->GetScaleY();
+	if (!m_Viewport) return 0.0f;
+	else return (float)m_Viewport->GetOgreViewport()->getActualHeight() / m_Viewport->GetScaleY();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,7 +110,7 @@ Ogre::Real Canvas2D::getBoundingRadius(void) const
 //////////////////////////////////////////////////////////////////////////
 void Canvas2D::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
-	if (!IsCurrentViewport()) return;
+	if (!m_Viewport || !IsCurrentViewport()) return;
 
 	if (m_LastViewportWidth != m_Viewport->GetOgreViewport()->getActualWidth() || m_LastViewportHeight != m_Viewport->GetOgreViewport()->getActualHeight())
 	{
