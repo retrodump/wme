@@ -379,8 +379,7 @@ void Viewport::OnRenderQueueStart(Ogre::uint8 renderQueueId)
 {
 	if (!m_Camera || !m_Camera->GetStage()) return;
 
-	ActiveSpotGeometry* spot = new ActiveSpotGeometry(this, m_Camera->GetStage(), m_Camera, renderQueueId);
-	AddActiveSpot(spot);
+	m_Camera->GetStage()->RegisterActiveSpots(this, m_Camera, renderQueueId);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@ namespace Wme
 {
 	class SceneNode2D;
 	class Element2D;
+	class InteractiveObject;
 
 	typedef std::list<Element2D*> Element2DList;
 
@@ -29,6 +30,9 @@ namespace Wme
 		bool IsVisible() const { return m_IsVisible; }
 		void SetVisible(bool visible) { m_IsVisible = visible; }
 
+		InteractiveObject* GetOwner() const { return m_Owner; }
+		void SetOwner(InteractiveObject* val) { m_Owner = val; }
+
 		virtual bool IsTransparentAt(float x, float y) { return false; }
 
 		virtual void AddGeometry() {};
@@ -36,6 +40,8 @@ namespace Wme
 	protected:
 		SceneNode2D* m_ParentNode;
 		bool m_IsVisible;
+
+		InteractiveObject* m_Owner;
 	};
 }
 

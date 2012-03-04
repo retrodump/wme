@@ -16,6 +16,7 @@
 #include "MaterialManager.h"
 #include "MaterialInstance.h"
 #include "Renderer.h"
+#include "ActiveSpot.h"
 
 
 namespace Wme
@@ -88,6 +89,13 @@ void Scene3DBase::DeleteNodes(Ogre::SceneNode* parentNode)
 		Entity3DBase* entity = Entity3DBase::NodeToEntity(node);
 		if (entity) delete entity;
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Scene3DBase::RegisterActiveSpots(Viewport* viewport, Camera* camera, Ogre::uint8 renderQueueId)
+{
+	ActiveSpotGeometry* spot = new ActiveSpotGeometry(viewport, this, camera, renderQueueId);
+	viewport->AddActiveSpot(spot);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,7 @@ namespace Wme
 	class SpriteSubFrame;
 	class Stage;
 	class Camera;
+	class Canvas2D;
 	class Region;
 	class Viewport;
 
@@ -64,6 +65,18 @@ namespace Wme
 		Stage* m_Stage;
 		Camera* m_Camera;
 	
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+	class WmeDllExport ActiveSpotCanvas : public ActiveSpot
+	{
+	public:
+		ActiveSpotCanvas(Viewport* viewport, Canvas2D* canvas);
+		virtual ~ActiveSpotCanvas();
+		virtual bool QueryObjectAt(int x, int y, float relX, float relY, MousePickResult& result);
+	private:
+		Canvas2D* m_Canvas;
+
 	};
 
 	//////////////////////////////////////////////////////////////////////////

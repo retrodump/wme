@@ -4,6 +4,7 @@
 #include "Wme.h"
 #include "Element2D.h"
 #include "SceneNode2D.h"
+#include "InteractiveObject.h"
 
 
 namespace Wme
@@ -15,6 +16,7 @@ Element2D::Element2D()
 {
 	m_ParentNode = NULL;
 	m_IsVisible = true;
+	m_Owner = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////

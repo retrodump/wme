@@ -28,6 +28,7 @@ namespace Wme
 		SceneNode2D* GetRootNode();
 
 		void GetElementsAt(float x, float y, Element2DList& elements) const;
+		Element2D* GetElementAt(float x, float y) const;
 
 
 		// Ogre::MovableObject implementation

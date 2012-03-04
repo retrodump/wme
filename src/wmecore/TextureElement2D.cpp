@@ -86,7 +86,12 @@ void TextureElement2D::AddGeometry()
 bool TextureElement2D::IsTransparentAt(float x, float y)
 {
 	if (!m_SubFrame) return true;
-	else return m_SubFrame->IsTransparentAt(static_cast<int>(x), static_cast<int>(y));
+
+	const SpriteTexture* texture = m_SubFrame->GetTexture();
+	if (!texture) return true;
+
+	Ogre::Vector2 basePoint = Ogre::Vector2(m_SubFrame->GetBasePoint().x * texture->GetWidth(), m_SubFrame->GetBasePoint().y * texture->GetHeight());
+	return m_SubFrame->IsTransparentAt(static_cast<int>(x + basePoint.x), static_cast<int>(y + basePoint.y));
 }
 
 

@@ -23,6 +23,7 @@ namespace Wme
 	class DebugHUD;
 	class HybridScene;
 	class FullScene;
+	class Scene2DBase;
 	class ViewportLayout;
 	class GameStartupSettings;
 	class Camera;
@@ -47,6 +48,7 @@ namespace Wme
 		DebugHUD* AddDebugHUD();
 		HybridScene* AddHybridScene();
 		FullScene* AddFullScene();
+		Scene2DBase* Add2DScene(); // temp
 		void RemoveStage(Stage* stage);
 
 		MainWindow* AddMainWindow(const WideString& name, const GameStartupSettings& startupSettings);

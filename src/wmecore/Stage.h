@@ -44,6 +44,8 @@ namespace Wme
 
 		virtual void Render(Viewport* viewport, Camera* camera);
 
+		virtual void RegisterActiveSpots(Viewport* viewport, Camera* camera, Ogre::uint8 renderQueueId) {}
+
 		Camera* GetDefaultCamera() { return m_Default2DCamera; }
 		
 		Camera* AddCamera(const WideString& name);

@@ -13,6 +13,10 @@ namespace Wme
 	class Viewport;
 	class Canvas2D;
 
+	// temp
+	class TextureElement2D;
+	class Sprite;
+
 	class WmeDllExport Scene2DBase : public Scene
 	{
 	public:
@@ -23,6 +27,8 @@ namespace Wme
 		virtual void Update();
 		virtual void Shutdown();
 
+		virtual void RegisterActiveSpots(Viewport* viewport, Camera* camera, Ogre::uint8 renderQueueId);
+
 		Viewport* GetViewport() const { return m_Viewport; }
 		void SetViewport(Viewport* viewport);
 
@@ -30,6 +36,10 @@ namespace Wme
 	protected:
 		Canvas2D* m_Canvas;
 		Viewport* m_Viewport;
+
+		// temp
+		TextureElement2D* m_Tex;
+		Sprite* m_TestSprite;
 	};
 }
 

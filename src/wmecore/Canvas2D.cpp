@@ -84,6 +84,15 @@ void Canvas2D::GetElementsAt(float x, float y, Element2DList& elements) const
 }
 
 //////////////////////////////////////////////////////////////////////////
+Element2D* Canvas2D::GetElementAt(float x, float y) const
+{
+	Element2DList elements;
+	GetElementsAt(x, y, elements);
+	if (elements.empty()) return NULL;
+	else return elements.back();
+}
+
+//////////////////////////////////////////////////////////////////////////
 // Ogre::MovableObject
 //////////////////////////////////////////////////////////////////////////
 const Ogre::String& Canvas2D::getMovableType(void) const

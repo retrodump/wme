@@ -8,6 +8,7 @@
 #include "SpriteSubFrame.h"
 #include "Stage.h"
 #include "Camera.h"
+#include "Canvas2D.h"
 #include "Region.h"
 #include "MousePickParams.h"
 #include "RttView.h"
@@ -201,6 +202,30 @@ bool ActiveSpotGeometry::QueryObjectAt(int x, int y, float relX, float relY, Mou
 		return true;
 	}
 	else return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+ActiveSpotCanvas::ActiveSpotCanvas(Viewport* viewport, Canvas2D* canvas) : ActiveSpot(viewport, NULL)
+{
+	m_Canvas = canvas;
+}
+
+//////////////////////////////////////////////////////////////////////////
+ActiveSpotCanvas::~ActiveSpotCanvas()
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool ActiveSpotCanvas::QueryObjectAt(int x, int y, float relX, float relY, MousePickResult& result)
+{
+	Element2D* element = m_Canvas->GetElementAt(static_cast<float>(x), static_cast<float>(y));
+	if (!element || !element->GetOwner()) return false;
+
+	result.Viewport = m_Viewport;
+	result.Object = element->GetOwner();
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////

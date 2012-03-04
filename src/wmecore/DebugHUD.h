@@ -12,9 +12,6 @@ namespace Wme
 {
 	class Entity3D;
 	class Viewport;
-	class Canvas2D;
-	class LineElement2D;
-	class TextureElement2D;
 
 	class WmeDllExport DebugHUD : public GuiStage
 	{
@@ -27,8 +24,6 @@ namespace Wme
 		virtual void Render(Viewport* viewport, Camera* camera);
 		virtual void Update();
 
-		void CreateCanvas(Viewport* viewport);
-
 	private:
 		ElementCollection* m_ElementCol;
 		TextElement* m_QuickMsg;
@@ -37,8 +32,6 @@ namespace Wme
 		SpriteSubFrame* m_Arrow;
 		TextElement* m_Fps;
 		TextElement* m_Info;
-		LineElement2D* m_Lines;
-		TextureElement2D* m_Tex;
 		Font* m_Font;
 
 		Entity3D* m_TestObj;
@@ -46,9 +39,6 @@ namespace Wme
 		Sprite* m_Back;
 		Region* m_TestRegion;
 		UiWindow* m_Window;
-
-		Canvas2D* m_Canvas;
-
 	};
 }
 

@@ -27,10 +27,6 @@
 #include "FontManager.h"
 #include "View.h"
 #include "EmbeddedWindow.h"
-#include "Canvas2D.h"
-#include "SceneNode2D.h"
-#include "LineElement2D.h"
-#include "TextureElement2D.h"
 #include "SpriteFrame.h"
 #include "SpriteSubFrame.h"
 
@@ -47,15 +43,12 @@ DebugHUD::DebugHUD()
 	m_Arrow = NULL;
 	m_Fps = NULL;
 	m_Info = NULL;
-	m_Lines = NULL;
 	m_TestObj = NULL;
 	m_TestSprite = NULL;
 	m_Back = NULL;
 	m_TestRegion = NULL;
 	m_Window = NULL;
 	m_Font = NULL;
-	m_Canvas = NULL;
-	m_Tex = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -65,15 +58,12 @@ DebugHUD::~DebugHUD()
 	SAFE_DELETE(m_Arrow);
 	SAFE_DELETE(m_Fps);
 	SAFE_DELETE(m_Info);
-	SAFE_DELETE(m_Lines);
-	SAFE_DELETE(m_Tex);
 	SAFE_DELETE(m_Window);
 	SAFE_DELETE(m_ElementCol);
 	SAFE_DELETE(m_TestSprite);
 	SAFE_DELETE(m_Back);
 	SAFE_DELETE(m_TestObj);
 	SAFE_DELETE(m_TestRegion);
-	SAFE_DELETE(m_Canvas);
 
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 }
@@ -182,31 +172,6 @@ void DebugHUD::Create()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void DebugHUD::CreateCanvas(Viewport* viewport)
-{
-	m_Canvas = new Canvas2D(L"canvas", viewport);
-	m_Canvas->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
-
-	/*
-	m_Lines = new LineElement2D();
-	m_Canvas->GetRootNode()->AttachElement(m_Lines);
-	*/
-
-	m_Tex = new TextureElement2D();
-	m_Tex->SetSubFrame(m_TestSprite->GetFrames().at(0)->GetSubFrames().at(0));
-	m_Canvas->GetRootNode()->AttachElement(m_Tex);
-
-	m_Canvas->GetRootNode()->SetRotation(45);
-	m_Canvas->GetRootNode()->SetPosition(300, 300);
-	m_Canvas->GetRootNode()->SetScale(2, 1);
-
-	//m_Canvas->GetRootNode()->SetClippingRect(Rect(-25, -50, 25, 50));
-	
-
-	m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);
-}
-
-//////////////////////////////////////////////////////////////////////////
 void DebugHUD::Render(Viewport* viewport, Camera* camera)
 {
 	GuiStage::Render(viewport, camera);
@@ -297,12 +262,6 @@ void DebugHUD::Render(Viewport* viewport, Camera* camera)
 	params.Color = Ogre::ColourValue(1, 1, 1, 1);
 	params.AbsolutePos = true;
 	m_Arrow->Display(m_ElementCol, mouseX, mouseY, params);
-
-	if (m_Canvas)
-	{
-		Element2DList elements;
-		m_Canvas->GetElementsAt(100, 100, elements);
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////

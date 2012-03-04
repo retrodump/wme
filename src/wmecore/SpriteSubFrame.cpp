@@ -97,6 +97,9 @@ bool SpriteSubFrame::SetTexture(const WideString& fileName, Ogre::ColourValue co
 //////////////////////////////////////////////////////////////////////////
 bool SpriteSubFrame::IsTransparentAt(int posX, int posY) const
 {
+	if (m_MirrorHorizontal) posX = m_Texture->GetWidth() - posX;
+	if (m_MirrorVertical) posY = m_Texture->GetHeight() - posY;
+
 	return m_Texture->IsTransparentAt(posX, posY);
 }
 

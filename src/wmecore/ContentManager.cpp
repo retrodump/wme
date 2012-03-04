@@ -17,6 +17,7 @@
 #include "DebugHUD.h"
 #include "HybridScene.h"
 #include "FullScene.h"
+#include "Scene2DBase.h"
 #include "ViewportLayout.h"
 #include "Camera.h"
 #include "HybridCamera.h"
@@ -106,6 +107,7 @@ void ContentManager::TestData(View* testView)
 
 	m_TestScene = AddFullScene();
 	CameraEntity* cam = static_cast<CameraEntity*>(m_TestScene->GetEntityByName(L"Camera", L"Camera01"));
+	/*
 	vp = layout->AddViewport(L"Geometry", cam->GetCamera(), 0, 0, 1, 1);
 	vp->SetDimensions(800, 600, 800, 600);	
 	vp->SetAutoScale(autoScale);
@@ -114,13 +116,17 @@ void ContentManager::TestData(View* testView)
 	controller->Create(vp);
 
 	vp->SetCameraController(controller);
-
-	/*
-	SceneNodeEditor* editor = new SceneNodeEditor(m_TestScene);
-	editor->Create();
-	m_TestScene->SetEditor(editor);
 	*/
 
+
+
+	// 2d scene
+	Scene2DBase* scene2d = Add2DScene();
+	vp = layout->AddViewport(L"2D", scene2d->GetDefaultCamera(), 0, 0, 1, 1);
+	vp->SetDimensions(800, 600);
+	vp->SetAutoScale(false);	
+	layout->RebuildViewportStack();
+	scene2d->SetViewport(vp);
 
 
 /*
@@ -165,9 +171,6 @@ void ContentManager::TestData(View* testView)
 	vp->SetClearBeforePaint(false);
 	//vp->SetScrollOffsetX(0);
 	//vp->SetScrollOffsetY(0);
-
-	hud->CreateCanvas(vp);
-
 
 
 	//m_TestCamera->AdjustToViewport(vp);
@@ -223,6 +226,18 @@ void ContentManager::OnResizeViewports()
 		ViewportLayout* layout = view->GetViewportLayout();
 		if (layout) layout->OnResizeViewports();
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+Scene2DBase* ContentManager::Add2DScene()
+{
+	Scene2DBase* scene = new Scene2DBase();
+	scene->Register();
+	scene->Create();
+
+	m_Stages.push_back(scene);
+
+	return scene;
 }
 
 //////////////////////////////////////////////////////////////////////////

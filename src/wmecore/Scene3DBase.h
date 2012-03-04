@@ -42,6 +42,8 @@ namespace Wme
 
 		virtual void Shutdown();
 
+		virtual void RegisterActiveSpots(Viewport* viewport, Camera* camera, Ogre::uint8 renderQueueId);
+
 		void ImportDotSceneFile(const WideString& fileName);
 		NavMesh* GetNavMesh() const { return m_NavMesh; }
 
