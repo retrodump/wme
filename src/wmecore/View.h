@@ -40,7 +40,7 @@ namespace Wme
 
 		WideString GetName() const { return m_Name; }
 
-		bool IsLevelWindow() const { return m_TopLevelWindow; }
+		bool IsTopLevelWindow() const { return m_TopLevelWindow; }
 		void SetTopLevelWindow(bool val) { m_TopLevelWindow = val; }
 
 

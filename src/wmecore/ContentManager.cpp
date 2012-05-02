@@ -429,7 +429,7 @@ InteractiveObject* ContentManager::GetActiveObject()
 	{
 		foreach (View* view, m_Views)
 		{
-			if (!view->IsLevelWindow()) continue;
+			if (!view->IsTopLevelWindow()) continue;
 
 			InteractiveObject* actObj = GetActiveObject(view);
 			if (actObj) return actObj;
@@ -485,7 +485,7 @@ bool ContentManager::IsShiftDown()
 {
 	foreach (View* view, m_Views)
 	{
-		if (view->IsLevelWindow()) return view->IsShiftDown();
+		if (view->IsTopLevelWindow()) return view->IsShiftDown();
 	}
 	return false;
 }
@@ -495,7 +495,7 @@ bool ContentManager::IsControlDown()
 {
 	foreach (View* view, m_Views)
 	{
-		if (view->IsLevelWindow()) return view->IsControlDown();
+		if (view->IsTopLevelWindow()) return view->IsControlDown();
 	}
 	return false;
 }
@@ -505,7 +505,7 @@ bool ContentManager::IsAltDown()
 {
 	foreach (View* view, m_Views)
 	{
-		if (view->IsLevelWindow()) return view->IsAltDown();
+		if (view->IsTopLevelWindow()) return view->IsAltDown();
 	}
 	return false;
 }
