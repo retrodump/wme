@@ -38,6 +38,9 @@ namespace Wme
 		bool IsActive() const { return m_Active; }
 		virtual void SetActive(bool val) { m_Active = val; }
 
+		bool IsOwnedByStage() const { return m_IsOwnedByStage; }
+		void SetOwnedByStage(bool val) { m_IsOwnedByStage = val; }
+
 		// internal
 		virtual void OnPreFindVisibleObjects() {};
 		virtual void OnPostFindVisibleObjects() {};
@@ -48,6 +51,7 @@ namespace Wme
 
 	protected:
 		bool m_Active;
+		bool m_IsOwnedByStage;
 
 	private:
 		typedef std::list<MicroTask*> MicroTaskList;

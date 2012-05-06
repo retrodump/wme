@@ -7,6 +7,7 @@
 #include "OgreRenderable.h"
 #include "ScriptableObject.h"
 #include "Sprite.h"
+#include "SpriteFrame.h"
 #include "IRenderableProvider.h"
 
 namespace Wme
@@ -18,7 +19,7 @@ namespace Wme
 	{
 		friend class SpriteFrame;
 	public:
-		SpriteSubFrame();
+		SpriteSubFrame(SpriteFrame* frame);
 		virtual ~SpriteSubFrame();
 
 
@@ -37,16 +38,22 @@ namespace Wme
 
 		void GetBoundingRect(Rect& rect) const;
 
+		SpriteFrame* GetFrame() const { return m_Frame; }
+		Sprite* GetSprite() const { return m_Frame ? m_Frame->GetSprite() : NULL; }
+
+		bool IsDirty() const { return m_IsDirty; }
+		void SetDirty(bool isDirty);
+
 		bool GetMirrorHorizontal() const { return m_MirrorHorizontal; }
-		void SetMirrorHorizontal(bool val) { m_MirrorHorizontal = val; }
+		void SetMirrorHorizontal(bool val);
 
 		bool GetMirrorVertical() const { return m_MirrorVertical; }
-		void SetMirrorVertical(bool val) { m_MirrorVertical = val; }
+		void SetMirrorVertical(bool val);
 
 		const SpriteVertex* GetVertices() const { return m_Vertices; }
 
 		// ScriptableObject
-		RTTI(SpriteFrame);
+		RTTI(SpriteSubFrame);
 		virtual WideString ConvertToString() { return L"SpriteSubFrame object"; }
 		virtual WideString GetTypeName() const { return L"SpriteSubFrame"; }
 
@@ -79,6 +86,9 @@ namespace Wme
 		Ogre::MaterialPtr m_EmptyMaterial;
 
 		SpriteVertex m_Vertices[4];
+
+		SpriteFrame* m_Frame;
+		bool m_IsDirty;
 	};
 }
 

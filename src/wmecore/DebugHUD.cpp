@@ -132,7 +132,7 @@ void DebugHUD::Create()
 
 
 
-	m_Arrow = new SpriteSubFrame();
+	m_Arrow = new SpriteSubFrame(NULL);
 	m_Arrow->SetTexture(L"cur_arrow.png");
 	m_Arrow->SetBasePoint(Ogre::Vector2(0.0, 0.0));
 

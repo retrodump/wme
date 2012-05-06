@@ -36,6 +36,8 @@ namespace Wme
 		SceneNode2D* GetParentNode() const { return m_ParentNode; }
 		void SetParentNode(SceneNode2D* newParent);
 
+		SceneNode2D* CreateChildNode(int zOrder = 0);
+
 		size_t GetNumChildren() const { return m_Children.size(); }
 		SceneNode2D* GetChild(size_t index) const;
 

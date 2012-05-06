@@ -12,6 +12,7 @@ namespace Wme
 {
 	class Viewport;
 	class Canvas2D;
+	class SceneNode2D;
 
 	// temp
 	class TextureElement2D;
@@ -32,6 +33,12 @@ namespace Wme
 		Viewport* GetViewport() const { return m_Viewport; }
 		void SetViewport(Viewport* viewport);
 
+		Canvas2D* GetCanvas() const { return m_Canvas; }
+
+		virtual void OnSceneNodeCreated(SceneNode2D* node);
+		virtual void OnSceneNodeDestroyed(SceneNode2D* node);
+		virtual void OnSceneNodeChanged(SceneNode2D* node);
+		virtual void OnSceneGraphDirty();
 
 	protected:
 		Canvas2D* m_Canvas;

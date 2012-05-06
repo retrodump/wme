@@ -62,11 +62,24 @@ namespace Wme
 	};
 
 
-
 	//////////////////////////////////////////////////////////////////////////
 	class WmeDllExport Sprite : public ScriptableObject, public DocumentAwareObject
 	{
 	public:
+
+		//////////////////////////////////////////////////////////////////////////
+		class WmeDllExport Listener 
+		{
+		public:
+			Listener() {}
+			virtual ~Listener() {}
+
+			virtual void OnSpriteChanged() {}
+			virtual void OnSpriteFrameChanged() {}
+			virtual void OnSpriteFinished() {}
+
+		};
+
 		Sprite(InteractiveObject* ownerObject);
 		virtual ~Sprite();
 
@@ -78,7 +91,7 @@ namespace Wme
 		FrameCollection& GetFrames() { return m_Frames; }
 
 		bool IsLooping() { return m_IsLooping; }
-		void SetLooping(bool looping) { m_IsLooping = looping; }
+		void SetLooping(bool looping);
 
 		bool IsFinished() { return m_IsFinished; }
 
@@ -90,6 +103,12 @@ namespace Wme
 		bool IsLoadedFromImage() { return m_IsLoadedFromImage; }
 
 		void GetBoundingRect(Rect& rect) const;
+
+		bool IsDirty() const { return m_IsDirty; }
+		void SetDirty(bool isDirty);
+
+		void AddListener(Listener* listener);
+		void RemoveListener(Listener* listener);
 
         // ScriptableObject
 		RTTI(Sprite);
@@ -118,6 +137,11 @@ namespace Wme
 		bool m_IsReversed;
 		bool m_IsFinished;
 		unsigned long m_FrameStartTime;
+
+		bool m_IsDirty;
+
+		typedef std::vector<Listener*> ListenerList;
+		ListenerList m_Listeners;
 	};
 }
 

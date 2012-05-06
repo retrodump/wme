@@ -14,8 +14,11 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-SpriteSubFrame::SpriteSubFrame()
+SpriteSubFrame::SpriteSubFrame(SpriteFrame* frame)
 {
+	m_Frame = frame;
+	m_IsDirty  = false;
+
 	m_BasePoint = Ogre::Vector2(0.0, 0.0);
 	m_Texture = NULL;
 
@@ -57,6 +60,13 @@ void SpriteSubFrame::GetBoundingRect(Rect& rect) const
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SpriteSubFrame::SetDirty(bool isDirty)
+{
+	m_IsDirty = isDirty;
+	if (isDirty && m_Frame) m_Frame->SetDirty(true);
+}
+
+//////////////////////////////////////////////////////////////////////////
 void SpriteSubFrame::Display(ElementCollection* elementCol, int targetX, int targetY, const SpriteDrawingParams& params)
 {
 	SpriteDrawingParams newParams = params;
@@ -71,7 +81,11 @@ void SpriteSubFrame::Display(ElementCollection* elementCol, int targetX, int tar
 //////////////////////////////////////////////////////////////////////////
 void SpriteSubFrame::SetBasePoint(const Ogre::Vector2 basePoint)
 {
-	m_BasePoint = basePoint;
+	if (basePoint != m_BasePoint)
+	{
+		m_BasePoint = basePoint;
+		SetDirty(true);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,6 +98,7 @@ const Ogre::Vector2& SpriteSubFrame::GetBasePoint() const
 bool SpriteSubFrame::SetTexture(const WideString& fileName, Ogre::ColourValue colorKey)
 {
 	SAFE_DELETE(m_Texture);
+	SetDirty(true);
 
 	m_Texture = new SpriteTexture();
 	if (m_Texture->SetTexture(fileName, colorKey)) return true;
@@ -91,6 +106,26 @@ bool SpriteSubFrame::SetTexture(const WideString& fileName, Ogre::ColourValue co
 	{
 		SAFE_DELETE(m_Texture);
 		return false;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SpriteSubFrame::SetMirrorHorizontal(bool val)
+{
+	if (val != m_MirrorHorizontal)
+	{
+		m_MirrorHorizontal = val;
+		SetDirty(true);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SpriteSubFrame::SetMirrorVertical(bool val)
+{
+	if (val != m_MirrorVertical)
+	{
+		m_MirrorVertical = val;
+		SetDirty(true);
 	}
 }
 
@@ -133,6 +168,8 @@ bool SpriteSubFrame::LoadFromXml(TiXmlElement* rootNode)
 			m_MirrorHorizontal = XmlUtil::TextToBool(elem);
 		}
 	}
+
+	SetDirty(true);
 
 	if (imageName.empty() || !SetTexture(imageName, colorKey)) return false;
 	else

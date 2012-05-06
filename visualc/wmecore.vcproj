@@ -361,6 +361,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\Entity2DBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\Entity3D.cpp"
 				>
 			</File>
@@ -769,6 +773,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\SpriteEntity.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\SpriteFrame.cpp"
 				>
 			</File>
@@ -1172,6 +1180,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Entity.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Entity2DBase.h"
 				>
 			</File>
 			<File
@@ -1612,6 +1624,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Sprite.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\SpriteEntity.h"
 				>
 			</File>
 			<File

@@ -12,9 +12,11 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-SpriteFrame::SpriteFrame()
+SpriteFrame::SpriteFrame(Sprite* sprite)
 {
+	m_Sprite = sprite;
 	m_Delay = 0;
+	m_IsDirty = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -25,6 +27,16 @@ SpriteFrame::~SpriteFrame()
 		SAFE_DELETE(subFrame);
 	}
 	m_SubFrames.clear();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SpriteFrame::SetDelay(unsigned long delay)
+{
+	if (delay != m_Delay)
+	{
+		m_Delay = delay;
+		SetDirty(true);
+	}	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,6 +66,20 @@ void SpriteFrame::GetBoundingRect(Rect& rect) const
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+void SpriteFrame::SetDirty(bool isDirty)
+{
+	m_IsDirty = isDirty;
+
+	if (isDirty && m_Sprite) m_Sprite->SetDirty(true);
+	else
+	{
+		foreach (SpriteSubFrame* subFrame, m_SubFrames)
+		{
+			subFrame->SetDirty(false);
+		}
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////
 bool SpriteFrame::LoadFromXml(TiXmlElement* rootNode)
@@ -66,7 +92,7 @@ bool SpriteFrame::LoadFromXml(TiXmlElement* rootNode)
 		}
 		else if (elem->ValueStr() == "SubFrame")
 		{
-			SpriteSubFrame* subFrame = new SpriteSubFrame();
+			SpriteSubFrame* subFrame = new SpriteSubFrame(this);
 			if (subFrame->LoadFromXml(elem))
 			{
 				m_SubFrames.push_back(subFrame);
@@ -78,6 +104,8 @@ bool SpriteFrame::LoadFromXml(TiXmlElement* rootNode)
 			}
 		}
 	}
+	SetDirty(true);
+
 	return true;
 }
 
@@ -102,13 +130,15 @@ bool SpriteFrame::SaveToXml(TiXmlElement* rootNode)
 //////////////////////////////////////////////////////////////////////////
 bool SpriteFrame::LoadFromImage(const WideString& fileName)
 {
-	SpriteSubFrame* subFrame = new SpriteSubFrame();
+	SpriteSubFrame* subFrame = new SpriteSubFrame(this);
 	if (!subFrame->LoadFromImage(fileName))
 	{
 		SAFE_DELETE(subFrame);
 		return false;
 	}
 	m_SubFrames.push_back(subFrame);
+	SetDirty(true);
+
 	return true;
 }
 

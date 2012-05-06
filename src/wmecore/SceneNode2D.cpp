@@ -76,6 +76,14 @@ void SceneNode2D::RemoveChild(SceneNode2D* child)
 }
 
 //////////////////////////////////////////////////////////////////////////
+SceneNode2D* SceneNode2D::CreateChildNode(int zOrder)
+{
+	SceneNode2D* child = new SceneNode2D(m_Canvas);
+	AddChild(child, zOrder);
+	return child;
+}
+
+//////////////////////////////////////////////////////////////////////////
 void SceneNode2D::SetParentNode(SceneNode2D* newParent)
 {
 	if (m_ParentNode == newParent) return;

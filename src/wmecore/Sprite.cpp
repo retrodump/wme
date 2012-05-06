@@ -19,6 +19,7 @@ namespace Wme
 Sprite::Sprite(InteractiveObject* ownerObject)
 {
 	m_OwnerObject = ownerObject;
+	m_IsDirty = false;
 
 	m_InitialFrame = 0;
 	m_IsLooping = false;
@@ -48,6 +49,18 @@ void Sprite::Clear()
 
 	m_IsFinished = false;
 	m_CurrentFrame = -1;
+
+	SetDirty(true);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Sprite::SetLooping(bool looping)
+{
+	if (looping != m_IsLooping)
+	{
+		m_IsLooping = looping;
+		SetDirty(true);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -79,6 +92,12 @@ void Sprite::Display(ElementCollection* elementCol, int targetX, int targetY, co
 //////////////////////////////////////////////////////////////////////////
 void Sprite::Update()
 {
+	if (IsDirty())
+	{
+		foreach (Listener* listener, m_Listeners) listener->OnSpriteChanged();
+		SetDirty(false);
+	}
+
 	if (m_Frames.size() == 0)
 	{
 		m_CurrentFrame = -1;
@@ -120,8 +139,12 @@ void Sprite::Update()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::SwitchToFrame(int frameIndex)
 {
+	if (frameIndex != m_CurrentFrame) SetDirty(true);
+
 	m_CurrentFrame = frameIndex;
 	m_FrameStartTime = m_OwnerObject->GetTier()->GetCurrentTime();
+
+	foreach (Listener* listener, m_Listeners) listener->OnSpriteFrameChanged();
 
 	// TODO trigger script event, pre-display action etc.
 }
@@ -184,6 +207,7 @@ int Sprite::GetNextFrameIndex(bool& finished)
 void Sprite::OnSpriteFinished()
 {
 	m_IsFinished = true;
+	foreach (Listener* listener, m_Listeners) listener->OnSpriteFinished();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -195,6 +219,34 @@ void Sprite::GetBoundingRect(Rect& rect) const
 		frame->GetBoundingRect(frameRect);
 		rect.UnionWith(frameRect);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Sprite::SetDirty(bool isDirty)
+{
+	m_IsDirty = isDirty;
+
+	if (!isDirty)
+	{
+		foreach (SpriteFrame* frame, m_Frames)
+		{
+			frame->SetDirty(false);
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Sprite::AddListener(Listener* listener)
+{
+	if (std::find(m_Listeners.begin(), m_Listeners.end(), listener) == m_Listeners.end())
+		m_Listeners.push_back(listener);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Sprite::RemoveListener(Listener* listener)
+{
+	ListenerList::iterator it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
+	if (it != m_Listeners.end()) m_Listeners.erase(it);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -220,7 +272,7 @@ bool Sprite::LoadFromImage(const WideString& fileName)
 {
 	Clear();
 	
-	SpriteFrame* frame = new SpriteFrame();
+	SpriteFrame* frame = new SpriteFrame(this);
 	if (!frame->LoadFromImage(fileName))
 	{
 		SAFE_DELETE(frame);
@@ -232,6 +284,7 @@ bool Sprite::LoadFromImage(const WideString& fileName)
 
 	m_IsLoadedFromImage = true;
 	m_FileName = fileName;
+	SetDirty(true);
 
 	return true;
 }
@@ -250,7 +303,7 @@ bool Sprite::LoadFromXml(TiXmlElement* rootNode)
 		}
 		else if (elem->ValueStr() == "Frame")
 		{
-			SpriteFrame* frame = new SpriteFrame();
+			SpriteFrame* frame = new SpriteFrame(this);
 			if (frame->LoadFromXml(elem))
 			{
 				m_Frames.push_back(frame);
@@ -262,6 +315,8 @@ bool Sprite::LoadFromXml(TiXmlElement* rootNode)
 			}
 		}
 	}
+	SetDirty(true);
+
 	return true;
 }
 

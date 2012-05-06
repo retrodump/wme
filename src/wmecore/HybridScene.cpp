@@ -37,7 +37,7 @@ void HybridScene::Create()
 	spriteNode->attachObject(m_Elements);
 
 
-	m_Background = new SpriteSubFrame();
+	m_Background = new SpriteSubFrame(NULL);
 	m_Background->SetTexture(L"background.jpg");
 
 }

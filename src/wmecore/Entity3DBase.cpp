@@ -20,8 +20,7 @@ namespace Wme
 Entity3DBase::Entity3DBase()
 {
 	m_SceneNode = NULL;
-	m_Stage = NULL;
-	m_IsOwnedByStage = false;
+	m_Stage = NULL;	
 	m_AnimFrozen = false;
 	m_AttachedTo = NULL;
 
@@ -271,6 +270,7 @@ bool Entity3DBase::LoadFromXml(TiXmlElement* rootNode)
 
 	return true;
 }
+
 //////////////////////////////////////////////////////////////////////////
 bool Entity3DBase::SaveToXml(TiXmlElement* rootNode)
 {

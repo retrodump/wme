@@ -16,7 +16,7 @@ namespace Wme
 	{
 		friend class Sprite;
 	public:		
-		SpriteFrame();
+		SpriteFrame(Sprite* sprite);
 		virtual ~SpriteFrame();
 
 
@@ -28,9 +28,14 @@ namespace Wme
 		SubFrameCollection& GetSubFrames() { return m_SubFrames; }
 
 		unsigned long GetDelay() { return m_Delay; }
-		void SetDelay(unsigned long delay) { m_Delay = delay; }
+		void SetDelay(unsigned long delay);
 
 		void GetBoundingRect(Rect& rect) const;
+
+		bool IsDirty() const { return m_IsDirty; }
+		void SetDirty(bool isDirty);
+
+		Sprite* GetSprite() const { return m_Sprite; }
 		
         // DocumentAwareObject
 		virtual bool LoadFromXml(TiXmlElement* rootNode);
@@ -45,6 +50,9 @@ namespace Wme
 		bool LoadFromImage(const WideString& fileName);
 		SubFrameCollection m_SubFrames;
 		unsigned long m_Delay;
+		Sprite* m_Sprite;
+
+		bool m_IsDirty;
 	};
 }
 

@@ -41,9 +41,6 @@ namespace Wme
 		void SetScale(const Ogre::Vector3& scale);
 		const Ogre::Vector3& GetScale() const;
 
-		bool IsOwnedByStage() const { return m_IsOwnedByStage; }
-		void SetOwnedByStage(bool val) { m_IsOwnedByStage = val; }
-
 		virtual bool IsAnimFrozen() const { return m_AnimFrozen; }
 		void SetAnimFrozen(bool val) { m_AnimFrozen = val; }
 
@@ -79,7 +76,6 @@ namespace Wme
 
 	protected:
 		Scene3DBase* m_Stage;
-		bool m_IsOwnedByStage;		
 		Ogre::SceneNode* m_SceneNode;
 
 		AttachmentPoint* m_AttachedTo;
