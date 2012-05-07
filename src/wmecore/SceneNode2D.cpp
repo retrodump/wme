@@ -76,6 +76,29 @@ void SceneNode2D::RemoveChild(SceneNode2D* child)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SceneNode2D::RemoveAndDestroyChild(SceneNode2D* child, bool destroyElements)
+{
+	if (!child || child->GetParentNode() != this) return;
+
+	child->RemoveAndDestroyAllChildren(destroyElements);
+	if (destroyElements) delete child->GetAttachedElement();
+	RemoveChild(child);
+	delete child;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void SceneNode2D::RemoveAndDestroyAllChildren(bool destroyElements)
+{
+	foreach (SceneNode2D* child, m_Children)
+	{
+		child->RemoveAndDestroyAllChildren(destroyElements);
+		if (destroyElements) delete child->GetAttachedElement();
+		delete child;
+	}
+	m_Children.clear();
+}
+
+//////////////////////////////////////////////////////////////////////////
 SceneNode2D* SceneNode2D::CreateChildNode(int zOrder)
 {
 	SceneNode2D* child = new SceneNode2D(m_Canvas);
@@ -328,8 +351,8 @@ void SceneNode2D::UpdateTransformInternal()
 	if (m_ParentNode)
 	{
 		m_DerivedPosition = m_ParentNode->GetSceneTransform() * m_Position;
-		m_DerivedRotation = MathUtil::NormalizeAngle(m_ParentNode->GetRotation() + m_Rotation);
-		m_DerivedScale = m_ParentNode->GetScale() * m_Scale;
+		m_DerivedRotation = MathUtil::NormalizeAngle(m_ParentNode->GetDerivedRotation() + m_Rotation);
+		m_DerivedScale = m_ParentNode->GetDerivedScale() * m_Scale;
 	}
 	else
 	{
@@ -343,7 +366,7 @@ void SceneNode2D::UpdateTransformInternal()
 	
 	m_SceneTransform.Scale(m_DerivedScale.x, m_DerivedScale.y);	
 	m_SceneTransform.Rotate(m_DerivedRotation);
-	m_SceneTransform.Translate(m_Position.x, m_Position.y);	
+	m_SceneTransform.Translate(m_DerivedPosition.x, m_DerivedPosition.y);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -423,6 +446,7 @@ Ogre::Vector2 SceneNode2D::ScaleSceneToLocal(const Ogre::Vector2& scale) const
 void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
 	SortChildren();
+	UpdateTransform();
 	UpdateGeometry();
 	
 	bool renderedSelf = false;

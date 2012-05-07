@@ -17,6 +17,7 @@ namespace Wme
 	// temp
 	class TextureElement2D;
 	class Sprite;
+	class SpriteEntity;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -47,6 +48,7 @@ namespace Wme
 		// temp
 		TextureElement2D* m_Tex;
 		Sprite* m_TestSprite;
+		SpriteEntity* m_TestEntity;
 	};
 }
 

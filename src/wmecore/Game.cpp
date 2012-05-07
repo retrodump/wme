@@ -430,6 +430,7 @@ template <class Archive>void Game::serialize(Archive& ar, const unsigned int ver
 //////////////////////////////////////////////////////////////////////////
 void Game::Tests()
 {
+	/*
 	SceneNode2D root(NULL);
 	root.SetPosition(100, 100);
 	root.SetRotation(90.0f);
@@ -445,6 +446,7 @@ void Game::Tests()
 	node.SetDerivedPosition(pos);
 
 	pos = node.GetPosition();
+	*/
 
 	int i = 10;
 

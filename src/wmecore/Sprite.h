@@ -16,6 +16,7 @@ namespace Wme
 	class SpriteFrame;
 	class ElementCollection;
 	class InteractiveObject;
+	class SceneNode2D;
 
 	//////////////////////////////////////////////////////////////////////////
 	class WmeDllExport SpriteDrawingParams
@@ -109,6 +110,8 @@ namespace Wme
 
 		void AddListener(Listener* listener);
 		void RemoveListener(Listener* listener);
+
+		void AttachToSceneNode(SceneNode2D* sceneNode);
 
         // ScriptableObject
 		RTTI(Sprite);

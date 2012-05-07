@@ -16,14 +16,23 @@ namespace Wme
 		SpriteEntity();
 		virtual ~SpriteEntity();
 
+		virtual void PutToStage(Scene2DBase* stage, Entity2DBase* parentEntity = NULL);
+		virtual void RemoveFromStage();
+
 		Sprite* GetCurrentSprite() const { return m_CurrentSprite; }
 		void SetCurrentSprite(Sprite* currentSprite);
+
+		virtual void Update();
 
 		// Sprite::Listener
 		void OnSpriteChanged();
 
+		// temp - remove later, this class should be abstract
+		RTTI(SpriteEntity);
+
 	protected:
 		Sprite* m_CurrentSprite;
+		SceneNode2D* m_SpriteNode;
 	};
 }
 

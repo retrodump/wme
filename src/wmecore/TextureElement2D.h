@@ -24,8 +24,12 @@ namespace Wme
 		void SetSubFrame(SpriteSubFrame* subFrame) { m_SubFrame = subFrame; }
 		SpriteSubFrame* GetSubFrame() const { return m_SubFrame; }
 
+		void SetColor(const Ogre::ColourValue& color) { m_Color = color; }
+		Ogre::ColourValue GetColor() const { return m_Color; }
+
 	private:
 		SpriteSubFrame* m_SubFrame;
+		Ogre::ColourValue m_Color;
 	};
 }
 

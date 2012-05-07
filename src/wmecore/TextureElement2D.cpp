@@ -16,6 +16,7 @@ namespace Wme
 TextureElement2D::TextureElement2D()
 {
 	m_SubFrame = NULL;
+	m_Color = Ogre::ColourValue::White;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,12 @@ void TextureElement2D::AddGeometry()
 	// bottom right
 	verts[2].pos = Ogre::Vector2(- basePoint.x + texture->GetWidth(), - basePoint.y + texture->GetHeight());
 	verts[2].texCoord = Ogre::Vector2(texEndX, texEndY);
+
+	// color
+	for (int i = 0; i < 4; i++)
+	{
+		verts[i].color = m_Color;
+	}
 
 	m_ParentNode->AddGeometry(verts, 4, texture->GetMaterial(), Ogre::RenderOperation::OT_TRIANGLE_STRIP);
 }

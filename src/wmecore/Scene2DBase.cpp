@@ -9,6 +9,7 @@
 #include "ActiveSpot.h"
 
 // temp
+#include "SpriteEntity.h"
 #include "Sprite.h"
 #include "SpriteFrame.h"
 #include "SpriteSubFrame.h"
@@ -28,6 +29,7 @@ Scene2DBase::Scene2DBase()
 
 	// temp
 	m_TestSprite = NULL;
+	m_TestEntity = NULL;
 	m_Tex = NULL;
 }
 
@@ -35,6 +37,7 @@ Scene2DBase::Scene2DBase()
 Scene2DBase::~Scene2DBase()
 {
 	SAFE_DELETE(m_Tex);
+	SAFE_DELETE(m_TestEntity);
 	SAFE_DELETE(m_TestSprite);
 
 	SAFE_DELETE(m_Canvas);
@@ -49,22 +52,30 @@ void Scene2DBase::Create()
 	this->GetRootNode()->attachObject(m_Canvas);
 
 	// test data
+	/*
 	static UiButton dummy(NULL);
 	dummy.SetName(L"molly");
 
-	m_TestSprite = new Sprite(NULL);
-	m_TestSprite->LoadFromFile(L"actors/molly/walk/walk_frame.sprite");
-		
 	m_Tex = new TextureElement2D();
 	m_Tex->SetSubFrame(m_TestSprite->GetFrames().at(0)->GetSubFrames().at(0));
+	m_Tex->SetColor(Ogre::ColourValue(1.0f, 1.0f, 1.0f, 1.0f));
 	m_Tex->SetOwner(&dummy);
 	m_Canvas->GetRootNode()->AttachElement(m_Tex);
+	*/
+	//m_Canvas->GetRootNode()->SetClippingRect(Rect(-25, -50, 25, 50));
+
+	m_TestEntity = new SpriteEntity();
+	m_TestEntity->SetName(L"molly entity");
+	m_TestEntity->PutToStage(this);
+
+	m_TestSprite = new Sprite(m_TestEntity);
+	m_TestSprite->LoadFromFile(L"actors/molly/walk/walk.sprite");
+
+	m_TestEntity->SetCurrentSprite(m_TestSprite);
 
 	m_Canvas->GetRootNode()->SetRotation(45);
 	m_Canvas->GetRootNode()->SetPosition(400, 400);
 	m_Canvas->GetRootNode()->SetScale(2, 1);
-
-	//m_Canvas->GetRootNode()->SetClippingRect(Rect(-25, -50, 25, 50));
 
 
 	//m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);
@@ -75,6 +86,7 @@ void Scene2DBase::Create()
 void Scene2DBase::Update()
 {
 	Scene::Update();
+	if (m_TestEntity) m_TestEntity->Update();
 }
 
 //////////////////////////////////////////////////////////////////////////

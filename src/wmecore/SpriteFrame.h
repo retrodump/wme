@@ -4,8 +4,10 @@
 #ifndef __WmeSpriteFrame_H__
 #define __WmeSpriteFrame_H__
 
+
 #include "ScriptableObject.h"
 #include "Sprite.h"
+
 
 namespace Wme
 {
@@ -14,7 +16,6 @@ namespace Wme
 
 	class WmeDllExport SpriteFrame : public ScriptableObject
 	{
-		friend class Sprite;
 	public:		
 		SpriteFrame(Sprite* sprite);
 		virtual ~SpriteFrame();
@@ -36,6 +37,8 @@ namespace Wme
 		void SetDirty(bool isDirty);
 
 		Sprite* GetSprite() const { return m_Sprite; }
+
+		bool LoadFromImage(const WideString& fileName);
 		
         // DocumentAwareObject
 		virtual bool LoadFromXml(TiXmlElement* rootNode);
@@ -46,8 +49,7 @@ namespace Wme
 		virtual WideString ConvertToString() { return L"SpriteFrame object"; }
 		virtual WideString GetTypeName() const { return L"SpriteFrame"; }
 
-	private:
-		bool LoadFromImage(const WideString& fileName);
+	private:		
 		SubFrameCollection m_SubFrames;
 		unsigned long m_Delay;
 		Sprite* m_Sprite;

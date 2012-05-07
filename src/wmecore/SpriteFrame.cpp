@@ -3,6 +3,7 @@
 
 #include "Wme.h"
 #include "SpriteFrame.h"
+#include "Sprite.h"
 #include "SpriteSubFrame.h"
 #include "XmlUtil.h"
 

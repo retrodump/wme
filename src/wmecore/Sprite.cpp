@@ -5,6 +5,8 @@
 #include "Sprite.h"
 #include "SpriteFrame.h"
 #include "InteractiveObject.h"
+#include "SceneNode2D.h"
+#include "TextureElement2D.h"
 #include "XmlUtil.h"
 #include "PathUtil.h"
 #include "SystemInfo.h"
@@ -117,7 +119,11 @@ void Sprite::Update()
 	}
 	else
 	{
-		elapsedTime = m_OwnerObject->GetTier()->GetCurrentTime() - m_FrameStartTime;
+		if (m_OwnerObject) elapsedTime = m_OwnerObject->GetTier()->GetCurrentTime();
+		else elapsedTime = Game::GetInstance()->GetDefaultTier()->GetCurrentTime();
+
+		elapsedTime -= m_FrameStartTime;
+
 		if (elapsedTime >= currentFrame->GetDelay())
 		{
 			SwitchToNextFrame();
@@ -142,7 +148,8 @@ void Sprite::SwitchToFrame(int frameIndex)
 	if (frameIndex != m_CurrentFrame) SetDirty(true);
 
 	m_CurrentFrame = frameIndex;
-	m_FrameStartTime = m_OwnerObject->GetTier()->GetCurrentTime();
+	if (m_OwnerObject) m_FrameStartTime = m_OwnerObject->GetTier()->GetCurrentTime();
+	else Game::GetInstance()->GetDefaultTier()->GetCurrentTime();
 
 	foreach (Listener* listener, m_Listeners) listener->OnSpriteFrameChanged();
 
@@ -247,6 +254,29 @@ void Sprite::RemoveListener(Listener* listener)
 {
 	ListenerList::iterator it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
 	if (it != m_Listeners.end()) m_Listeners.erase(it);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Sprite::AttachToSceneNode(SceneNode2D* sceneNode)
+{
+	if (!sceneNode) return;
+
+	SpriteFrame* currentFrame = GetCurrentFrame();
+	if (!currentFrame) return;
+
+	// destroy current nodes
+	sceneNode->RemoveAndDestroyAllChildren(true);
+
+	// create new nodes for each subframe
+	foreach (SpriteSubFrame* subFrame, currentFrame->GetSubFrames())
+	{
+		TextureElement2D* texElement = new TextureElement2D();
+		texElement->SetSubFrame(subFrame);
+		texElement->SetOwner(m_OwnerObject);
+
+		SceneNode2D* subNode = sceneNode->CreateChildNode();
+		subNode->AttachElement(texElement);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

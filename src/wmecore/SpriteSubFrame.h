@@ -12,12 +12,10 @@
 
 namespace Wme
 {
-
 	class SpriteTexture;
 
 	class WmeDllExport SpriteSubFrame : public ScriptableObject, public Ogre::Renderable, public IRenderableProvider
 	{
-		friend class SpriteFrame;
 	public:
 		SpriteSubFrame(SpriteFrame* frame);
 		virtual ~SpriteSubFrame();
@@ -52,6 +50,8 @@ namespace Wme
 
 		const SpriteVertex* GetVertices() const { return m_Vertices; }
 
+		bool LoadFromImage(const WideString& fileName);
+
 		// ScriptableObject
 		RTTI(SpriteSubFrame);
 		virtual WideString ConvertToString() { return L"SpriteSubFrame object"; }
@@ -74,8 +74,6 @@ namespace Wme
 		virtual bool preRender(Ogre::SceneManager* sm, Ogre::RenderSystem* rs);
 
 	private:
-		bool LoadFromImage(const WideString& fileName);
-
 		Ogre::Vector2 m_BasePoint;		
 		SpriteTexture* m_Texture;
 
