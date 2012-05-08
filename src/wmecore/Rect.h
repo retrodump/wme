@@ -35,6 +35,8 @@ namespace Wme
 		bool Intersects(const Rect& r) const;
 		void UnionWith(const Rect& r);
 
+		void Normalize();
+
 		bool ContainsPoint(float testX, float testY) const;
 
 		static const Rect EMPTY_RECT;

@@ -68,6 +68,23 @@ Ogre::Vector2 Transform2D::operator*(const Ogre::Vector2& v) const
 }
 
 //////////////////////////////////////////////////////////////////////////
+Rect Transform2D::operator*(const Rect& rect) const
+{
+	// this only works for rotations of 0/90/180/270 degrees (rects are always axis-aligned)
+
+	// top left
+	Ogre::Vector3 tl = m_Matrix * Ogre::Vector3(rect.GetLeft(), rect.GetTop(), 0.0f);
+	
+	// bottom right
+	Ogre::Vector3 br = m_Matrix * Ogre::Vector3(rect.GetRight(), rect.GetBottom(), 0.0f);
+
+	Rect ret = Rect(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+	ret.Normalize();
+
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////
 Transform2D& Transform2D::Translate(float x, float y)
 {
 	Ogre::Matrix4 matTrans;

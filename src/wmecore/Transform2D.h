@@ -5,6 +5,9 @@
 #define __WmeTransform2D_H__
 
 
+#include "Rect.h"
+
+
 namespace Wme
 {
 	class WmeDllExport Transform2D
@@ -22,7 +25,8 @@ namespace Wme
 
 		Transform2D& operator=(const Transform2D& trans);
 
-		Ogre::Vector2 operator*(const Ogre::Vector2 &v) const;
+		Ogre::Vector2 operator*(const Ogre::Vector2& v) const;
+		Rect operator*(const Rect& rect) const;
 
 
 		Transform2D& Translate(float x, float y);

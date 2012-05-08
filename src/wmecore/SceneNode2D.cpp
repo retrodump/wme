@@ -516,7 +516,7 @@ void SceneNode2D::GetElementsAt(float x, float y, const Rect& clippingRect, Elem
 			testedSelf = true;
 		}
 
-		bool clipChild = m_ClipChildrenBehind && child->GetZOrder() < 0;
+		bool clipChild = (m_ClipChildrenBehind && child->GetZOrder() < 0) || child->GetZOrder() >= 0;
 
 		child->GetElementsAt(x, y, clipChild ? selfClipRect : clippingRect, elements);
 		prevZOrder = child->GetZOrder();
@@ -552,19 +552,18 @@ void SceneNode2D::SetClippingRect(const Rect& rect)
 //////////////////////////////////////////////////////////////////////////
 Rect SceneNode2D::GetTransformedClippingRect()
 {
-	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return Rect();
+	if (m_ClippingRect.IsEmpty() || fmod(GetDerivedRotation().valueDegrees(), 90.0f) != 0.0f) return Rect();
 	else
 	{
-		Ogre::Vector2 clipPos = GetSceneTransform() * Ogre::Vector2(m_ClippingRect.x, m_ClippingRect.y);
-		return Rect(clipPos.x, clipPos.y, m_ClippingRect.width * GetDerivedScale().x, m_ClippingRect.height * GetDerivedScale().y);
+		return GetSceneTransform() * m_ClippingRect;
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::StartClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
-	// we don't support rotated clipping rectanges
-	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return;
+	// we only support clipping rectanges rotated by multiplies of 90 degrees
+	if (m_ClippingRect.IsEmpty() || fmod(GetDerivedRotation().valueDegrees(), 90.0f) != 0.0f) return;
 		
 	m_Clipper->SetClipping(true, m_Canvas->GetViewport(), m_Canvas->GetViewport()->GetClippingRect().GetIntersection(GetTransformedClippingRect()));
 

@@ -62,15 +62,15 @@ void SpriteEntity::OnSpriteChanged()
 //////////////////////////////////////////////////////////////////////////
 void SpriteEntity::Update()
 {
-	/*
+		
 	static unsigned long prevTime = 0;
-	if (Game::GetInstance()->GetDefaultTier()->GetCurrentTime() - prevTime > 1000)
+	if (Game::GetInstance()->GetDefaultTier()->GetCurrentTime() - prevTime > 500)
 	{
 		prevTime = Game::GetInstance()->GetDefaultTier()->GetCurrentTime();
-		//SetRotation(GetRotation().valueDegrees() + 10);
-		SetPosition(GetPosition().x + 10, GetPosition().y);
+		SetRotation(GetRotation().valueDegrees() + 10);
+		//SetPosition(GetPosition().x + 10, GetPosition().y);
 	}
-	*/
+	
 
 	if (m_CurrentSprite) m_CurrentSprite->Update();
 }

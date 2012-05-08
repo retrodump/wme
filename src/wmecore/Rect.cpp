@@ -116,4 +116,21 @@ bool Rect::ContainsPoint(float testX, float testY) const
 	return testX >= x && testX <= x + width && testY >= y && testY <= y + height;
 }
 
+//////////////////////////////////////////////////////////////////////////
+void Rect::Normalize()
+{
+	if (width < 0)
+	{
+		x += width;
+		width = Ogre::Math::Abs(width);
+	}
+	
+	if (height < 0)
+	{
+		y += height;
+		height = Ogre::Math::Abs(height);
+	}
+}
+
+
 } // namespace Wme

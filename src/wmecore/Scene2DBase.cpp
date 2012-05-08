@@ -72,11 +72,15 @@ void Scene2DBase::Create()
 	m_TestSprite->LoadFromFile(L"actors/molly/walk/walk.sprite");
 
 	m_TestEntity->SetCurrentSprite(m_TestSprite);
+	m_TestEntity->SetPosition(400, 400);
+	m_TestEntity->GetSceneNode()->SetClippingRect(Rect(0, -222, 50, 30));
+	//m_TestEntity->SetRotation(270.0f);
 
+	/*
 	m_Canvas->GetRootNode()->SetRotation(45);
 	m_Canvas->GetRootNode()->SetPosition(400, 400);
 	m_Canvas->GetRootNode()->SetScale(2, 1);
-
+	*/
 
 	//m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);
 
