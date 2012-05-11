@@ -21,10 +21,10 @@ namespace Wme
 		void AddGeometry();
 		bool IsTransparentAt(float x, float y);
 
-		void SetSubFrame(SpriteSubFrame* subFrame) { m_SubFrame = subFrame; }
+		void SetSubFrame(SpriteSubFrame* subFrame);
 		SpriteSubFrame* GetSubFrame() const { return m_SubFrame; }
 
-		void SetColor(const Ogre::ColourValue& color) { m_Color = color; }
+		void SetColor(const Ogre::ColourValue& color);
 		Ogre::ColourValue GetColor() const { return m_Color; }
 
 	private:

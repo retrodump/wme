@@ -829,6 +829,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\TextElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\TextureElement2D.cpp"
 				>
 			</File>
@@ -1680,6 +1684,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\TextElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\TextElement2D.h"
 				>
 			</File>
 			<File

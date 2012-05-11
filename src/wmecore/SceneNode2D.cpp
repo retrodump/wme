@@ -574,7 +574,7 @@ void SceneNode2D::StartClipping(Ogre::RenderQueue* renderQueue, byte queueId, wo
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::StopClipping(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
-	if (m_ClippingRect.IsEmpty() || GetDerivedRotation().valueDegrees() != 0.0f) return;
+	if (m_ClippingRect.IsEmpty() || fmod(GetDerivedRotation().valueDegrees(), 90.0f) != 0.0f) return;
 
 	m_UnClipper->SetClipping(false, m_Canvas->GetViewport());
 

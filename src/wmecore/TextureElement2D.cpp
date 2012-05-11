@@ -25,6 +25,26 @@ TextureElement2D::~TextureElement2D()
 }
 
 //////////////////////////////////////////////////////////////////////////
+void TextureElement2D::SetSubFrame(SpriteSubFrame* subFrame)
+{
+	if (subFrame != m_SubFrame)
+	{
+		m_SubFrame = subFrame;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextureElement2D::SetColor(const Ogre::ColourValue& color)
+{
+	if (color != m_Color)
+	{
+		m_Color = color;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void TextureElement2D::AddGeometry()
 {
 	if (!m_SubFrame) return;

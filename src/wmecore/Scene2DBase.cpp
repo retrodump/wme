@@ -15,6 +15,8 @@
 #include "SpriteSubFrame.h"
 #include "TextureElement2D.h"
 #include "UiButton.h"
+#include "TextElement2D.h"
+#include "FontManager.h"
 
 
 namespace Wme
@@ -31,6 +33,9 @@ Scene2DBase::Scene2DBase()
 	m_TestSprite = NULL;
 	m_TestEntity = NULL;
 	m_Tex = NULL;
+	m_Font = NULL;
+	m_Text = NULL;
+	m_TestNode = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,6 +44,9 @@ Scene2DBase::~Scene2DBase()
 	SAFE_DELETE(m_Tex);
 	SAFE_DELETE(m_TestEntity);
 	SAFE_DELETE(m_TestSprite);
+	SAFE_DELETE(m_Text);	
+	SAFE_DELETE(m_TestNode);
+	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 
 	SAFE_DELETE(m_Canvas);
 }
@@ -75,6 +83,23 @@ void Scene2DBase::Create()
 	m_TestEntity->SetPosition(400, 400);
 	m_TestEntity->GetSceneNode()->SetClippingRect(Rect(0, -222, 50, 30));
 	//m_TestEntity->SetRotation(270.0f);
+
+	m_Font = Game::GetInstance()->GetFontMgr()->GetFont(L"arial_small.font", false);
+
+	m_Text = new TextElement2D();
+	m_Text->SetFont(m_Font);
+	m_Text->SetText(L"Test test test.\nSecond line.");
+	m_Text->SetWidth(100);
+	m_Text->SetHeight(100);
+	m_Text->SetLeadingSpace(20);
+
+	m_TestNode = m_Canvas->GetRootNode()->CreateChildNode();
+	m_TestNode->AttachElement(m_Text);
+
+	m_TestNode->SetPosition(400, 500);
+	m_TestNode->SetRotation(180);
+	//m_TestNode->SetScale(2, 2);
+
 
 	/*
 	m_Canvas->GetRootNode()->SetRotation(45);

@@ -281,9 +281,9 @@ bool Font::SaveToXml(TiXmlElement* rootNode)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Font::WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines)
+void Font::WrapText(const WideString& text, int maxWidth, int maxHeight, int leadingSpace, TextLineList& lines)
 {
-	int currWidth = 0;
+	int currWidth = leadingSpace;
 	wchar_t prevChar = L'\0';
 	int prevSpaceIndex = -1;
 	int prevSpaceWidth = 0;
@@ -370,10 +370,10 @@ void Font::WrapText(const WideString& text, int maxWidth, int maxHeight, TextLin
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Font::MeasureText(const WideString& text, int maxWidth, int maxHeight, int& textWidth, int& textHeight)
+void Font::MeasureText(const WideString& text, int maxWidth, int maxHeight, int leadingSpace, int& textWidth, int& textHeight)
 {
 	TextLineList lines;
-	WrapText(text, maxWidth, maxHeight, lines);
+	WrapText(text, maxWidth, maxHeight, leadingSpace, lines);
 
 	textHeight = (int)(lines.size() * m_LineHeight);
 	textWidth = 0;

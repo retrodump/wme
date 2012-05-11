@@ -18,6 +18,8 @@ namespace Wme
 	class TextureElement2D;
 	class Sprite;
 	class SpriteEntity;
+	class Font;
+	class TextElement2D;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -49,6 +51,9 @@ namespace Wme
 		TextureElement2D* m_Tex;
 		Sprite* m_TestSprite;
 		SpriteEntity* m_TestEntity;
+		Font* m_Font;
+		TextElement2D* m_Text;
+		SceneNode2D* m_TestNode;
 	};
 }
 

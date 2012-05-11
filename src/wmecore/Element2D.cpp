@@ -52,5 +52,11 @@ void Element2D::DetachFromParent()
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+void Element2D::SetDirty()
+{
+	if (IsAttached()) m_ParentNode->SetGeometryDirty();
+}
+
 
 } // namespace Wme

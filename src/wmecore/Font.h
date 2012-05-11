@@ -56,8 +56,8 @@ namespace Wme
 
 		const WideString& GetFileName() { return m_FileName; }
 
-		void WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines);
-		void MeasureText(const WideString& text, int maxWidth, int maxHeight, int& textWidth, int& textHeight);
+		void WrapText(const WideString& text, int maxWidth, int maxHeight, int leadingSpace, TextLineList& lines);
+		void MeasureText(const WideString& text, int maxWidth, int maxHeight, int leadingSpace, int& textWidth, int& textHeight);
 
 	private:
 		void Cleanup();

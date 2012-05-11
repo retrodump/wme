@@ -90,7 +90,7 @@ void TextElement::UpdateGeometry(Viewport* viewport, bool absolutePos)
 	UpdateRenderBatches();
 
 	Font::TextLineList lines;
-	m_Font->WrapText(m_Text, m_MaxWidth, m_MaxHeight, lines);
+	m_Font->WrapText(m_Text, m_MaxWidth, m_MaxHeight, 0, lines);
 
 
 	SpriteVertex* vertexBuf = reinterpret_cast<SpriteVertex*>(m_HardwareBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));

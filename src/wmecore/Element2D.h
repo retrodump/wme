@@ -33,6 +33,8 @@ namespace Wme
 		InteractiveObject* GetOwner() const { return m_Owner; }
 		void SetOwner(InteractiveObject* val) { m_Owner = val; }
 
+		void SetDirty();
+
 		virtual bool IsTransparentAt(float x, float y) { return false; }
 
 		virtual void AddGeometry() {};
