@@ -136,6 +136,7 @@ namespace Compiler
 }
 }	
 void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer);
+int yylex_destroy(void);
 
 
 #endif // __WmeScriptParser_H_

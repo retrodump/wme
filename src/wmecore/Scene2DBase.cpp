@@ -17,6 +17,7 @@
 #include "UiButton.h"
 #include "TextElement2D.h"
 #include "FontManager.h"
+#include "RectElement2D.h"
 
 
 namespace Wme
@@ -36,6 +37,8 @@ Scene2DBase::Scene2DBase()
 	m_Font = NULL;
 	m_Text = NULL;
 	m_TestNode = NULL;
+	m_Rect = NULL;
+	m_RectNode = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,6 +49,8 @@ Scene2DBase::~Scene2DBase()
 	SAFE_DELETE(m_TestSprite);
 	SAFE_DELETE(m_Text);	
 	SAFE_DELETE(m_TestNode);
+	SAFE_DELETE(m_Rect);
+	SAFE_DELETE(m_RectNode);
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 
 	SAFE_DELETE(m_Canvas);
@@ -100,6 +105,18 @@ void Scene2DBase::Create()
 	//m_TestNode->SetRotation(10);
 	//m_TestNode->SetScale(2, 2);
 
+
+	m_Rect = new RectElement2D();
+	m_Rect->SetWidth(100);
+	m_Rect->SetHeight(80);
+	m_Rect->SetStrokeThickness(10);
+	m_Rect->SetFillColor(Ogre::ColourValue(0, 1, 0, 0.5f));
+	m_Rect->SetStrokeColor(Ogre::ColourValue::Red);
+	m_RectNode = m_Canvas->GetRootNode()->CreateChildNode();
+	m_RectNode->AttachElement(m_Rect);
+	m_RectNode->SetPosition(300, 300);
+	m_RectNode->SetRotation(45);
+	//m_RectNode->SetScale(10, 10);
 
 	/*
 	m_Canvas->GetRootNode()->SetRotation(45);

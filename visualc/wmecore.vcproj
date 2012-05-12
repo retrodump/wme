@@ -653,6 +653,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\RectElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\Region.cpp"
 				>
 			</File>
@@ -1496,6 +1500,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Rect.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\RectElement2D.h"
 				>
 			</File>
 			<File

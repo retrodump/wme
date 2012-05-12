@@ -95,6 +95,8 @@ FunctionBodyNode* ScriptParser::Parse(const WideString& fileName, ErrorLog* log)
 	}
 	CloseFile(fileHandle);
 
+	yylex_destroy();
+
 
 	if (!parseError)
 	{

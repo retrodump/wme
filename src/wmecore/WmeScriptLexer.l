@@ -2,6 +2,7 @@
 This file is part of Wintermute Engine
 For conditions of distribution and use, see copyright notice in license.txt
 */
+%option nounistd
 
 DIGIT     [0-9]
 LETTER    [a-zA-Z_]
@@ -16,6 +17,15 @@ FL		    (f|F)
 #include "WmeScriptParser.h"
 #include "CodeNodes.h"
 #include "ScriptParser.h"
+
+
+#if defined(_MSC_VER)
+#	pragma warning(push)
+#	pragma warning(disable : 4018)
+#endif
+
+
+extern "C" int isatty(int);
 
 using namespace Wme::Compiler;
 
@@ -422,3 +432,7 @@ void CountPos()
 		else
 			ScriptParser::GetInstance().IncrementCurrentCol();
 }
+
+#if defined(_MSC_VER)
+#	pragma warning(pop)
+#endif
