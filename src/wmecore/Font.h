@@ -43,12 +43,22 @@ namespace Wme
 		bool LoadFace(const WideString& fileName, float pointSize, float vertDpi = 96.0, float horDpi = 96.0, bool antiAlias = true);
 		void PrepareGlyphs(const WideString& text);
 
-		float GetKerning(wchar_t leftChar, wchar_t rightChar);
+		float GetKerning(wchar_t leftChar, wchar_t rightChar) const;
 
-		FontGlyphCache* GetGlyphCache() { return m_GlyphCache; }
-		float GetLineHeight() { return m_LineHeight; }
-		float GetAscender() { return m_Ascender; }
-		float GetDescender() { return m_Descender; }
+		FontGlyphCache* GetGlyphCache() const { return m_GlyphCache; }
+		float GetLineHeight() const { return m_LineHeight; }
+		float GetAscender() const { return m_Ascender; }
+		float GetDescender() const { return m_Descender; }
+
+		float GetUnderlinePosition() const { return m_UnderlinePosition; }
+		float GetUnderlineThickness() const { return m_UnderlineThickness; }
+		float GetStrikethroughPosition() const { return GetDescender() * 2.0f; }
+
+		bool GetUnderline() const { return m_Underline; }
+		void SetUnderline(bool val) { m_Underline = val; }
+
+		bool GetStrikethrough() const { return m_Strikethrough; }
+		void SetStrikethrough(bool val) { m_Strikethrough = val; }
 
 		virtual bool LoadFromXml(TiXmlElement* rootNode);
 		virtual bool SaveToXml(TiXmlElement* rootNode);
@@ -63,6 +73,9 @@ namespace Wme
 		void Cleanup();
 		void CacheGlyph(wchar_t ch);
 
+		bool m_Underline;
+		bool m_Strikethrough;
+
 		FontGlyphCache* m_GlyphCache;
 		FT_Face m_FTFace;
 
@@ -73,6 +86,8 @@ namespace Wme
 		float m_PointSize;
 		float m_VertDpi;
 		float m_HorDpi;
+		float m_UnderlinePosition;
+		float m_UnderlineThickness;
 		WideString m_FaceFileName;
 		bool m_AntiAlias;
 		FT_Stream m_FTStream;

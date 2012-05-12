@@ -6,6 +6,7 @@
 #include "SceneNode2D.h"
 #include "Font.h"
 #include "FontGlyphCache.h"
+#include "MaterialUtil.h"
 
 
 namespace Wme
@@ -17,6 +18,8 @@ TextElement2D::TextElement2D()
 {
 	m_Font = NULL;
 	m_Color = Ogre::ColourValue::White;
+
+	m_StrokeMaterial = MaterialUtil::GetGeometry2DMat();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -103,8 +106,9 @@ void TextElement2D::AddGeometry()
 
 	// generate vertices for each character
 	RenderBatchMap renderBatches;
+	StrokeList strokes;
 	InitializeRenderBatches(renderBatches);
-	GenerateRenderBatches(renderBatches);
+	GenerateRenderBatches(renderBatches, strokes);
 
 
 	// add geometry to scene node
@@ -112,12 +116,21 @@ void TextElement2D::AddGeometry()
 	{
 		m_ParentNode->AddGeometry(batch.second->GetVertices(), batch.second->GetNumCharacters() * 6, m_Font->GetGlyphCache()->GetMaterial(batch.first), Ogre::RenderOperation::OT_TRIANGLE_LIST);
 	}
+	foreach (Stroke* stroke, strokes)
+	{
+		RenderStroke(stroke);
+	}
 
 
 	// cleanup
 	foreach (RenderBatchMap::value_type batch, renderBatches)
 	{
 		delete batch.second;
+	}
+
+	foreach (Stroke* stroke, strokes)
+	{
+		delete stroke;
 	}
 }
 
@@ -138,7 +151,7 @@ void TextElement2D::InitializeRenderBatches(RenderBatchMap& renderBatches)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches)
+void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes)
 {
 	Font::TextLineList lines;
 	m_Font->WrapText(m_Text, m_Width, m_Height, m_LeadingSpace, lines);
@@ -191,6 +204,8 @@ void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches)
 			firstLine = false;
 		}
 
+		int lineStart = posX;
+
 		wchar_t prevChar = L'\0';
 		foreach (wchar_t ch, line->GetText())
 		{
@@ -206,8 +221,13 @@ void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches)
 			posY += (int)(glyphInfo->GetAdvanceY());
 
 			prevChar = ch;
-		}		
-		posY += (int)m_Font->GetLineHeight();
+		}
+
+		// handle underline / strikethrough
+		if (m_Font->GetUnderline()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetUnderlinePosition(), m_Font->GetUnderlineThickness()));
+		if (m_Font->GetStrikethrough()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetStrikethroughPosition(), m_Font->GetUnderlineThickness()));
+
+		posY += (int)m_Font->GetLineHeight();		
 	}
 
 	foreach (Font::TextLine* line, lines)
@@ -242,6 +262,32 @@ void TextElement2D::AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo,
 	// add character to the render batch
 	RenderBatch* renderBatch = renderBatches[page];
 	renderBatch->AddCharacter(Ogre::Vector2(posLeft, posTop), Ogre::Vector2(posRight, posBottom), textureRect, m_Color);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::RenderStroke(const Stroke* stroke)
+{
+	Vertex2D verts[4];
+
+	// top left
+	verts[1].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY());
+
+	// top right
+	verts[3].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY());
+
+	// bottom left
+	verts[0].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY() + stroke->GetThickness());
+
+	// bottom right
+	verts[2].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY() + stroke->GetThickness());
+
+	// color
+	for (int i = 0; i < 4; i++)
+	{
+		verts[i].color = m_Color;
+	}
+
+	m_ParentNode->AddGeometry(verts, 4, m_StrokeMaterial, Ogre::RenderOperation::OT_TRIANGLE_STRIP);
 }
 
 //////////////////////////////////////////////////////////////////////////

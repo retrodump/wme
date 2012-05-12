@@ -37,6 +37,31 @@ namespace Wme
 			Vertex2DTex* m_Vertices;
 		};
 
+		//////////////////////////////////////////////////////////////////////////
+		class Stroke
+		{
+		public:
+			Stroke(float startX, float endX, float posY, float thickness)
+			{
+				m_StartX = startX;
+				m_EndX = endX;
+				m_PosY = posY;
+				m_Thickness = thickness;
+			}
+
+			float GetStartX() const { return m_StartX; }
+			float GetEndX() const { return m_EndX; }
+			float GetPosY() const { return m_PosY; }
+			float GetThickness() const { return m_Thickness; }
+
+		private:
+			float m_StartX;
+			float m_EndX;
+			float m_PosY;
+			float m_Thickness;
+		};
+
+
 	public:
 		TextElement2D();
 		virtual ~TextElement2D();
@@ -72,12 +97,15 @@ namespace Wme
 		int m_Width;
 		int m_Height;
 		int m_LeadingSpace;
+		Ogre::MaterialPtr m_StrokeMaterial;
 
 		typedef std::map<int, RenderBatch*> RenderBatchMap;
+		typedef std::list<Stroke*> StrokeList;
 
 		void InitializeRenderBatches(RenderBatchMap& renderBatches);
-		void GenerateRenderBatches(RenderBatchMap& renderBatches);
+		void GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes);
 		void AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches);
+		void RenderStroke(const Stroke* stroke);
 	};
 }
 

@@ -4,4 +4,6 @@
     <PointSize>31</PointSize>
     <DPI Vertical="96" Horizontal="96" />
     <Antialias>true</Antialias>
+    <Underline>true</Underline>
+    <Strikethrough>true</Strikethrough>
 </WmeFont>

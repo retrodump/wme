@@ -25,8 +25,12 @@ Font::Font()
 	m_FTFace = NULL;
 	m_FTStream = NULL;
 
+	m_Underline = false;
+	m_Strikethrough = false;
+
 	m_Ascender = m_Descender = m_LineHeight = m_PointSize = 0;
 	m_HorDpi = m_VertDpi = 0;
+	m_UnderlinePosition = m_UnderlineThickness = 0;
 	m_AntiAlias = true;
 }
 
@@ -114,6 +118,8 @@ bool Font::LoadFace(const WideString& fileName, float pointSize, float vertDpi, 
 	m_Ascender = m_FTFace->ascender * pixelsPerUnit;
 	m_Descender = - m_FTFace->descender * pixelsPerUnit;
 	m_LineHeight = m_FTFace->height * pixelsPerUnit;
+	m_UnderlinePosition = m_FTFace->underline_position * pixelsPerUnit;
+	m_UnderlineThickness = m_FTFace->underline_thickness * pixelsPerUnit;
 
 	// max character size (used for texture grid)
 	size_t maxCharWidth  = (size_t)MathUtil::RoundUp(xMax - xMin);
@@ -187,7 +193,7 @@ void Font::CacheGlyph(wchar_t ch)
 }
 
 //////////////////////////////////////////////////////////////////////////
-float Font::GetKerning(wchar_t leftChar, wchar_t rightChar)
+float Font::GetKerning(wchar_t leftChar, wchar_t rightChar) const
 {
 	GlyphInfo* infoLeft = m_GlyphCache->GetGlyph(leftChar);
 	GlyphInfo* infoRight = m_GlyphCache->GetGlyph(rightChar);
@@ -246,6 +252,14 @@ bool Font::LoadFromXml(TiXmlElement* rootNode)
 		{
 			antiAlias = XmlUtil::TextToBool(elem, antiAlias);
 		}
+		else if (elem->ValueStr() == "Underline")
+		{
+			m_Underline = XmlUtil::TextToBool(elem);
+		}
+		else if (elem->ValueStr() == "Strikethrough")
+		{
+			m_Strikethrough = XmlUtil::TextToBool(elem);
+		}
 	}
 
 
@@ -276,6 +290,12 @@ bool Font::SaveToXml(TiXmlElement* rootNode)
 
 	elem = XmlUtil::AddElem("Antialias", rootNode);
 	XmlUtil::SetText(elem, m_AntiAlias);
+
+	elem = XmlUtil::AddElem("Underline", rootNode);
+	XmlUtil::SetText(elem, m_Underline);
+
+	elem = XmlUtil::AddElem("Strikethrough", rootNode);
+	XmlUtil::SetText(elem, m_Strikethrough);
 
 	return true;
 }

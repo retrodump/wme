@@ -19,6 +19,8 @@ namespace Wme
 		static Ogre::MaterialPtr GetHighlightMat(const Ogre::MaterialPtr origMat, bool forceRebuild = false);
 		static Ogre::MaterialPtr GetEmptyMat();
 
+		static Ogre::MaterialPtr GetGeometry2DMat();
+
 	};
 }
 

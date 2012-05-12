@@ -74,5 +74,23 @@ Ogre::MaterialPtr MaterialUtil::GetEmptyMat()
 	return Ogre::MaterialManager::getSingleton().getByName("BaseWhite");
 }
 
+//////////////////////////////////////////////////////////////////////////
+Ogre::MaterialPtr MaterialUtil::GetGeometry2DMat()
+{	
+	Ogre::MaterialManager::ResourceCreateOrRetrieveResult res = Ogre::MaterialManager::getSingleton().createOrRetrieve("sys/geometry2D_material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	Ogre::MaterialPtr mat = res.first;
+	if (res.second)
+	{
+		mat->setReceiveShadows(false);
+		mat->setCullingMode(Ogre::CULL_NONE);
+		mat->setFog(Ogre::FOG_NONE);
+		mat->setLightingEnabled(false);
+		mat->setDepthCheckEnabled(false);
+		mat->setDepthWriteEnabled(false);
+		mat->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+	}
+	return mat;
+}
+
 
 } // namespace Wme
