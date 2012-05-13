@@ -23,7 +23,7 @@ namespace Wme
 		const WideString& GetFileName() const { return m_FileName; }
 		const Ogre::ColourValue& GetColorKey() const { return m_ColorKey; }
 
-		bool SetTexture(const WideString& fileName, Ogre::ColourValue colorKey);
+		bool SetTexture(const WideString& fileName, Ogre::ColourValue colorKey = Ogre::ColourValue::ZERO);
 		const Ogre::MaterialPtr& GetMaterial() const { return m_Material; }
 
 		bool IsTransparentAt(int posX, int posY);

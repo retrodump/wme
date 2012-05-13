@@ -21,6 +21,8 @@ namespace Wme
 	class Font;
 	class TextElement2D;
 	class RectElement2D;
+	class SpriteTexture;
+	class ResizableElement2D;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -57,6 +59,9 @@ namespace Wme
 		SceneNode2D* m_TestNode;
 		SceneNode2D* m_RectNode;
 		RectElement2D* m_Rect;
+		SpriteTexture* m_ResizableTexture;
+		ResizableElement2D* m_Resizable;
+		SceneNode2D* m_ResizableNode;
 	};
 }
 

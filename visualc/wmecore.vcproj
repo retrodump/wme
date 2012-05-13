@@ -673,6 +673,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\ResizableElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\ResizableImage.cpp"
 				>
 			</File>
@@ -1524,6 +1528,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\RenderModifier.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\ResizableElement2D.h"
 				>
 			</File>
 			<File
