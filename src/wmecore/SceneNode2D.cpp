@@ -415,6 +415,7 @@ RenderBatch2D* SceneNode2D::GetFreeRenderBatch()
 			m_BatchesUsed++;
 			return batch;
 		}
+		counter++;
 	}
 
 	m_BatchesUsed++;

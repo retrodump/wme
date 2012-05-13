@@ -105,7 +105,8 @@ namespace Wme
 		void InitializeRenderBatches(RenderBatchMap& renderBatches);
 		void GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes);
 		void AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches);
-		void RenderStroke(const Stroke* stroke);
+		void RenderStrokes(StrokeList& strokes);
+		void RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset);
 	};
 }
 

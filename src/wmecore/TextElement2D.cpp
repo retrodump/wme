@@ -116,10 +116,7 @@ void TextElement2D::AddGeometry()
 	{
 		m_ParentNode->AddGeometry(batch.second->GetVertices(), batch.second->GetNumCharacters() * 6, m_Font->GetGlyphCache()->GetMaterial(batch.first), Ogre::RenderOperation::OT_TRIANGLE_LIST);
 	}
-	foreach (Stroke* stroke, strokes)
-	{
-		RenderStroke(stroke);
-	}
+	RenderStrokes(strokes);
 
 
 	// cleanup
@@ -265,29 +262,49 @@ void TextElement2D::AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo,
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::RenderStroke(const Stroke* stroke)
+void TextElement2D::RenderStrokes(StrokeList& strokes)
 {
-	Vertex2D verts[4];
+	if (strokes.size() == 0) return;
+
+	Vertex2D* vertBuffer = new Vertex2D[strokes.size() * 6];
+	int vertexOffset = 0;
+
+	foreach (Stroke* stroke, strokes)
+	{
+		RenderStroke(stroke, vertBuffer, vertexOffset);
+	}
+	m_ParentNode->AddGeometry(vertBuffer, strokes.size() * 6, m_StrokeMaterial, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+	delete [] vertBuffer;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset)
+{
+	Vertex2D* verts = &vertBuffer[vertexOffset];
 
 	// top left
-	verts[1].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY());
-
-	// top right
-	verts[3].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY());
+	verts[0].color = m_Color;
+	verts[0].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY());
 
 	// bottom left
-	verts[0].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY() + stroke->GetThickness());
+	verts[1].color = m_Color;
+	verts[1].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY() + stroke->GetThickness());
+
+	// top right
+	verts[2].color = m_Color;
+	verts[2].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY());
 
 	// bottom right
-	verts[2].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY() + stroke->GetThickness());
+	verts[5].color = m_Color;
+	verts[5].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY() + stroke->GetThickness());
 
-	// color
-	for (int i = 0; i < 4; i++)
-	{
-		verts[i].color = m_Color;
-	}
+	// the other triangle
+	verts[3] = verts[2];
+	verts[4] = verts[1];
 
-	m_ParentNode->AddGeometry(verts, 4, m_StrokeMaterial, Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+
+	vertexOffset += 6;
 }
 
 //////////////////////////////////////////////////////////////////////////
