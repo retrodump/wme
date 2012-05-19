@@ -66,6 +66,13 @@ namespace Wme
 		TextElement2D();
 		virtual ~TextElement2D();
 
+		enum DecorationType
+		{
+			DECORATION_NONE,
+			DECORATION_SHADOW,
+			DECORATION_OUTLINE
+		};
+
 		void AddGeometry();
 
 		void SetFont(Font* font);
@@ -76,6 +83,9 @@ namespace Wme
 
 		void SetColor(const Ogre::ColourValue& color);
 		Ogre::ColourValue GetColor() const { return m_Color; }
+
+		void SetDecorationColor(const Ogre::ColourValue& color);
+		Ogre::ColourValue GetDecorationColor() const { return m_DecorationColor; }
 
 		void SetAlignment(const Alignment& alignment);
 		Alignment GetAlignment() const { return m_Alignment; }
@@ -89,24 +99,49 @@ namespace Wme
 		void SetLeadingSpace(int leadingSpace);
 		int GetLeadingSpace() const { return m_LeadingSpace; }
 
+		void SetDecorationType(DecorationType type);
+		DecorationType GetDecorationType() const { return m_DecorationType; }
+
+		void SetDecorationThickness(float thickness);
+		float GetDecorationThickness() const { return m_DecorationThickness; }
+
+
 	private:
+		struct Layer
+		{
+			Layer(float offsetX, float offsetY, bool decoration)
+			{
+				OffsetX = offsetX;
+				OffsetY = offsetY;
+				Decoration = decoration;
+			}
+			float OffsetX;
+			float OffsetY;
+			bool Decoration;
+		};
+
 		Font* m_Font;
 		WideString m_Text;
 		Ogre::ColourValue m_Color;
+		Ogre::ColourValue m_DecorationColor;
 		Alignment m_Alignment;
 		int m_Width;
 		int m_Height;
 		int m_LeadingSpace;
 		Ogre::MaterialPtr m_StrokeMaterial;
+		DecorationType m_DecorationType;
+		float m_DecorationThickness;		
 
 		typedef std::map<int, RenderBatch*> RenderBatchMap;
 		typedef std::list<Stroke*> StrokeList;
+		typedef std::list<Layer> LayerList;
 
 		void InitializeRenderBatches(RenderBatchMap& renderBatches);
-		void GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes);
-		void AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches);
-		void RenderStrokes(StrokeList& strokes);
-		void RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset);
+		void GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes, const Layer& layer);
+		void AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches, const Layer& layer);
+		void RenderStrokes(StrokeList& strokes, const Layer& layer);
+		void RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset, const Layer& layer);
+		void GenerateLayers(LayerList& layers);
 	};
 }
 

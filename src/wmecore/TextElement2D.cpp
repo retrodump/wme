@@ -18,6 +18,10 @@ TextElement2D::TextElement2D()
 {
 	m_Font = NULL;
 	m_Color = Ogre::ColourValue::White;
+	m_DecorationColor = Ogre::ColourValue::Black;
+
+	m_DecorationType = DECORATION_NONE;
+	m_DecorationThickness = 1.0f;
 
 	m_StrokeMaterial = MaterialUtil::GetGeometry2DMat();
 }
@@ -53,6 +57,16 @@ void TextElement2D::SetColor(const Ogre::ColourValue& color)
 	if (color != m_Color)
 	{
 		m_Color = color;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::SetDecorationColor(const Ogre::ColourValue& color)
+{
+	if (color != m_DecorationColor)
+	{
+		m_DecorationColor = color;
 		SetDirty();
 	}
 }
@@ -98,36 +112,65 @@ void TextElement2D::SetLeadingSpace(int leadingSpace)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void TextElement2D::SetDecorationType(DecorationType type)
+{
+	if (type != m_DecorationType)
+	{
+		m_DecorationType = type;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::SetDecorationThickness(float thickness)
+{
+	if (thickness != m_DecorationThickness)
+	{
+		m_DecorationThickness = thickness;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void TextElement2D::AddGeometry()
 {
 	if (!m_Font || m_Text.length() == 0) return;
 
 	m_Font->PrepareGlyphs(m_Text);
 
-	// generate vertices for each character
-	RenderBatchMap renderBatches;
-	StrokeList strokes;
-	InitializeRenderBatches(renderBatches);
-	GenerateRenderBatches(renderBatches, strokes);
+	LayerList layers;
+	GenerateLayers(layers);
+	
 
-
-	// add geometry to scene node
-	foreach (RenderBatchMap::value_type batch, renderBatches)
+	foreach (Layer& layer, layers)
 	{
-		m_ParentNode->AddGeometry(batch.second->GetVertices(), batch.second->GetNumCharacters() * 6, m_Font->GetGlyphCache()->GetMaterial(batch.first), Ogre::RenderOperation::OT_TRIANGLE_LIST);
-	}
-	RenderStrokes(strokes);
+		// generate vertices for each character
+		RenderBatchMap renderBatches;
+		StrokeList strokes;
+		InitializeRenderBatches(renderBatches);
+		GenerateRenderBatches(renderBatches, strokes, layer);
 
 
-	// cleanup
-	foreach (RenderBatchMap::value_type batch, renderBatches)
-	{
-		delete batch.second;
-	}
+		// add geometry to scene node
+		foreach (RenderBatchMap::value_type batch, renderBatches)
+		{
+			m_ParentNode->AddGeometry(batch.second->GetVertices(), batch.second->GetNumCharacters() * 6, m_Font->GetGlyphCache()->GetMaterial(batch.first), Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		}
+		RenderStrokes(strokes, layer);
 
-	foreach (Stroke* stroke, strokes)
-	{
-		delete stroke;
+
+		// cleanup
+		foreach (RenderBatchMap::value_type batch, renderBatches)
+		{
+			delete batch.second;
+		}
+		renderBatches.clear();
+
+		foreach (Stroke* stroke, strokes)
+		{
+			delete stroke;
+		}
+		strokes.clear();
 	}
 }
 
@@ -148,7 +191,7 @@ void TextElement2D::InitializeRenderBatches(RenderBatchMap& renderBatches)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes)
+void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeList& strokes, const Layer& layer)
 {
 	Font::TextLineList lines;
 	m_Font->WrapText(m_Text, m_Width, m_Height, m_LeadingSpace, lines);
@@ -213,7 +256,7 @@ void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeL
 			if (prevChar != L'\0') kerning = m_Font->GetKerning(prevChar, ch);
 			posX += (int)kerning;
 
-			AddCharacter(ch, posX, posY, glyphInfo, renderBatches);
+			AddCharacter(ch, posX, posY, glyphInfo, renderBatches, layer);
 			posX += (int)(glyphInfo->GetAdvanceX());
 			posY += (int)(glyphInfo->GetAdvanceY());
 
@@ -234,7 +277,7 @@ void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeL
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches)
+void TextElement2D::AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo, RenderBatchMap& renderBatches, const Layer& layer)
 {
 	// no glyph graphics?
 	if (glyphInfo->GetWidth() == 0 || glyphInfo->GetHeight() == 0) return;
@@ -248,21 +291,21 @@ void TextElement2D::AddCharacter(wchar_t ch, int x, int y, GlyphInfo* glyphInfo,
 
 	// character bounds
 	float posLeft, posRight, posBottom, posTop;
-	posLeft = (float)x;
-	posRight = (float)(x + glyphInfo->GetWidth());
-	posTop = (float)y;
-	posBottom = (float)(y + glyphInfo->GetHeight());
+	posLeft = (float)x + layer.OffsetX;
+	posRight = (float)(x + glyphInfo->GetWidth()) + layer.OffsetX;
+	posTop = (float)y + layer.OffsetY;
+	posBottom = (float)(y + glyphInfo->GetHeight()) + layer.OffsetY;
 
 	// texture coordinates
 	Ogre::FloatRect textureRect = glyphInfo->GetTextureRect();
 
 	// add character to the render batch
 	RenderBatch* renderBatch = renderBatches[page];
-	renderBatch->AddCharacter(Ogre::Vector2(posLeft, posTop), Ogre::Vector2(posRight, posBottom), textureRect, m_Color);
+	renderBatch->AddCharacter(Ogre::Vector2(posLeft, posTop), Ogre::Vector2(posRight, posBottom), textureRect, layer.Decoration ? m_DecorationColor : m_Color);
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::RenderStrokes(StrokeList& strokes)
+void TextElement2D::RenderStrokes(StrokeList& strokes, const Layer& layer)
 {
 	if (strokes.size() == 0) return;
 
@@ -271,7 +314,7 @@ void TextElement2D::RenderStrokes(StrokeList& strokes)
 
 	foreach (Stroke* stroke, strokes)
 	{
-		RenderStroke(stroke, vertBuffer, vertexOffset);
+		RenderStroke(stroke, vertBuffer, vertexOffset, layer);
 	}
 	m_ParentNode->AddGeometry(vertBuffer, strokes.size() * 6, m_StrokeMaterial, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -279,25 +322,27 @@ void TextElement2D::RenderStrokes(StrokeList& strokes)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void TextElement2D::RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset)
+void TextElement2D::RenderStroke(const Stroke* stroke, Vertex2D* vertBuffer, int& vertexOffset, const Layer& layer)
 {
 	Vertex2D* verts = &vertBuffer[vertexOffset];
 
+	Ogre::ColourValue color = layer.Decoration ? m_DecorationColor : m_Color;
+
 	// top left
-	verts[0].color = m_Color;
-	verts[0].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY());
+	verts[0].color = color;
+	verts[0].pos = Ogre::Vector2(stroke->GetStartX() + layer.OffsetX, stroke->GetPosY() + layer.OffsetY);
 
 	// bottom left
-	verts[1].color = m_Color;
-	verts[1].pos = Ogre::Vector2(stroke->GetStartX(), stroke->GetPosY() + stroke->GetThickness());
+	verts[1].color = color;
+	verts[1].pos = Ogre::Vector2(stroke->GetStartX() + layer.OffsetX, stroke->GetPosY() + stroke->GetThickness() + layer.OffsetY);
 
 	// top right
-	verts[2].color = m_Color;
-	verts[2].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY());
+	verts[2].color = color;
+	verts[2].pos = Ogre::Vector2(stroke->GetEndX() + layer.OffsetX, stroke->GetPosY() + layer.OffsetY);
 
 	// bottom right
-	verts[5].color = m_Color;
-	verts[5].pos = Ogre::Vector2(stroke->GetEndX(), stroke->GetPosY() + stroke->GetThickness());
+	verts[5].color = color;
+	verts[5].pos = Ogre::Vector2(stroke->GetEndX() + layer.OffsetX, stroke->GetPosY() + stroke->GetThickness() + layer.OffsetY);
 
 	// the other triangle
 	verts[3] = verts[2];
@@ -370,6 +415,29 @@ void TextElement2D::RenderBatch::AddCharacter(const Ogre::Vector2& topLeft, cons
 
 
 	m_NumCharacters++;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::GenerateLayers(LayerList& layers)
+{
+	if (m_DecorationType == DECORATION_SHADOW)
+	{
+		layers.push_back(Layer(m_DecorationThickness, m_DecorationThickness, true));
+	}
+	else if (m_DecorationType == DECORATION_OUTLINE)
+	{
+		for (float row = -1.0f; row <= 1.0f; row++)
+		{
+			for (float col = -1.0f; col <= 1.0f; col++)
+			{
+				if (row == 0.0f && col == 0.0f) continue;
+				
+				layers.push_back(Layer(row * m_DecorationThickness, col * m_DecorationThickness, true));
+			}
+		}
+	}
+
+	layers.push_back(Layer(0.0f, 0.0f, false));
 }
 
 
