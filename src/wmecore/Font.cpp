@@ -25,9 +25,6 @@ Font::Font()
 	m_FTFace = NULL;
 	m_FTStream = NULL;
 
-	m_Underline = false;
-	m_Strikethrough = false;
-
 	m_Ascender = m_Descender = m_LineHeight = m_PointSize = 0;
 	m_HorDpi = m_VertDpi = 0;
 	m_UnderlinePosition = m_UnderlineThickness = 0;
@@ -252,14 +249,6 @@ bool Font::LoadFromXml(TiXmlElement* rootNode)
 		{
 			antiAlias = XmlUtil::TextToBool(elem, antiAlias);
 		}
-		else if (elem->ValueStr() == "Underline")
-		{
-			m_Underline = XmlUtil::TextToBool(elem);
-		}
-		else if (elem->ValueStr() == "Strikethrough")
-		{
-			m_Strikethrough = XmlUtil::TextToBool(elem);
-		}
 	}
 
 
@@ -290,12 +279,6 @@ bool Font::SaveToXml(TiXmlElement* rootNode)
 
 	elem = XmlUtil::AddElem("Antialias", rootNode);
 	XmlUtil::SetText(elem, m_AntiAlias);
-
-	elem = XmlUtil::AddElem("Underline", rootNode);
-	XmlUtil::SetText(elem, m_Underline);
-
-	elem = XmlUtil::AddElem("Strikethrough", rootNode);
-	XmlUtil::SetText(elem, m_Strikethrough);
 
 	return true;
 }

@@ -54,12 +54,6 @@ namespace Wme
 		float GetUnderlineThickness() const { return m_UnderlineThickness; }
 		float GetStrikethroughPosition() const { return GetDescender() * 2.0f; }
 
-		bool GetUnderline() const { return m_Underline; }
-		void SetUnderline(bool val) { m_Underline = val; }
-
-		bool GetStrikethrough() const { return m_Strikethrough; }
-		void SetStrikethrough(bool val) { m_Strikethrough = val; }
-
 		virtual bool LoadFromXml(TiXmlElement* rootNode);
 		virtual bool SaveToXml(TiXmlElement* rootNode);
 		virtual Utf8String GetDocRootName() { return "WmeFont"; }

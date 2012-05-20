@@ -20,6 +20,7 @@
 #include "RectElement2D.h"
 #include "SpriteTexture.h"
 #include "ResizableElement2D.h"
+#include "Window.h"
 
 
 namespace Wme
@@ -44,6 +45,7 @@ Scene2DBase::Scene2DBase()
 	m_Resizable = NULL;
 	m_ResizableTexture = NULL;
 	m_ResizableNode = NULL;
+	m_Window1 = m_Window2 = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,7 @@ Scene2DBase::~Scene2DBase()
 	SAFE_DELETE(m_Resizable);
 	SAFE_DELETE(m_ResizableTexture);
 	SAFE_DELETE(m_ResizableNode);
+	SAFE_DELETE(m_Window1);
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 
 	SAFE_DELETE(m_Canvas);
@@ -105,6 +108,9 @@ void Scene2DBase::Create()
 	m_Text->SetWidth(500);
 	m_Text->SetHeight(500);
 	m_Text->SetLeadingSpace(20);
+	m_Text->SetUnderline(true);
+	m_Text->SetDecorationType(TextElement2D::DECORATION_OUTLINE);
+	m_Text->SetDecorationColor(Ogre::ColourValue::Red);
 
 	m_TestNode = m_Canvas->GetRootNode()->CreateChildNode();
 	m_TestNode->AttachElement(m_Text);
@@ -145,6 +151,21 @@ void Scene2DBase::Create()
 	m_ResizableNode = m_Canvas->GetRootNode()->CreateChildNode();
 	m_ResizableNode->AttachElement(m_Resizable);
 	m_ResizableNode->SetPosition(400, 30);
+
+	m_Window1 = new Window(m_Canvas);
+	m_Window1->SetClipChildren(true);
+	m_Window1->SetPosX(60);
+	m_Window1->SetPosY(440);
+	m_Window1->SetWidth(200);
+	m_Window1->SetHeight(200);
+
+	m_Window2 = new Window(m_Canvas);
+	m_Window2->SetPosX(150);
+	m_Window2->SetPosY(150);
+	m_Window2->SetWidth(100);
+	m_Window2->SetHeight(100);
+
+	m_Window1->AddChild(m_Window2);
 
 
 	/*

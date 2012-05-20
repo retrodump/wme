@@ -28,6 +28,8 @@ SceneNode2D::SceneNode2D(Canvas2D* canvas)
 	m_Rotation = m_DerivedRotation = 0;
 	m_Scale = m_DerivedScale = Ogre::Vector2::UNIT_SCALE;
 
+	m_Visible = true;
+
 	m_TransformDirty = true;
 	m_GeometryDirty = true;
 
@@ -44,6 +46,7 @@ SceneNode2D::SceneNode2D(Canvas2D* canvas)
 SceneNode2D::~SceneNode2D()
 {
 	DetachElement();
+	SetParentNode(NULL);
 
 	foreach (RenderBatch2D* batch, m_RenderBatches)
 	{
@@ -89,13 +92,19 @@ void SceneNode2D::RemoveAndDestroyChild(SceneNode2D* child, bool destroyElements
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::RemoveAndDestroyAllChildren(bool destroyElements)
 {
-	foreach (SceneNode2D* child, m_Children)
+	while (!m_Children.empty())
 	{
-		child->RemoveAndDestroyAllChildren(destroyElements);
+		SceneNode2D* child = m_Children.front();
+
 		if (destroyElements) delete child->GetAttachedElement();
 		delete child;
 	}
-	m_Children.clear();
+
+	if (destroyElements)
+	{
+		SAFE_DELETE(m_AttachedElement);
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -116,11 +125,11 @@ void SceneNode2D::SetParentNode(SceneNode2D* newParent)
 		m_ParentNode->m_Children.remove(this);
 	}
 
-	if (newParent)
+	m_ParentNode = newParent;
+	if (m_ParentNode)
 	{
-		newParent->m_Children.push_back(this);
-		newParent->m_SortNeeded = true;
-		m_ParentNode = newParent;
+		m_ParentNode->m_Children.push_back(this);
+		m_ParentNode->m_SortNeeded = true;		
 		SetTransformDirty();
 	}
 }
@@ -446,6 +455,8 @@ Ogre::Vector2 SceneNode2D::ScaleSceneToLocal(const Ogre::Vector2& scale) const
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::Render(Ogre::RenderQueue* renderQueue, byte queueId, word& priority)
 {
+	if (!m_Visible) return;
+
 	SortChildren();
 	UpdateTransform();
 	UpdateGeometry();
@@ -487,6 +498,8 @@ void SceneNode2D::RenderSelf(Ogre::RenderQueue* renderQueue, byte queueId, word&
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::VisitRenderables(Ogre::Renderable::Visitor* visitor)
 {
+	if (!m_Visible) return;
+
 	foreach (RenderBatch2D* batch, m_RenderBatches)
 	{
 		visitor->visit(batch, 0, false);
@@ -501,6 +514,8 @@ void SceneNode2D::VisitRenderables(Ogre::Renderable::Visitor* visitor)
 //////////////////////////////////////////////////////////////////////////
 void SceneNode2D::GetElementsAt(float x, float y, const Rect& clippingRect, Element2DList& elements)
 {
+	if (!m_Visible) return;
+
 	bool testedSelf = false;
 	int prevZOrder = -1;
 

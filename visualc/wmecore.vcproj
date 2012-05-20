@@ -873,6 +873,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiObjectBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectFactory.cpp"
 				>
 			</File>
@@ -926,6 +930,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Win32WindowExt.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Window.cpp"
 				>
 			</File>
 			<File
@@ -1739,6 +1747,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiObjectBase.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectFactory.h"
 				>
 			</File>
@@ -1796,6 +1808,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Win32WindowExt.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\Window.h"
 				>
 			</File>
 			<File

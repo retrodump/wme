@@ -12,13 +12,15 @@
 namespace Wme
 {
 
-
+// TODO: Improve layer batching (all decoration layers can be rendered in a single batch)
 //////////////////////////////////////////////////////////////////////////
 TextElement2D::TextElement2D()
 {
 	m_Font = NULL;
 	m_Color = Ogre::ColourValue::White;
 	m_DecorationColor = Ogre::ColourValue::Black;
+
+	m_Underline = m_Strikethrough = false;
 
 	m_DecorationType = DECORATION_NONE;
 	m_DecorationThickness = 1.0f;
@@ -127,6 +129,26 @@ void TextElement2D::SetDecorationThickness(float thickness)
 	if (thickness != m_DecorationThickness)
 	{
 		m_DecorationThickness = thickness;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::SetUnderline(bool underline)
+{
+	if (underline != m_Underline)
+	{
+		m_Underline = underline;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void TextElement2D::SetStrikethrough(bool strikethrough)
+{
+	if (strikethrough != m_Strikethrough)
+	{
+		m_Strikethrough = strikethrough;
 		SetDirty();
 	}
 }
@@ -264,8 +286,8 @@ void TextElement2D::GenerateRenderBatches(RenderBatchMap& renderBatches, StrokeL
 		}
 
 		// handle underline / strikethrough
-		if (m_Font->GetUnderline()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetUnderlinePosition(), m_Font->GetUnderlineThickness()));
-		if (m_Font->GetStrikethrough()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetStrikethroughPosition(), m_Font->GetUnderlineThickness()));
+		if (GetUnderline()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetUnderlinePosition(), m_Font->GetUnderlineThickness()));
+		if (GetStrikethrough()) strokes.push_back(new Stroke((float)lineStart, (float)posX, (float)posY - m_Font->GetStrikethroughPosition(), m_Font->GetUnderlineThickness()));
 
 		posY += (int)m_Font->GetLineHeight();		
 	}

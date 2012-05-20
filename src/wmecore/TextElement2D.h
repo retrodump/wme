@@ -105,6 +105,12 @@ namespace Wme
 		void SetDecorationThickness(float thickness);
 		float GetDecorationThickness() const { return m_DecorationThickness; }
 
+		void SetUnderline(bool underline);
+		bool GetUnderline() const { return m_Underline; }
+
+		void SetStrikethrough(bool strikethrough);
+		bool GetStrikethrough() const { return m_Strikethrough; }
+
 
 	private:
 		struct Layer
@@ -131,6 +137,8 @@ namespace Wme
 		Ogre::MaterialPtr m_StrokeMaterial;
 		DecorationType m_DecorationType;
 		float m_DecorationThickness;		
+		bool m_Underline;
+		bool m_Strikethrough;
 
 		typedef std::map<int, RenderBatch*> RenderBatchMap;
 		typedef std::list<Stroke*> StrokeList;

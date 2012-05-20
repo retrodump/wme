@@ -30,6 +30,9 @@ namespace Wme
 		Canvas2D* GetCanvas() const { return m_Canvas; }
 		Viewport* GetViewport() const;
 
+		bool IsVisible() const { return m_Visible; }
+		void SetVisible(bool visible) { m_Visible = visible; }
+
 		void AddChild(SceneNode2D* child, int zOrder = 0);
 		void RemoveChild(SceneNode2D* child);
 
@@ -105,6 +108,8 @@ namespace Wme
 
 		mutable NodeList m_Children;
 		SceneNode2D* m_ParentNode;
+
+		bool m_Visible;
 		
 		int m_ZOrder;
 		Ogre::Vector2 m_Position;

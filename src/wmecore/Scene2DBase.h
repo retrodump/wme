@@ -23,6 +23,7 @@ namespace Wme
 	class RectElement2D;
 	class SpriteTexture;
 	class ResizableElement2D;
+	class Window;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -62,6 +63,9 @@ namespace Wme
 		SpriteTexture* m_ResizableTexture;
 		ResizableElement2D* m_Resizable;
 		SceneNode2D* m_ResizableNode;
+
+		Window* m_Window1;
+		Window* m_Window2;
 	};
 }
 
