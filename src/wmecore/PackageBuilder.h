@@ -24,8 +24,8 @@ namespace Wme
 
 
 	private:
-		void ProcessFiles(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream);
-		void ProcessSingleFile(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream);
+		void ProcessFiles(const path& currentPath, const WideString& basePath, std::ofstream& packageStream);
+		void ProcessSingleFile(const path& currentPath, const WideString& basePath, std::ofstream& packageStream);
 
 		void DeleteEntries();
 

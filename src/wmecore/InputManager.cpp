@@ -10,9 +10,9 @@
 
 #if defined(_MSC_VER)
 #	ifdef _DEBUG
-#		pragma comment (lib, "OIS_static_d.lib")
+#		pragma comment (lib, "OIS_d.lib")
 #	else
-#		pragma comment (lib, "OIS_static.lib")
+#		pragma comment (lib, "OIS.lib")
 #	endif
 #endif
 

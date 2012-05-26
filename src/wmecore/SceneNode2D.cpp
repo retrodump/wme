@@ -386,7 +386,7 @@ void SceneNode2D::UpdateGeometry()
 	m_BoundingRect.Clear();
 	m_BatchesUsed = 0;
 
-	// reguest geometry from attached object
+	// request geometry from attached object
 	if (m_AttachedElement) m_AttachedElement->AddGeometry();
 
 	// delete unneeded render batches

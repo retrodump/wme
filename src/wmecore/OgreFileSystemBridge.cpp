@@ -64,7 +64,7 @@ Ogre::StringVectorPtr WmeArchive::find(const Ogre::String& pattern, bool recursi
 }
 
 //////////////////////////////////////////////////////////////////////////
-Ogre::FileInfoListPtr WmeArchive::findFileInfo(const Ogre::String& pattern, bool recursive, bool dirs)
+Ogre::FileInfoListPtr WmeArchive::findFileInfo(const Ogre::String& pattern, bool recursive, bool dirs) const
 {
 	return Ogre::FileInfoListPtr(new Ogre::FileInfoList());
 }

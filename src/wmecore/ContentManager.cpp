@@ -107,7 +107,7 @@ void ContentManager::TestData(View* testView)
 
 	m_TestScene = AddFullScene();
 	CameraEntity* cam = static_cast<CameraEntity*>(m_TestScene->GetEntityByName(L"Camera", L"Camera01"));
-	/*
+/*
 	vp = layout->AddViewport(L"Geometry", cam->GetCamera(), 0, 0, 1, 1);
 	vp->SetDimensions(800, 600, 800, 600);	
 	vp->SetAutoScale(autoScale);
@@ -116,7 +116,7 @@ void ContentManager::TestData(View* testView)
 	controller->Create(vp);
 
 	vp->SetCameraController(controller);
-	*/
+*/
 
 
 

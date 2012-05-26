@@ -107,7 +107,7 @@ bool PackageBuilder::ProcessDirectory(const WideString& packageDir, const WideSt
 
 
 	// files
-	ProcessFiles(wpath(inputDir), inputDir, stream);
+	ProcessFiles(path(inputDir), inputDir, stream);
 
 
 	// remember directory position
@@ -151,39 +151,38 @@ bool PackageBuilder::ProcessDirectory(const WideString& packageDir, const WideSt
 }
 
 //////////////////////////////////////////////////////////////////////////
-void PackageBuilder::ProcessFiles(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream)
+void PackageBuilder::ProcessFiles(const path& currentPath, const WideString& basePath, std::ofstream& packageStream)
 {
-	wdirectory_iterator endIter;	// DEPRECATED - pouzit neco jinyho
-	for (wdirectory_iterator it(currentPath); it != endIter; it++)
+	directory_iterator endIter;
+	for (directory_iterator dit = directory_iterator(currentPath); dit != endIter; ++dit)
 	{
-		if (is_directory(it->status()))
+		directory_entry dirEntry = *dit;
+
+		if (is_directory(dirEntry))
 		{
-			ProcessFiles(it->path(), basePath, packageStream);
+			ProcessFiles(dirEntry.path(), basePath, packageStream);
 		}
 		else
 		{
-			ProcessSingleFile(it->path(), basePath, packageStream);
+			ProcessSingleFile(dirEntry.path(), basePath, packageStream);
 		}
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
-void PackageBuilder::ProcessSingleFile(const wpath& currentPath, const WideString& basePath, std::ofstream& packageStream)
+void PackageBuilder::ProcessSingleFile(const path& currentPath, const WideString& basePath, std::ofstream& packageStream)
 {
-	WideString fullPath = currentPath.string();	// neexistujici operace prirazeni
+	WideString fullPath = currentPath.c_str();
 
-
-	FilterList::const_iterator it;
-
-	for (it = m_Filters.begin(); it != m_Filters.end(); it++)
+	foreach (PackageBuilderFilter* filter, m_Filters)
 	{
-		if ((*it)->MatchesFile(fullPath))
+		if (filter->MatchesFile(fullPath))
 		{
 			PackageFilterInfo info;
 			memset(&info, 0, sizeof(PackageFilterInfo));
 
 			info.OrigFileName = fullPath;
-			if (!(*it)->ProcessFile(info)) return;
+			if (!filter->ProcessFile(info)) return;
 
 			if (info.Processing == PackageFilterInfo::FILTER_SKIP) return;
 

@@ -276,19 +276,21 @@ void FileManager::ScanPackages()
 
 	Game::GetInstance()->Log(L"Scanning packages...");
 
-	for (it = m_PackageSearchPaths.begin(); it != m_PackageSearchPaths.end(); it++)
+	foreach (WideString pathName, m_PackageSearchPaths)
 	{
-		wdirectory_iterator endIter;	// DEPRECATED - rewrite using something else
-		for (wdirectory_iterator dit((*it)); dit != endIter; dit++)
+		path searchPath(pathName);
+		directory_iterator endIter;
+		for (directory_iterator dit = directory_iterator(searchPath); dit != endIter; ++dit)
 		{
-			if (!is_directory(dit->status()))
+			directory_entry dirEntry = *dit;
+			
+			if (!is_directory(dirEntry))
 			{
-				WideString fileName = dit->path().filename();
+				WideString fileName = dirEntry.path().filename().c_str();
 				if (!PathUtil::MatchesMask(fileName, packageMask)) continue;
 
-
 				Package* package = new Package();
-				if (package->Load(dit->path().string()))
+				if (package->Load(dirEntry.path().c_str()))
 				{
 					m_Packages.push_back(package);
 				}
