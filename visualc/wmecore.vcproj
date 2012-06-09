@@ -865,6 +865,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiAnchor.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiButton.cpp"
 				>
 			</File>
@@ -1736,6 +1740,10 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\TriangleElement3D.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiAnchor.h"
 				>
 			</File>
 			<File

@@ -167,6 +167,14 @@ void Scene2DBase::Create()
 
 	m_Window1->AddChild(m_Window2);
 
+	m_Window2->SetAnchor(UiObjectBase::ANCHOR_LEFT, m_Window1, 10);
+	m_Window2->SetAnchor(UiObjectBase::ANCHOR_RIGHT, m_Window1, 10);
+	m_Window2->SetAnchor(UiObjectBase::ANCHOR_TOP, m_Window1, 10);
+	m_Window2->SetAnchor(UiObjectBase::ANCHOR_BOTTOM, m_Window1, 10);
+
+	m_Window1->SetWidth(300);
+	m_Window1->SetHeight(300);
+
 
 	/*
 	m_Canvas->GetRootNode()->SetRotation(45);

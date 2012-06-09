@@ -12,10 +12,32 @@ namespace Wme
 {
 	class Canvas2D;
 	class SceneNode2D;
+	class UiAnchor;
 
 	class WmeDllExport UiObjectBase : public InteractiveObject
 	{
 	public:
+
+		class WmeDllExport Listener 
+		{
+		public:
+			Listener() {}
+			virtual ~Listener() {}
+
+			virtual void OnGeometryChanged() {}
+			virtual void OnDestroy() {}
+		};
+
+		enum AnchorType
+		{
+			ANCHOR_NONE,
+			ANCHOR_LEFT,
+			ANCHOR_RIGHT,
+			ANCHOR_TOP,
+			ANCHOR_BOTTOM
+		};
+
+
 		UiObjectBase(Canvas2D* canvas);
 		virtual ~UiObjectBase();
 
@@ -43,6 +65,18 @@ namespace Wme
 		float GetHeight() const { return m_Height; }
 		void SetHeight(float height);
 
+		float GetLeft() const;
+		void SetLeft(float left);
+
+		float GetRight() const;
+		void SetRight(float right);
+
+		float GetTop() const;
+		void SetTop(float top);
+
+		float GetBottom() const;
+		void SetBottom(float bottom);
+
 		bool IsVisible() const;
 		void SetVisible(bool visible);
 
@@ -59,6 +93,16 @@ namespace Wme
 		UiObjectBase* GetChild(int index);
 		UiObjectBase* GetChild(const WideString& name);
 
+		void AddListener(Listener* listener);
+		void RemoveListener(Listener* listener);
+
+		bool HasChild(UiObjectBase* object) const;
+		bool IsSibling(UiObjectBase* object) const;
+		bool IsParent(UiObjectBase* object) const;
+
+		bool SetAnchor(AnchorType type, UiObjectBase* target, float margin = 0.0f);
+		bool GetAnchor(AnchorType type, UiObjectBase*& target, float& margin) const;
+		bool HasAnchor(AnchorType type) const;
 
 	protected:
 		Canvas2D* m_Canvas;
@@ -81,6 +125,16 @@ namespace Wme
 
 		virtual void OnSizeChanged() {}
 		virtual void OnEnabledChanged() {}
+
+		void InvokeGeometryChanged() const;
+
+		typedef std::vector<Listener*> ListenerList;
+		ListenerList m_Listeners;
+
+		UiAnchor* m_LeftAnchor;
+		UiAnchor* m_RightAnchor;
+		UiAnchor* m_TopAnchor;
+		UiAnchor* m_BottomAnchor;
 	};
 }
 

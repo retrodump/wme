@@ -5,6 +5,7 @@
 #include "UiObjectBase.h"
 #include "Canvas2D.h"
 #include "SceneNode2D.h"
+#include "UiAnchor.h"
 
 
 namespace Wme
@@ -21,12 +22,21 @@ UiObjectBase::UiObjectBase(Canvas2D* canvas)
 	m_ClipChildren = false;
 	m_Width = m_Height = 0.0f;
 
+	m_LeftAnchor = m_RightAnchor = m_TopAnchor = m_BottomAnchor = NULL;
+
 	m_Parent = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
 UiObjectBase::~UiObjectBase()
 {
+	foreach (Listener* listener, m_Listeners) listener->OnDestroy();
+
+	SAFE_DELETE(m_LeftAnchor);
+	SAFE_DELETE(m_RightAnchor);
+	SAFE_DELETE(m_TopAnchor);
+	SAFE_DELETE(m_BottomAnchor);
+
 	foreach (UiObjectBase* child, m_Children)
 	{
 		SAFE_DELETE(child);
@@ -82,6 +92,7 @@ float UiObjectBase::GetPosX() const
 void UiObjectBase::SetPosX(float posX)
 {
 	m_SceneNode->SetPosition(posX, GetPosY());
+	InvokeGeometryChanged();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -94,6 +105,7 @@ float UiObjectBase::GetPosY() const
 void UiObjectBase::SetPosY(float posY)
 {
 	m_SceneNode->SetPosition(GetPosX(), posY);
+	InvokeGeometryChanged();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -104,6 +116,7 @@ void UiObjectBase::SetWidth(float width)
 		m_Width = width;
 		OnSizeChanged();
 		UpdateClippingRect();
+		InvokeGeometryChanged();
 	}
 }
 
@@ -115,6 +128,75 @@ void UiObjectBase::SetHeight(float height)
 		m_Height = height;
 		OnSizeChanged();
 		UpdateClippingRect();
+		InvokeGeometryChanged();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetLeft() const
+{
+	return GetPosX();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetLeft(float left)
+{
+	if (HasAnchor(ANCHOR_RIGHT))
+		SetWidth(GetWidth() + GetPosX() - left);
+
+	SetPosX(left);
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetRight() const
+{
+	return GetPosX() + GetWidth();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetRight(float right)
+{
+	if (HasAnchor(ANCHOR_LEFT))
+	{
+		SetWidth(GetWidth() + right - GetRight());
+	}
+	else
+	{
+		SetPosX(right - GetWidth());
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetTop() const
+{
+	return GetPosY();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetTop(float top)
+{
+	if (HasAnchor(ANCHOR_BOTTOM))
+		SetHeight(GetHeight() + GetPosY() - top);
+
+	SetPosY(top);
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetBottom() const
+{
+	return GetPosY() + GetHeight();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetBottom(float bottom)
+{
+	if (HasAnchor(ANCHOR_TOP))
+	{
+		SetHeight(GetHeight() + bottom - GetBottom());
+	}
+	else
+	{
+		SetPosY(bottom - GetHeight());
 	}
 }
 
@@ -243,6 +325,141 @@ void UiObjectBase::UpdateClippingRect()
 	{
 		m_ChildrenNode->SetClippingRect(Rect::EMPTY_RECT);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::InvokeGeometryChanged() const
+{
+	foreach (Listener* listener, m_Listeners) listener->OnGeometryChanged();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::AddListener(Listener* listener)
+{
+	if (std::find(m_Listeners.begin(), m_Listeners.end(), listener) == m_Listeners.end())
+		m_Listeners.push_back(listener);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::RemoveListener(Listener* listener)
+{
+	ListenerList::iterator it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
+	if (it != m_Listeners.end()) m_Listeners.erase(it);
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::HasChild(UiObjectBase* object) const
+{
+	if (!object) return false;
+	return std::find(m_Children.begin(), m_Children.end(), object) != m_Children.end();
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::IsSibling(UiObjectBase* object) const
+{
+	if (!object) return false;
+	return object->GetParent() == m_Parent;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::IsParent(UiObjectBase* object) const
+{
+	return object != NULL && object == m_Parent;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::SetAnchor(AnchorType type, UiObjectBase* target, float margin)
+{
+	// TODO checks
+	switch (type)
+	{
+	case ANCHOR_LEFT:
+		SAFE_DELETE(m_LeftAnchor);
+		if (target) m_LeftAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+	
+	case ANCHOR_RIGHT:
+		SAFE_DELETE(m_RightAnchor);
+		if (target) m_RightAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+	
+	case ANCHOR_TOP:
+		SAFE_DELETE(m_TopAnchor);
+		if (target) m_TopAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+	
+	case ANCHOR_BOTTOM:
+		SAFE_DELETE(m_BottomAnchor);
+		if (target) m_BottomAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+	}
+	
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::GetAnchor(AnchorType type, UiObjectBase*& target, float& margin) const
+{
+	UiAnchor* anchor = NULL;
+
+	switch (type)
+	{
+	case ANCHOR_LEFT:
+		if (m_LeftAnchor) anchor = m_LeftAnchor;
+		break;
+
+	case ANCHOR_RIGHT:
+		if (m_RightAnchor) anchor = m_RightAnchor;
+		break;
+
+	case ANCHOR_TOP:
+		if (m_TopAnchor) anchor = m_TopAnchor;
+		break;
+
+	case ANCHOR_BOTTOM:
+		if (m_BottomAnchor) anchor = m_BottomAnchor;
+		break;
+	}
+
+	if (anchor && anchor->GetType() != ANCHOR_NONE)
+	{
+		target = anchor->GetTarget();
+		margin = anchor->GetMargin();
+		return true;
+	}
+	else
+	{
+		target = NULL;
+		margin = 0.0f;
+		return false;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::HasAnchor(AnchorType type) const
+{
+	UiAnchor* anchor = NULL;
+
+	switch (type)
+	{
+	case ANCHOR_LEFT:
+		if (m_LeftAnchor) anchor = m_LeftAnchor;
+		break;
+
+	case ANCHOR_RIGHT:
+		if (m_RightAnchor) anchor = m_RightAnchor;
+		break;
+
+	case ANCHOR_TOP:
+		if (m_TopAnchor) anchor = m_TopAnchor;
+		break;
+
+	case ANCHOR_BOTTOM:
+		if (m_BottomAnchor) anchor = m_BottomAnchor;
+		break;
+	}
+
+	return (anchor && anchor->GetType() != ANCHOR_NONE);
 }
 
 
