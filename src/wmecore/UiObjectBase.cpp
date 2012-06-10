@@ -22,7 +22,7 @@ UiObjectBase::UiObjectBase(Canvas2D* canvas)
 	m_ClipChildren = false;
 	m_Width = m_Height = 0.0f;
 
-	m_LeftAnchor = m_RightAnchor = m_TopAnchor = m_BottomAnchor = NULL;
+	m_LeftAnchor = m_RightAnchor = m_TopAnchor = m_BottomAnchor = m_VerticalCenterAnchor = m_HorizontalCenterAnchor = NULL;
 
 	m_Parent = NULL;
 }
@@ -36,6 +36,8 @@ UiObjectBase::~UiObjectBase()
 	SAFE_DELETE(m_RightAnchor);
 	SAFE_DELETE(m_TopAnchor);
 	SAFE_DELETE(m_BottomAnchor);
+	SAFE_DELETE(m_VerticalCenterAnchor);
+	SAFE_DELETE(m_HorizontalCenterAnchor);
 
 	foreach (UiObjectBase* child, m_Children)
 	{
@@ -198,6 +200,30 @@ void UiObjectBase::SetBottom(float bottom)
 	{
 		SetPosY(bottom - GetHeight());
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetVerticalCenter() const
+{
+	return GetPosY() + GetHeight() / 2.0f;	
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetVerticalCenter(float verticalCenter)
+{
+	SetPosY(verticalCenter - GetHeight() / 2.0f);
+}
+
+//////////////////////////////////////////////////////////////////////////
+float UiObjectBase::GetHorizontalCenter() const
+{
+	return GetPosX() + GetWidth() / 2.0f;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetHorizontalCenter(float horizontalCenter)
+{
+	SetPosX(horizontalCenter - GetWidth() / 2.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -375,22 +401,40 @@ bool UiObjectBase::SetAnchor(AnchorType type, UiObjectBase* target, float margin
 	{
 	case ANCHOR_LEFT:
 		SAFE_DELETE(m_LeftAnchor);
+		SAFE_DELETE(m_HorizontalCenterAnchor);
 		if (target) m_LeftAnchor = new UiAnchor(this, target, type, margin);
 		return true;
 	
 	case ANCHOR_RIGHT:
 		SAFE_DELETE(m_RightAnchor);
+		SAFE_DELETE(m_HorizontalCenterAnchor);
 		if (target) m_RightAnchor = new UiAnchor(this, target, type, margin);
 		return true;
 	
 	case ANCHOR_TOP:
 		SAFE_DELETE(m_TopAnchor);
+		SAFE_DELETE(m_VerticalCenterAnchor);
 		if (target) m_TopAnchor = new UiAnchor(this, target, type, margin);
 		return true;
 	
 	case ANCHOR_BOTTOM:
 		SAFE_DELETE(m_BottomAnchor);
+		SAFE_DELETE(m_VerticalCenterAnchor);
 		if (target) m_BottomAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+
+	case ANCHOR_VERTICAL_CENTER:
+		SAFE_DELETE(m_TopAnchor);
+		SAFE_DELETE(m_BottomAnchor);
+		SAFE_DELETE(m_VerticalCenterAnchor);
+		if (target) m_VerticalCenterAnchor = new UiAnchor(this, target, type, margin);
+		return true;
+
+	case ANCHOR_HORIZONTAL_CENTER:
+		SAFE_DELETE(m_LeftAnchor);
+		SAFE_DELETE(m_RightAnchor);
+		SAFE_DELETE(m_HorizontalCenterAnchor);
+		if (target) m_HorizontalCenterAnchor = new UiAnchor(this, target, type, margin);
 		return true;
 	}
 	
@@ -418,6 +462,14 @@ bool UiObjectBase::GetAnchor(AnchorType type, UiObjectBase*& target, float& marg
 
 	case ANCHOR_BOTTOM:
 		if (m_BottomAnchor) anchor = m_BottomAnchor;
+		break;
+
+	case ANCHOR_VERTICAL_CENTER:
+		if (m_VerticalCenterAnchor) anchor = m_VerticalCenterAnchor;
+		break;
+
+	case ANCHOR_HORIZONTAL_CENTER:
+		if (m_HorizontalCenterAnchor) anchor = m_HorizontalCenterAnchor;
 		break;
 	}
 
@@ -456,6 +508,14 @@ bool UiObjectBase::HasAnchor(AnchorType type) const
 
 	case ANCHOR_BOTTOM:
 		if (m_BottomAnchor) anchor = m_BottomAnchor;
+		break;
+
+	case ANCHOR_VERTICAL_CENTER:
+		if (m_VerticalCenterAnchor) anchor = m_VerticalCenterAnchor;
+		break;
+
+	case ANCHOR_HORIZONTAL_CENTER:
+		if (m_HorizontalCenterAnchor) anchor = m_HorizontalCenterAnchor;
 		break;
 	}
 

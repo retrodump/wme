@@ -34,7 +34,9 @@ namespace Wme
 			ANCHOR_LEFT,
 			ANCHOR_RIGHT,
 			ANCHOR_TOP,
-			ANCHOR_BOTTOM
+			ANCHOR_BOTTOM,
+			ANCHOR_VERTICAL_CENTER,
+			ANCHOR_HORIZONTAL_CENTER
 		};
 
 
@@ -76,6 +78,12 @@ namespace Wme
 
 		float GetBottom() const;
 		void SetBottom(float bottom);
+
+		float GetVerticalCenter() const;
+		void SetVerticalCenter(float verticalCenter);
+
+		float GetHorizontalCenter() const;
+		void SetHorizontalCenter(float horizontalCenter);
 
 		bool IsVisible() const;
 		void SetVisible(bool visible);
@@ -135,6 +143,8 @@ namespace Wme
 		UiAnchor* m_RightAnchor;
 		UiAnchor* m_TopAnchor;
 		UiAnchor* m_BottomAnchor;
+		UiAnchor* m_VerticalCenterAnchor;
+		UiAnchor* m_HorizontalCenterAnchor;
 	};
 }
 

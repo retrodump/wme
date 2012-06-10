@@ -70,6 +70,12 @@ void UiAnchor::UpdateFromSibling()
 	case UiObjectBase::ANCHOR_BOTTOM:
 		m_Owner->SetBottom(m_Target->GetTop() - m_Margin);
 		break;
+	case UiObjectBase::ANCHOR_VERTICAL_CENTER:
+		m_Owner->SetVerticalCenter(m_Target->GetVerticalCenter() + m_Margin);
+		break;
+	case UiObjectBase::ANCHOR_HORIZONTAL_CENTER:
+		m_Owner->SetHorizontalCenter(m_Target->GetHorizontalCenter() + m_Margin);
+		break;
 	}
 }
 
@@ -89,6 +95,12 @@ void UiAnchor::UpdateFromParent()
 		break;
 	case UiObjectBase::ANCHOR_BOTTOM:
 		m_Owner->SetBottom(m_Target->GetHeight() - m_Margin);
+		break;
+	case UiObjectBase::ANCHOR_VERTICAL_CENTER:
+		m_Owner->SetVerticalCenter(m_Target->GetHeight() / 2.0f + m_Margin);
+		break;
+	case UiObjectBase::ANCHOR_HORIZONTAL_CENTER:
+		m_Owner->SetHorizontalCenter(m_Target->GetWidth() / 2.0f + m_Margin);
 		break;
 	}
 }
