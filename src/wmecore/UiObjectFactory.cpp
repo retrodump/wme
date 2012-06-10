@@ -3,9 +3,9 @@
 
 #include "Wme.h"
 #include "UiObjectFactory.h"
-#include "UiObject.h"
-#include "UiWindow.h"
-#include "UiButton.h"
+#include "UiObjectOld.h"
+#include "UiWindowOld.h"
+#include "UiButtonOld.h"
 
 
 namespace Wme
@@ -15,8 +15,8 @@ namespace Wme
 //////////////////////////////////////////////////////////////////////////
 UiObjectFactory::UiObjectFactory()
 {
-	Register("WmeWindow", UiWindow::CreateInstance);
-	Register("WmeButton", UiButton::CreateInstance);
+	Register("WmeWindow", UiWindowOld::CreateInstance);
+	Register("WmeButton", UiButtonOld::CreateInstance);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ UiObjectFactory* UiObjectFactory::GetInstance()
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObject* UiObjectFactory::CreateInstance(GuiStage* parentStage, const Utf8String& type)
+UiObjectOld* UiObjectFactory::CreateInstance(GuiStage* parentStage, const Utf8String& type)
 {
 	ActivatorMap::iterator it = m_Activators.find(type);
 	if (it == m_Activators.end()) return NULL;
@@ -40,7 +40,7 @@ UiObject* UiObjectFactory::CreateInstance(GuiStage* parentStage, const Utf8Strin
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObjectFactory::Register(const Utf8String& objectId, UiObject::UiObjectActivator activator)
+void UiObjectFactory::Register(const Utf8String& objectId, UiObjectOld::UiObjectActivator activator)
 {
 	m_Activators[objectId] = activator;
 }

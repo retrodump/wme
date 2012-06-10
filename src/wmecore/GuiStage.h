@@ -20,7 +20,7 @@ namespace Wme
 	class Sprite;
 	class Region;
 	class Camera;
-	class UiWindow;
+	class UiWindowOld;
 	class Font;
 
 	class WmeDllExport GuiStage : public Stage

@@ -2,11 +2,11 @@
 // For conditions of distribution and use, see copyright notice in license.txt
 
 #include "Wme.h"
-#include "UiWindow.h"
-#include "UiObjectStyle.h"
+#include "UiWindowOld.h"
+#include "UiObjectStyleOld.h"
 #include "Viewport.h"
 #include "ActiveSpot.h"
-#include "ResizableImage.h"
+#include "ResizableImageOld.h"
 #include "Sprite.h"
 #include "ViewportLayout.h"
 #include "View.h"
@@ -23,7 +23,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-UiWindow::UiWindow(GuiStage* parentStage) : UiObject(parentStage)
+UiWindowOld::UiWindowOld(GuiStage* parentStage) : UiObjectOld(parentStage)
 {
 	m_NormalStyle = NULL;
 	m_DisabledStyle = NULL;
@@ -40,7 +40,7 @@ UiWindow::UiWindow(GuiStage* parentStage) : UiObject(parentStage)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiWindow::~UiWindow()
+UiWindowOld::~UiWindowOld()
 {
 	SAFE_DELETE(m_NormalStyle);
 	SAFE_DELETE(m_DisabledStyle);
@@ -51,27 +51,27 @@ UiWindow::~UiWindow()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiWindow::Create()
+void UiWindowOld::Create()
 {
-	m_NormalStyle = new UiObjectStyle(this);
-	m_DisabledStyle = new UiObjectStyle(this);
-	m_InactiveStyle = new UiObjectStyle(this);
+	m_NormalStyle = new UiObjectStyleOld(this);
+	m_DisabledStyle = new UiObjectStyleOld(this);
+	m_InactiveStyle = new UiObjectStyleOld(this);
 
 	m_Clipper = new RenderModifier;
 	m_UnClipper = new RenderModifier;
 
-	UiObject::Create();
+	UiObjectOld::Create();
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiWindow::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
+void UiWindowOld::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
 {
 	if (!m_Visible) return;
 
 	Rect windowRect = GetAbsoluteRect();
 
 	Sprite* sprite = GetSprite();
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 
 	// start clipping
 	if (m_ClipContent)
@@ -100,7 +100,7 @@ void UiWindow::Display(ElementCollection* elementCol, const SpriteDrawingParams&
 	}
 
 	// render children
-	UiObject::Display(elementCol, params);
+	UiObjectOld::Display(elementCol, params);
 
 
 	// stop clipping
@@ -112,12 +112,12 @@ void UiWindow::Display(ElementCollection* elementCol, const SpriteDrawingParams&
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiWindow::Update()
+void UiWindowOld::Update()
 {
 	if (!m_Visible) return;
 
 	Sprite* sprite = GetSprite();
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 
 	if (m_IsDragging)
 	{
@@ -140,27 +140,27 @@ void UiWindow::Update()
 		image->SetSize(GetWidth(), GetHeight());
 	}
 
-	UiObject::Update();
+	UiObjectOld::Update();
 }
 
 //////////////////////////////////////////////////////////////////////////
-int UiWindow::GetRealWidth() const
+int UiWindowOld::GetRealWidth() const
 {
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 	if (image) return image->GetCorrectedWidth();
 	else return m_Width;
 }
 
 //////////////////////////////////////////////////////////////////////////
-int UiWindow::GetRealHeight() const
+int UiWindowOld::GetRealHeight() const
 {
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 	if (image) return image->GetCorrectedHeight();
 	else return m_Height;
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle* UiWindow::GetCurrentStyle() const
+UiObjectStyleOld* UiWindowOld::GetCurrentStyle() const
 {
 	if (m_Disabled) return m_DisabledStyle;
 
@@ -168,7 +168,7 @@ UiObjectStyle* UiWindow::GetCurrentStyle() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle* UiWindow::GetStyle(WindowState state) const
+UiObjectStyleOld* UiWindowOld::GetStyle(WindowState state) const
 {
 	switch (state)
 	{
@@ -183,22 +183,22 @@ UiObjectStyle* UiWindow::GetStyle(WindowState state) const
 
 
 //////////////////////////////////////////////////////////////////////////
-ResizableImage* UiWindow::GetImage() const
+ResizableImageOld* UiWindowOld::GetImage() const
 {
-	ResizableImage* ret;
+	ResizableImageOld* ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetImage();
 	if (!ret) ret = m_NormalStyle->GetImage();
 	return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////
-Sprite* UiWindow::GetSprite() const
+Sprite* UiWindowOld::GetSprite() const
 {
 	Sprite* ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetSprite();
 	if (!ret) ret = m_NormalStyle->GetSprite();
 	return ret;
@@ -206,7 +206,7 @@ Sprite* UiWindow::GetSprite() const
 
 
 //////////////////////////////////////////////////////////////////////////
-bool UiWindow::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
+bool UiWindowOld::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
 {
 	event.TranslateToViewport(viewport);
 
@@ -237,7 +237,7 @@ bool UiWindow::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
 //////////////////////////////////////////////////////////////////////////
 // DocumentAwareObject
 //////////////////////////////////////////////////////////////////////////
-bool UiWindow::LoadFromXml(TiXmlElement* rootNode)
+bool UiWindowOld::LoadFromXml(TiXmlElement* rootNode)
 {
 	for (TiXmlElement* elem = rootNode->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement())
 	{
@@ -264,11 +264,11 @@ bool UiWindow::LoadFromXml(TiXmlElement* rootNode)
 		}
 	}
 
-	return UiObject::LoadFromXml(rootNode);
+	return UiObjectOld::LoadFromXml(rootNode);
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiWindow::SaveToXml(TiXmlElement* rootNode)
+bool UiWindowOld::SaveToXml(TiXmlElement* rootNode)
 {
 	TiXmlElement* elem;
 
@@ -289,7 +289,7 @@ bool UiWindow::SaveToXml(TiXmlElement* rootNode)
 	m_DisabledStyle->SaveToXml(elem);
 
 
-	return UiObject::SaveToXml(rootNode);
+	return UiObjectOld::SaveToXml(rootNode);
 }
 
 

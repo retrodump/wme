@@ -1,8 +1,8 @@
 // This file is part of Wintermute Engine
 // For conditions of distribution and use, see copyright notice in license.txt
 
-#ifndef __WmeUiObject_H__
-#define __WmeUiObject_H__
+#ifndef __WmeUiObjectOld_H__
+#define __WmeUiObjectOld_H__
 
 
 #include "InteractiveObject.h"
@@ -16,33 +16,33 @@ namespace Wme
 	class ElementCollection;
 	class SpriteDrawingParams;
 
-	class WmeDllExport UiObject : public InteractiveObject, public DocumentAwareObject
+	class WmeDllExport UiObjectOld : public InteractiveObject, public DocumentAwareObject
 	{
 	public:
-		typedef UiObject* (*UiObjectActivator)(GuiStage* parentStage);
+		typedef UiObjectOld* (*UiObjectActivator)(GuiStage* parentStage);
 
-		UiObject(GuiStage* parentStage);
-		virtual ~UiObject();
+		UiObjectOld(GuiStage* parentStage);
+		virtual ~UiObjectOld();
 
-		typedef std::list<UiObject*> UiObjectList;
+		typedef std::list<UiObjectOld*> UiObjectList;
 
 		virtual void Display(ElementCollection* elementCol, const SpriteDrawingParams& params);
 		virtual void Update();
 		virtual void Create();
 
-		UiObject* GetParent() const { return m_Parent; }
+		UiObjectOld* GetParent() const { return m_Parent; }
 		
 		size_t GetZOrder() const { return m_ZOrder; }
 
-		void AddChild(UiObject* child);
-		void RemoveChild(UiObject* child);
+		void AddChild(UiObjectOld* child);
+		void RemoveChild(UiObjectOld* child);
 
-		void MoveChildAfter(UiObject* child, UiObject* pos);
-		void MoveChildBefore(UiObject* child, UiObject* pos);
+		void MoveChildAfter(UiObjectOld* child, UiObjectOld* pos);
+		void MoveChildBefore(UiObjectOld* child, UiObjectOld* pos);
 
 		size_t GetNumChildren() const { return m_Children.size(); }
-		UiObject* GetChild(size_t index);
-		UiObject* GetChild(const WideString& name);
+		UiObjectOld* GetChild(size_t index);
+		UiObjectOld* GetChild(const WideString& name);
 
 		void SetPosX(int posX) { m_PosX = posX; }
 		int GetPosX() const { return m_PosX; }
@@ -91,7 +91,7 @@ namespace Wme
 	protected:
 		GuiStage* m_ParentStage;
 
-		UiObject* m_Parent;		
+		UiObjectOld* m_Parent;		
 		UiObjectList m_Children;
 		size_t m_ZOrder;
 
@@ -107,9 +107,9 @@ namespace Wme
 
 		void UpdateChildrenZOrder();
 		void SetZOrder(size_t order) { m_ZOrder = order; }
-		void SetParent(UiObject* parent) { m_Parent = parent; }
+		void SetParent(UiObjectOld* parent) { m_Parent = parent; }
 		void GetOffset(int& offsetX, int& offsetY) const;
 	};
 }
 
-#endif // __WmeUiObject_H__
+#endif // __WmeUiObjectOld_H__

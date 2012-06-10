@@ -4,6 +4,7 @@
 #include "Wme.h"
 #include "ResizableElement2D.h"
 #include "SceneNode2D.h"
+#include "ResizableImage.h"
 #include "SpriteTexture.h"
 
 
@@ -15,24 +16,20 @@ namespace Wme
 ResizableElement2D::ResizableElement2D()
 {
 	m_Width = m_Height = 0.0f;
-	m_Texture = NULL;
+	m_Image = NULL;
 	m_Color = Ogre::ColourValue::White;
-
-	m_FrameTopHeight = m_FrameBottomHeight = m_FrameLeftWidth = m_FrameRightWidth = 0.0f;
-
-	m_StretchHorizontal = m_StretchVertical = true;
-	m_PaintMiddlePart = true;
 }
 
 //////////////////////////////////////////////////////////////////////////
 ResizableElement2D::~ResizableElement2D()
 {
+	if (m_Image) m_Image->RemoveListener(this);
 }
 
 //////////////////////////////////////////////////////////////////////////
 void ResizableElement2D::AddGeometry()
 {
-	if (m_Width == 0.0f || m_Height == 0.0f || m_Texture == NULL) return;
+	if (m_Width == 0.0f || m_Height == 0.0f || m_Image == NULL || m_Image->GetTexture() == NULL) return;
 
 	int numTiles = 0;
 	int tilesVertical = 0;
@@ -42,74 +39,74 @@ void ResizableElement2D::AddGeometry()
 	Vertex2DTex* verts = new Vertex2DTex[numTiles * 6];
 	int vertexOffset = 0;
 
-	float middleTileWidth = m_Texture->GetWidth() - m_FrameLeftWidth - m_FrameRightWidth;
-	float middleTileHeight = m_Texture->GetHeight() - m_FrameTopHeight - m_FrameBottomHeight;
+	float middleTileWidth = m_Image->GetTexture()->GetWidth() - m_Image->GetFrameLeftWidth() - m_Image->GetFrameRightWidth();
+	float middleTileHeight = m_Image->GetTexture()->GetHeight() - m_Image->GetFrameTopHeight() - m_Image->GetFrameBottomHeight();
 
-	float middlePartWidth = m_Width - m_FrameLeftWidth - m_FrameRightWidth;
-	float middlePartHeight = m_Height - m_FrameTopHeight - m_FrameBottomHeight;
+	float middlePartWidth = m_Width - m_Image->GetFrameLeftWidth() - m_Image->GetFrameRightWidth();
+	float middlePartHeight = m_Height - m_Image->GetFrameTopHeight() - m_Image->GetFrameBottomHeight();
 	
 
 	float col = 0.0f;
 	float row = 0.0f;
 
 	// top row
-	if (m_FrameTopHeight > 0.0f)
+	if (m_Image->GetFrameTopHeight() > 0.0f)
 	{
-		if (m_FrameLeftWidth)
+		if (m_Image->GetFrameLeftWidth())
 		{
-			AddTile(row, col, TILE_TOP_LEFT, m_FrameLeftWidth, m_FrameTopHeight, verts, vertexOffset);
-			col += m_FrameLeftWidth;
+			AddTile(row, col, TILE_TOP_LEFT, m_Image->GetFrameLeftWidth(), m_Image->GetFrameTopHeight(), verts, vertexOffset);
+			col += m_Image->GetFrameLeftWidth();
 		}
 		if (tilesHorizontal > 0)
 		{
-			if (m_StretchHorizontal)
+			if (m_Image->GetStretchHorizontal())
 			{
-				AddTile(row, col, TILE_TOP_MIDDLE, middlePartWidth, m_FrameTopHeight, verts, vertexOffset);
+				AddTile(row, col, TILE_TOP_MIDDLE, middlePartWidth, m_Image->GetFrameTopHeight(), verts, vertexOffset);
 				col += middlePartWidth;
 			}
 			else
 			{
 				for (int i = 0; i < tilesHorizontal; i++)
 				{
-					AddTile(row, col, TILE_TOP_MIDDLE, middleTileWidth, m_FrameTopHeight, verts, vertexOffset);
+					AddTile(row, col, TILE_TOP_MIDDLE, middleTileWidth, m_Image->GetFrameTopHeight(), verts, vertexOffset);
 					col += middleTileWidth;
 				}
 			}
 		}
-		if (m_FrameRightWidth)
+		if (m_Image->GetFrameRightWidth())
 		{
-			AddTile(row, col, TILE_TOP_RIGHT, m_FrameRightWidth, m_FrameTopHeight, verts, vertexOffset);
-			col += m_FrameRightWidth;
+			AddTile(row, col, TILE_TOP_RIGHT, m_Image->GetFrameRightWidth(), m_Image->GetFrameTopHeight(), verts, vertexOffset);
+			col += m_Image->GetFrameRightWidth();
 		}
 
-		row += m_FrameTopHeight;
+		row += m_Image->GetFrameTopHeight();
 		col = 0.0f;
 	}
 
 	// middle part
 	if (tilesVertical > 0)
 	{
-		float middleWidth = m_StretchHorizontal ? middlePartWidth : middleTileWidth;
-		float middleHeight = m_StretchVertical ? middlePartHeight : middleTileHeight;
+		float middleWidth = m_Image->GetStretchHorizontal() ? middlePartWidth : middleTileWidth;
+		float middleHeight = m_Image->GetStretchVertical() ? middlePartHeight : middleTileHeight;
 
 		for (int y = 0; y < tilesVertical; y++)
 		{
-			if (m_FrameLeftWidth)
+			if (m_Image->GetFrameLeftWidth())
 			{
-				AddTile(row, col, TILE_MIDDLE_LEFT, m_FrameLeftWidth, middleHeight, verts, vertexOffset);
-				col += m_FrameLeftWidth;
+				AddTile(row, col, TILE_MIDDLE_LEFT, m_Image->GetFrameLeftWidth(), middleHeight, verts, vertexOffset);
+				col += m_Image->GetFrameLeftWidth();
 			}
 
 			for (int x = 0; x < tilesHorizontal; x++)
 			{
-				if (m_PaintMiddlePart) AddTile(row, col, TILE_MIDDLE_MIDDLE, middleWidth, middleHeight, verts, vertexOffset);
+				if (m_Image->GetPaintMiddlePart()) AddTile(row, col, TILE_MIDDLE_MIDDLE, middleWidth, middleHeight, verts, vertexOffset);
 				col += middleWidth;
 			}
 
-			if (m_FrameRightWidth)
+			if (m_Image->GetFrameRightWidth())
 			{
-				AddTile(row, col, TILE_MIDDLE_RIGHT, m_FrameRightWidth, middleHeight, verts, vertexOffset);
-				col += m_FrameLeftWidth;
+				AddTile(row, col, TILE_MIDDLE_RIGHT, m_Image->GetFrameRightWidth(), middleHeight, verts, vertexOffset);
+				col += m_Image->GetFrameLeftWidth();
 			}
 			row += middleHeight;
 			col = 0.0f;
@@ -117,40 +114,40 @@ void ResizableElement2D::AddGeometry()
 	}
 
 	// bottom row
-	if (m_FrameBottomHeight > 0.0f)
+	if (m_Image->GetFrameBottomHeight() > 0.0f)
 	{
-		if (m_FrameLeftWidth)
+		if (m_Image->GetFrameLeftWidth())
 		{
-			AddTile(row, col, TILE_BOTTOM_LEFT, m_FrameLeftWidth, m_FrameBottomHeight, verts, vertexOffset);
-			col += m_FrameLeftWidth;
+			AddTile(row, col, TILE_BOTTOM_LEFT, m_Image->GetFrameLeftWidth(), m_Image->GetFrameBottomHeight(), verts, vertexOffset);
+			col += m_Image->GetFrameLeftWidth();
 		}
 		if (tilesHorizontal > 0)
 		{
-			if (m_StretchHorizontal)
+			if (m_Image->GetStretchHorizontal())
 			{
-				AddTile(row, col, TILE_BOTTOM_MIDDLE, middlePartWidth, m_FrameBottomHeight, verts, vertexOffset);
+				AddTile(row, col, TILE_BOTTOM_MIDDLE, middlePartWidth, m_Image->GetFrameBottomHeight(), verts, vertexOffset);
 				col += middlePartWidth;
 			}
 			else
 			{
 				for (int i = 0; i < tilesHorizontal; i++)
 				{
-					AddTile(row, col, TILE_BOTTOM_MIDDLE, middleTileWidth, m_FrameBottomHeight, verts, vertexOffset);
+					AddTile(row, col, TILE_BOTTOM_MIDDLE, middleTileWidth, m_Image->GetFrameBottomHeight(), verts, vertexOffset);
 					col += middleTileWidth;
 				}
 			}
 		}
-		if (m_FrameRightWidth)
+		if (m_Image->GetFrameRightWidth())
 		{
-			AddTile(row, col, TILE_BOTTOM_RIGHT, m_FrameRightWidth, m_FrameBottomHeight, verts, vertexOffset);
-			col += m_FrameRightWidth;
+			AddTile(row, col, TILE_BOTTOM_RIGHT, m_Image->GetFrameRightWidth(), m_Image->GetFrameBottomHeight(), verts, vertexOffset);
+			col += m_Image->GetFrameRightWidth();
 		}
 
-		row += m_FrameBottomHeight;
+		row += m_Image->GetFrameBottomHeight();
 		col = 0.0f;
 	}
 
-	m_ParentNode->AddGeometry(verts, numTiles * 6, m_Texture->GetMaterial(), Ogre::RenderOperation::OT_TRIANGLE_LIST);
+	m_ParentNode->AddGeometry(verts, numTiles * 6, m_Image->GetTexture()->GetMaterial(), Ogre::RenderOperation::OT_TRIANGLE_LIST);
 	delete [] verts;
 }
 
@@ -159,35 +156,35 @@ void ResizableElement2D::GetNumTiles(int& numTiles, int& tilesHorizontal, int& t
 {
 	numTiles = tilesHorizontal = tilesVertical = 0;
 
-	if (m_StretchHorizontal) tilesHorizontal = 1;
-	else tilesHorizontal = (int)floor((m_Width - m_FrameLeftWidth - m_FrameRightWidth) / ((float)m_Texture->GetWidth() - m_FrameLeftWidth - m_FrameRightWidth));
+	if (m_Image->GetStretchHorizontal()) tilesHorizontal = 1;
+	else tilesHorizontal = (int)floor((m_Width - m_Image->GetFrameLeftWidth() - m_Image->GetFrameRightWidth()) / ((float)m_Image->GetTexture()->GetWidth() - m_Image->GetFrameLeftWidth() - m_Image->GetFrameRightWidth()));
 
-	if (m_StretchVertical) tilesVertical = 1;
-	else tilesVertical = (int)floor((m_Height - m_FrameTopHeight - m_FrameBottomHeight) / ((float)m_Texture->GetHeight() - m_FrameTopHeight - m_FrameBottomHeight));
+	if (m_Image->GetStretchVertical()) tilesVertical = 1;
+	else tilesVertical = (int)floor((m_Height - m_Image->GetFrameTopHeight() - m_Image->GetFrameBottomHeight()) / ((float)m_Image->GetTexture()->GetHeight() - m_Image->GetFrameTopHeight() - m_Image->GetFrameBottomHeight()));
 
 
-	float f = m_Width / ((float)m_Texture->GetWidth() - m_FrameLeftWidth - m_FrameRightWidth);
+	float f = m_Width / ((float)m_Image->GetTexture()->GetWidth() - m_Image->GetFrameLeftWidth() - m_Image->GetFrameRightWidth());
 	f = floor(f);
 
 	// top row
-	if (m_FrameTopHeight > 0.0f)
+	if (m_Image->GetFrameTopHeight() > 0.0f)
 	{
-		if (m_FrameLeftWidth > 0.0f) numTiles++;
+		if (m_Image->GetFrameLeftWidth() > 0.0f) numTiles++;
 		numTiles += tilesHorizontal;
-		if (m_FrameRightWidth > 0.0f) numTiles++;
+		if (m_Image->GetFrameRightWidth() > 0.0f) numTiles++;
 	}
 
 	// middle part
-	if (m_FrameLeftWidth > 0.0f) numTiles += tilesVertical;
-	if (m_PaintMiddlePart) numTiles += tilesVertical * tilesHorizontal;
-	if (m_FrameRightWidth > 0.0f) numTiles += tilesVertical;
+	if (m_Image->GetFrameLeftWidth() > 0.0f) numTiles += tilesVertical;
+	if (m_Image->GetPaintMiddlePart()) numTiles += tilesVertical * tilesHorizontal;
+	if (m_Image->GetFrameRightWidth() > 0.0f) numTiles += tilesVertical;
 
 	// bottom row
-	if (m_FrameBottomHeight > 0.0f)
+	if (m_Image->GetFrameBottomHeight() > 0.0f)
 	{
-		if (m_FrameLeftWidth > 0.0f) numTiles++;
+		if (m_Image->GetFrameLeftWidth() > 0.0f) numTiles++;
 		numTiles += tilesHorizontal;
-		if (m_FrameRightWidth > 0.0f) numTiles++;
+		if (m_Image->GetFrameRightWidth() > 0.0f) numTiles++;
 	}
 }
 
@@ -232,16 +229,16 @@ void ResizableElement2D::AddTile(float row, float col, TileType tileType, float 
 void ResizableElement2D::GetTextureCoordinates(TileType type, Ogre::FloatRect& rect)
 {
 	float leftColLeft = 0;
-	float leftColRight = m_FrameLeftWidth;
+	float leftColRight = m_Image->GetFrameLeftWidth();
 
-	float rightColLeft = (float)m_Texture->GetWidth() - m_FrameRightWidth;
-	float rightColRight = (float)m_Texture->GetWidth();
+	float rightColLeft = (float)m_Image->GetTexture()->GetWidth() - m_Image->GetFrameRightWidth();
+	float rightColRight = (float)m_Image->GetTexture()->GetWidth();
 
 	float topRowTop = 0;
-	float topRowBottom = (float)m_FrameTopHeight;
+	float topRowBottom = (float)m_Image->GetFrameTopHeight();
 
-	float bottomRowTop = (float)m_Texture->GetHeight() - m_FrameBottomHeight;
-	float bottomRowBottom = (float)m_Texture->GetHeight();
+	float bottomRowTop = (float)m_Image->GetTexture()->GetHeight() - m_Image->GetFrameBottomHeight();
+	float bottomRowBottom = (float)m_Image->GetTexture()->GetHeight();
 
 
 	switch (type)
@@ -311,16 +308,16 @@ void ResizableElement2D::GetTextureCoordinates(TileType type, Ogre::FloatRect& r
 	}
 
 	// relative coordinates
-	rect.left /= (float)m_Texture->GetWidth();
-	rect.right /= (float)m_Texture->GetWidth();
-	rect.top /= (float)m_Texture->GetHeight();
-	rect.bottom /= (float)m_Texture->GetHeight();
+	rect.left /= (float)m_Image->GetTexture()->GetWidth();
+	rect.right /= (float)m_Image->GetTexture()->GetWidth();
+	rect.top /= (float)m_Image->GetTexture()->GetHeight();
+	rect.bottom /= (float)m_Image->GetTexture()->GetHeight();
 
 	// compensate for non-pow2 dimensions
-	rect.left *= m_Texture->GetTexCoordU();
-	rect.right *= m_Texture->GetTexCoordU();
-	rect.top *= m_Texture->GetTexCoordV();
-	rect.bottom *= m_Texture->GetTexCoordV();
+	rect.left *= m_Image->GetTexture()->GetTexCoordU();
+	rect.right *= m_Image->GetTexture()->GetTexCoordU();
+	rect.top *= m_Image->GetTexture()->GetTexCoordV();
+	rect.bottom *= m_Image->GetTexture()->GetTexCoordV();
 }
 
 
@@ -345,11 +342,15 @@ void ResizableElement2D::SetHeight(float val)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetTexture(SpriteTexture* val)
+void ResizableElement2D::SetImage(ResizableImage* val)
 {
-	if (val != m_Texture)
+	if (val != m_Image)
 	{
-		m_Texture = val;
+		if (m_Image) m_Image->RemoveListener(this);
+
+		m_Image = val;
+		if (m_Image) m_Image->AddListener(this);
+
 		SetDirty();
 	}
 }
@@ -365,73 +366,18 @@ void ResizableElement2D::SetColor(const Ogre::ColourValue& val)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetFrameTopHeight(float val)
+// ResizableImage::Listener
+//////////////////////////////////////////////////////////////////////////
+void ResizableElement2D::OnChanged()
 {
-	if (val != m_FrameTopHeight)
-	{
-		m_FrameTopHeight = val;
-		SetDirty();
-	}
+	SetDirty();
 }
 
 //////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetFrameBottomHeight(float val)
+void ResizableElement2D::OnDestroy()
 {
-	if (val != m_FrameBottomHeight)
-	{
-		m_FrameBottomHeight = val;
-		SetDirty();
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetFrameLeftWidth(float val)
-{
-	if (val != m_FrameLeftWidth)
-	{
-		m_FrameLeftWidth = val;
-		SetDirty();
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetFrameRightWidth(float val)
-{
-	if (val != m_FrameRightWidth)
-	{
-		m_FrameRightWidth = val;
-		SetDirty();
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetStretchVertical(bool val)
-{
-	if (val != m_StretchVertical)
-	{
-		m_StretchVertical = val;
-		SetDirty();
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetStretchHorizontal(bool val)
-{
-	if (val != m_StretchHorizontal)
-	{
-		m_StretchHorizontal = val;
-		SetDirty();
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-void ResizableElement2D::SetPaintMiddlePart(bool val)
-{
-	if (val != m_PaintMiddlePart)
-	{
-		m_PaintMiddlePart = val;
-		SetDirty();
-	}
+	m_Image = NULL;
+	SetDirty();
 }
 
 

@@ -14,7 +14,7 @@
 #include "SpriteFrame.h"
 #include "SpriteSubFrame.h"
 #include "TextureElement2D.h"
-#include "UiButton.h"
+#include "UiButtonOld.h"
 #include "TextElement2D.h"
 #include "FontManager.h"
 #include "RectElement2D.h"
@@ -43,7 +43,7 @@ Scene2DBase::Scene2DBase()
 	m_Rect = NULL;
 	m_RectNode = NULL;
 	m_Resizable = NULL;
-	m_ResizableTexture = NULL;
+	m_ResizableImage = NULL;
 	m_ResizableNode = NULL;
 	m_Window1 = m_Window2 = NULL;
 }
@@ -59,7 +59,7 @@ Scene2DBase::~Scene2DBase()
 	SAFE_DELETE(m_Rect);
 	SAFE_DELETE(m_RectNode);
 	SAFE_DELETE(m_Resizable);
-	SAFE_DELETE(m_ResizableTexture);
+	SAFE_DELETE(m_ResizableImage);
 	SAFE_DELETE(m_ResizableNode);
 	SAFE_DELETE(m_Window1);
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
@@ -133,20 +133,20 @@ void Scene2DBase::Create()
 	//m_RectNode->SetScale(10, 10);
 
 
-	m_ResizableTexture = new SpriteTexture();
-	m_ResizableTexture->SetTexture(L"win_grid.bmp");
+	m_ResizableImage = new ResizableImage();
+	m_ResizableImage->SetTexture(L"win_grid.bmp");
+	m_ResizableImage->SetFrameLeftWidth(30);
+	m_ResizableImage->SetFrameRightWidth(30);
+	m_ResizableImage->SetFrameTopHeight(30);
+	m_ResizableImage->SetFrameBottomHeight(30);
+	m_ResizableImage->SetPaintMiddlePart(true);
+	m_ResizableImage->SetStretchHorizontal(true);
+	m_ResizableImage->SetStretchVertical(true);
 
 	m_Resizable = new ResizableElement2D();
-	m_Resizable->SetTexture(m_ResizableTexture);
-	m_Resizable->SetFrameLeftWidth(30);
-	m_Resizable->SetFrameRightWidth(30);
-	m_Resizable->SetFrameTopHeight(30);
-	m_Resizable->SetFrameBottomHeight(30);
 	m_Resizable->SetWidth(200);
 	m_Resizable->SetHeight(150);
-	m_Resizable->SetPaintMiddlePart(true);
-	m_Resizable->SetStretchHorizontal(true);
-	m_Resizable->SetStretchVertical(true);
+	m_Resizable->SetImage(m_ResizableImage);
 
 	m_ResizableNode = m_Canvas->GetRootNode()->CreateChildNode();
 	m_ResizableNode->AttachElement(m_Resizable);

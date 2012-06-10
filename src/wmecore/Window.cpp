@@ -7,7 +7,7 @@
 #include "ResizableElement2D.h"
 
 // temp
-#include "SpriteTexture.h"
+#include "ResizableImage.h"
 
 
 namespace Wme
@@ -23,14 +23,15 @@ Window::Window(Canvas2D* canvas) : UiObjectBase(canvas)
 	m_BackgroundNode->AttachElement(m_Background);
 
 	// temp
-	m_ResizableTexture = new SpriteTexture();
+	m_ResizableTexture = new ResizableImage();
 	m_ResizableTexture->SetTexture(L"win.bmp");
+	m_ResizableTexture->SetFrameLeftWidth(30);
+	m_ResizableTexture->SetFrameRightWidth(30);
+	m_ResizableTexture->SetFrameTopHeight(30);
+	m_ResizableTexture->SetFrameBottomHeight(30);
 
-	m_Background->SetTexture(m_ResizableTexture);
-	m_Background->SetFrameLeftWidth(30);
-	m_Background->SetFrameRightWidth(30);
-	m_Background->SetFrameTopHeight(30);
-	m_Background->SetFrameBottomHeight(30);
+
+	m_Background->SetImage(m_ResizableTexture);
 }
 
 //////////////////////////////////////////////////////////////////////////

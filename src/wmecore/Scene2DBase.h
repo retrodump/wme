@@ -21,7 +21,7 @@ namespace Wme
 	class Font;
 	class TextElement2D;
 	class RectElement2D;
-	class SpriteTexture;
+	class ResizableImage;
 	class ResizableElement2D;
 	class Window;
 
@@ -60,7 +60,7 @@ namespace Wme
 		SceneNode2D* m_TestNode;
 		SceneNode2D* m_RectNode;
 		RectElement2D* m_Rect;
-		SpriteTexture* m_ResizableTexture;
+		ResizableImage* m_ResizableImage;
 		ResizableElement2D* m_Resizable;
 		SceneNode2D* m_ResizableNode;
 

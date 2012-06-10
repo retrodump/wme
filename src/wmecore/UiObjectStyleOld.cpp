@@ -2,13 +2,13 @@
 // For conditions of distribution and use, see copyright notice in license.txt
 
 #include "Wme.h"
-#include "UiObjectStyle.h"
+#include "UiObjectStyleOld.h"
 #include "Sprite.h"
-#include "ResizableImage.h"
+#include "ResizableImageOld.h"
 #include "FontManager.h"
 #include "Font.h"
 #include "XmlUtil.h"
-#include "UiObject.h"
+#include "UiObjectOld.h"
 
 
 namespace Wme
@@ -16,7 +16,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle::UiObjectStyle(UiObject* owner)
+UiObjectStyleOld::UiObjectStyleOld(UiObjectOld* owner)
 {
 	m_Owner = owner;
 
@@ -27,7 +27,7 @@ UiObjectStyle::UiObjectStyle(UiObject* owner)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle::~UiObjectStyle()
+UiObjectStyleOld::~UiObjectStyleOld()
 {
 	SAFE_DELETE(m_Sprite);
 	SAFE_DELETE(m_Image);
@@ -35,7 +35,7 @@ UiObjectStyle::~UiObjectStyle()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObjectStyle::SetSprite(Sprite* sprite)
+void UiObjectStyleOld::SetSprite(Sprite* sprite)
 {
 	if (sprite == m_Sprite) return;
 	
@@ -44,7 +44,7 @@ void UiObjectStyle::SetSprite(Sprite* sprite)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObjectStyle::SetImage(ResizableImage* image)
+void UiObjectStyleOld::SetImage(ResizableImageOld* image)
 {
 	if (image == m_Image) return;
 
@@ -53,7 +53,7 @@ void UiObjectStyle::SetImage(ResizableImage* image)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObjectStyle::SetFont(Font* font)
+void UiObjectStyleOld::SetFont(Font* font)
 {
 	if (font == m_Font) return;
 
@@ -62,7 +62,7 @@ void UiObjectStyle::SetFont(Font* font)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObjectStyle::LoadSprite(const WideString& fileName)
+bool UiObjectStyleOld::LoadSprite(const WideString& fileName)
 {
 	bool success;
 	SAFE_DELETE(m_Sprite);
@@ -83,7 +83,7 @@ bool UiObjectStyle::LoadSprite(const WideString& fileName)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObjectStyle::LoadFont(const WideString& fileName)
+bool UiObjectStyleOld::LoadFont(const WideString& fileName)
 {
 	Game::GetInstance()->GetFontMgr()->ReleaseFont(m_Font);
 	m_Font = Game::GetInstance()->GetFontMgr()->GetFont(fileName, false);
@@ -93,7 +93,7 @@ bool UiObjectStyle::LoadFont(const WideString& fileName)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObjectStyle::LoadFromXml(TiXmlElement* node)
+bool UiObjectStyleOld::LoadFromXml(TiXmlElement* node)
 {
 	SAFE_DELETE(m_Image);
 	SAFE_DELETE(m_Sprite);
@@ -105,7 +105,7 @@ bool UiObjectStyle::LoadFromXml(TiXmlElement* node)
 	{
 		if (elem->ValueStr() == "Image")
 		{			
-			m_Image = new ResizableImage;
+			m_Image = new ResizableImageOld;
 			m_Image->LoadFromXml(elem);
 		}
 		else if (elem->ValueStr() == "Sprite")
@@ -126,7 +126,7 @@ bool UiObjectStyle::LoadFromXml(TiXmlElement* node)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObjectStyle::SaveToXml(TiXmlElement* node)
+bool UiObjectStyleOld::SaveToXml(TiXmlElement* node)
 {
 	TiXmlElement* elem;
 

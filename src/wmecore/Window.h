@@ -12,7 +12,7 @@ namespace Wme
 {
 	class ResizableElement2D;
 	// temp
-	class SpriteTexture;
+	class ResizableImage;
 
 	class WmeDllExport Window : public UiObjectBase
 	{
@@ -22,7 +22,7 @@ namespace Wme
 
 
 		// ScriptableObject
-		RTTI(UiWindow);
+		RTTI(Window);
 		virtual WideString ConvertToString() { return L"Window object"; }
 		virtual WideString GetTypeName() const { return L"Window"; }
 
@@ -30,7 +30,7 @@ namespace Wme
 	private:
 		SceneNode2D* m_BackgroundNode;
 		ResizableElement2D* m_Background;
-		SpriteTexture* m_ResizableTexture;
+		ResizableImage* m_ResizableTexture;
 
 		virtual void OnSizeChanged();
 	};

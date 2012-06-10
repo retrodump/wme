@@ -20,9 +20,9 @@
 #include "Entity3D.h"
 #include "Region.h"
 #include "ActiveSpot.h"
-#include "ResizableImage.h"
-#include "UiWindow.h"
-#include "UiButton.h"
+#include "ResizableImageOld.h"
+#include "UiWindowOld.h"
+#include "UiButtonOld.h"
 #include "Font.h"
 #include "FontManager.h"
 #include "View.h"
@@ -137,7 +137,7 @@ void DebugHUD::Create()
 	m_Arrow->SetBasePoint(Ogre::Vector2(0.0, 0.0));
 
 
-	m_Window = new UiWindow(this);
+	m_Window = new UiWindowOld(this);
 	m_Window->Create();
 	m_Window->SetName(L"test window");
 	m_Window->LoadFromFile(L"test.window");

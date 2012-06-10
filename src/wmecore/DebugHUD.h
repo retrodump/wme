@@ -38,7 +38,7 @@ namespace Wme
 		Sprite* m_TestSprite;
 		Sprite* m_Back;
 		Region* m_TestRegion;
-		UiWindow* m_Window;
+		UiWindowOld* m_Window;
 	};
 }
 

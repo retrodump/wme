@@ -2,7 +2,7 @@
 // For conditions of distribution and use, see copyright notice in license.txt
 
 #include "Wme.h"
-#include "UiObject.h"
+#include "UiObjectOld.h"
 #include "UiObjectFactory.h"
 #include "ContentManager.h"
 #include "ElementCollection.h"
@@ -15,7 +15,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-UiObject::UiObject(GuiStage* parentStage)
+UiObjectOld::UiObjectOld(GuiStage* parentStage)
 {
 	m_ParentStage = parentStage;
 	m_Parent = NULL;
@@ -30,9 +30,9 @@ UiObject::UiObject(GuiStage* parentStage)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObject::~UiObject()
+UiObjectOld::~UiObjectOld()
 {
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		SAFE_DELETE(child);
 	}
@@ -40,30 +40,30 @@ UiObject::~UiObject()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::Create()
+void UiObjectOld::Create()
 {
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
+void UiObjectOld::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
 {
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		child->Display(elementCol, params);
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::Update()
+void UiObjectOld::Update()
 {
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		child->Update();
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::AddChild(UiObject* child)
+void UiObjectOld::AddChild(UiObjectOld* child)
 {
 	UiObjectList::iterator it = std::find(m_Children.begin(), m_Children.end(), child);
 	if (it != m_Children.end()) return;
@@ -75,7 +75,7 @@ void UiObject::AddChild(UiObject* child)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::RemoveChild(UiObject* child)
+void UiObjectOld::RemoveChild(UiObjectOld* child)
 {
 	UiObjectList::iterator it = std::find(m_Children.begin(), m_Children.end(), child);
 	if (it != m_Children.end())
@@ -88,7 +88,7 @@ void UiObject::RemoveChild(UiObject* child)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::MoveChildAfter(UiObject* child, UiObject* pos)
+void UiObjectOld::MoveChildAfter(UiObjectOld* child, UiObjectOld* pos)
 {
 	UiObjectList::iterator it;
 	
@@ -107,7 +107,7 @@ void UiObject::MoveChildAfter(UiObject* child, UiObject* pos)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::MoveChildBefore(UiObject* child, UiObject* pos)
+void UiObjectOld::MoveChildBefore(UiObjectOld* child, UiObjectOld* pos)
 {
 	UiObjectList::iterator it;
 
@@ -122,9 +122,9 @@ void UiObject::MoveChildBefore(UiObject* child, UiObject* pos)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObject* UiObject::GetChild(size_t index)
+UiObjectOld* UiObjectOld::GetChild(size_t index)
 {
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		if (child->GetZOrder() == index) return child;
 	}
@@ -132,9 +132,9 @@ UiObject* UiObject::GetChild(size_t index)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObject* UiObject::GetChild(const WideString& name)
+UiObjectOld* UiObjectOld::GetChild(const WideString& name)
 {
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		if (child->GetName() == name) return child;
 	}
@@ -142,10 +142,10 @@ UiObject* UiObject::GetChild(const WideString& name)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::UpdateChildrenZOrder()
+void UiObjectOld::UpdateChildrenZOrder()
 {
 	size_t order = 0;
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		child->SetZOrder(order);
 		order++;
@@ -153,7 +153,7 @@ void UiObject::UpdateChildrenZOrder()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObject::GetOffset(int& offsetX, int& offsetY) const
+void UiObjectOld::GetOffset(int& offsetX, int& offsetY) const
 {
 	if (m_Parent) m_Parent->GetOffset(offsetX, offsetY);
 	offsetX += m_PosX;
@@ -161,7 +161,7 @@ void UiObject::GetOffset(int& offsetX, int& offsetY) const
 }
 
 //////////////////////////////////////////////////////////////////////////
-int UiObject::GetAbsoluteX() const
+int UiObjectOld::GetAbsoluteX() const
 {
 	int posX = 0;
 	int posY = 0;
@@ -171,7 +171,7 @@ int UiObject::GetAbsoluteX() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-int UiObject::GetAbsoluteY() const
+int UiObjectOld::GetAbsoluteY() const
 {
 	int posX = 0;
 	int posY = 0;
@@ -183,7 +183,7 @@ int UiObject::GetAbsoluteY() const
 //////////////////////////////////////////////////////////////////////////
 // DocumentAwareObject
 //////////////////////////////////////////////////////////////////////////
-bool UiObject::LoadFromXml(TiXmlElement* rootNode)
+bool UiObjectOld::LoadFromXml(TiXmlElement* rootNode)
 {
 	ScriptableObject::LoadFromXml(rootNode);
 
@@ -220,7 +220,7 @@ bool UiObject::LoadFromXml(TiXmlElement* rootNode)
 		{
 			for (TiXmlElement* childNode = elem->FirstChildElement(); childNode != NULL; childNode = childNode->NextSiblingElement())
 			{
-				UiObject* child = UiObjectFactory::GetInstance()->CreateInstance(m_ParentStage, childNode->ValueStr());
+				UiObjectOld* child = UiObjectFactory::GetInstance()->CreateInstance(m_ParentStage, childNode->ValueStr());
 				if (!child) continue;
 
 				child->Create();
@@ -237,7 +237,7 @@ bool UiObject::LoadFromXml(TiXmlElement* rootNode)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObject::SaveToXml(TiXmlElement* rootNode)
+bool UiObjectOld::SaveToXml(TiXmlElement* rootNode)
 {
 	ScriptableObject::SaveToXml(rootNode);
 
@@ -266,7 +266,7 @@ bool UiObject::SaveToXml(TiXmlElement* rootNode)
 
 	// save children
 	elem = XmlUtil::AddElem("Children", rootNode);
-	foreach (UiObject* child, m_Children)
+	foreach (UiObjectOld* child, m_Children)
 	{
 		TiXmlElement* childNode = XmlUtil::AddElem(child->GetDocRootName(), elem);
 		child->SaveToXml(childNode);

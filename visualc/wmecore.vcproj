@@ -681,6 +681,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\ResizableImageOld.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\RotGizmo.cpp"
 				>
 			</File>
@@ -869,11 +873,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiButton.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\UiObject.cpp"
+				RelativePath="..\src\wmecore\UiButtonOld.cpp"
 				>
 			</File>
 			<File
@@ -885,11 +885,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiObjectStyle.cpp"
+				RelativePath="..\src\wmecore\UiObjectOld.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiWindow.cpp"
+				RelativePath="..\src\wmecore\UiObjectStyleOld.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiWindowOld.cpp"
 				>
 			</File>
 			<File
@@ -1551,6 +1555,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\ResizableImageOld.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\resource.h"
 				>
 			</File>
@@ -1747,11 +1755,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiButton.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\UiObject.h"
+				RelativePath="..\src\wmecore\UiButtonOld.h"
 				>
 			</File>
 			<File
@@ -1763,11 +1767,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiObjectStyle.h"
+				RelativePath="..\src\wmecore\UiObjectOld.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\wmecore\UiWindow.h"
+				RelativePath="..\src\wmecore\UiObjectStyleOld.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiWindowOld.h"
 				>
 			</File>
 			<File

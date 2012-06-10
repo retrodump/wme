@@ -2,11 +2,11 @@
 // For conditions of distribution and use, see copyright notice in license.txt
 
 #include "Wme.h"
-#include "UiButton.h"
-#include "UiObjectStyle.h"
+#include "UiButtonOld.h"
+#include "UiObjectStyleOld.h"
 #include "FontManager.h"
 #include "Sprite.h"
-#include "ResizableImage.h"
+#include "ResizableImageOld.h"
 #include "Font.h"
 #include "Viewport.h"
 #include "ActiveSpot.h"
@@ -21,7 +21,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-UiButton::UiButton(GuiStage* parentStage) : UiObject(parentStage)
+UiButtonOld::UiButtonOld(GuiStage* parentStage) : UiObjectOld(parentStage)
 {
 	m_NormalStyle = NULL;
 	m_DisabledStyle = NULL;
@@ -41,7 +41,7 @@ UiButton::UiButton(GuiStage* parentStage) : UiObject(parentStage)
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiButton::~UiButton()
+UiButtonOld::~UiButtonOld()
 {
 	SAFE_DELETE(m_NormalStyle);
 	SAFE_DELETE(m_DisabledStyle);
@@ -52,20 +52,20 @@ UiButton::~UiButton()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiButton::Create()
+void UiButtonOld::Create()
 {
-	m_NormalStyle = new UiObjectStyle(this);
-	m_DisabledStyle = new UiObjectStyle(this);
-	m_PressedStyle = new UiObjectStyle(this);
-	m_HoverStyle = new UiObjectStyle(this);
+	m_NormalStyle = new UiObjectStyleOld(this);
+	m_DisabledStyle = new UiObjectStyleOld(this);
+	m_PressedStyle = new UiObjectStyleOld(this);
+	m_HoverStyle = new UiObjectStyleOld(this);
 
 	m_TextElement = new TextElement;
 
-	UiObject::Create();
+	UiObjectOld::Create();
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiButton::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
+void UiButtonOld::Display(ElementCollection* elementCol, const SpriteDrawingParams& params)
 {
 	if (!m_Visible) return;
 
@@ -76,7 +76,7 @@ void UiButton::Display(ElementCollection* elementCol, const SpriteDrawingParams&
 
 
 	Sprite* sprite = GetSprite();
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 	Font* font = GetFont();
 	Ogre::ColourValue textColor = GetTextColor();
 
@@ -123,16 +123,16 @@ void UiButton::Display(ElementCollection* elementCol, const SpriteDrawingParams&
 	}
 
 	// render children
-	UiObject::Display(elementCol, params);
+	UiObjectOld::Display(elementCol, params);
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiButton::Update()
+void UiButtonOld::Update()
 {
 	if (!m_Visible) return;
 
 	Sprite* sprite = GetSprite();
-	ResizableImage* image = GetImage();
+	ResizableImageOld* image = GetImage();
 
 
 	if (sprite) sprite->Update();
@@ -143,18 +143,18 @@ void UiButton::Update()
 		image->SetSize(GetWidth(), GetHeight());
 	}
 
-	UiObject::Update();
+	UiObjectOld::Update();
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiButton::GetPressedAndHover(bool& pressedDown, bool& hover) const
+void UiButtonOld::GetPressedAndHover(bool& pressedDown, bool& hover) const
 {
 	hover = Game::GetInstance()->GetActiveObject() == this;
 	pressedDown = (m_IsPressed || (m_IsBeingPressed && hover));
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiButton::GetSpritePos(Sprite* sprite, bool pressedDown, int& posX, int& posY) const
+void UiButtonOld::GetSpritePos(Sprite* sprite, bool pressedDown, int& posX, int& posY) const
 {
 	Rect spriteRect;
 	sprite->GetBoundingRect(spriteRect);
@@ -194,7 +194,7 @@ void UiButton::GetSpritePos(Sprite* sprite, bool pressedDown, int& posX, int& po
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle* UiButton::GetCurrentStyle() const
+UiObjectStyleOld* UiButtonOld::GetCurrentStyle() const
 {
 	bool pressedDown, hover;
 	GetPressedAndHover(pressedDown, hover);
@@ -207,7 +207,7 @@ UiObjectStyle* UiButton::GetCurrentStyle() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-UiObjectStyle* UiButton::GetStyle(ButtonState state) const
+UiObjectStyleOld* UiButtonOld::GetStyle(ButtonState state) const
 {
 	switch (state)
 	{
@@ -223,33 +223,33 @@ UiObjectStyle* UiButton::GetStyle(ButtonState state) const
 }
 
 //////////////////////////////////////////////////////////////////////////
-ResizableImage* UiButton::GetImage() const
+ResizableImageOld* UiButtonOld::GetImage() const
 {
-	ResizableImage* ret;
+	ResizableImageOld* ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetImage();
 	if (!ret) ret = m_NormalStyle->GetImage();
 	return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////
-Sprite* UiButton::GetSprite() const
+Sprite* UiButtonOld::GetSprite() const
 {
 	Sprite* ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetSprite();
 	if (!ret) ret = m_NormalStyle->GetSprite();
 	return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////
-Font* UiButton::GetFont() const
+Font* UiButtonOld::GetFont() const
 {
 	Font* ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetFont();
 	if (!ret) ret = m_NormalStyle->GetFont();
 	if (!ret) ret = Game::GetInstance()->GetFontMgr()->GetFallbackFont();
@@ -259,11 +259,11 @@ Font* UiButton::GetFont() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-Ogre::ColourValue UiButton::GetTextColor() const
+Ogre::ColourValue UiButtonOld::GetTextColor() const
 {
 	Ogre::ColourValue ret;
 
-	UiObjectStyle* style = GetCurrentStyle();
+	UiObjectStyleOld* style = GetCurrentStyle();
 	ret = style->GetTextColor();
 	if (ret == Ogre::ColourValue::ZERO) ret = m_NormalStyle->GetTextColor();
 	if (ret == Ogre::ColourValue::ZERO) ret = Ogre::ColourValue::Black;
@@ -271,7 +271,7 @@ Ogre::ColourValue UiButton::GetTextColor() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiButton::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
+bool UiButtonOld::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
 {
 	if (m_Disabled) return false;
 
@@ -309,7 +309,7 @@ bool UiButton::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
 //////////////////////////////////////////////////////////////////////////
 // DocumentAwareObject
 //////////////////////////////////////////////////////////////////////////
-bool UiButton::LoadFromXml(TiXmlElement* rootNode)
+bool UiButtonOld::LoadFromXml(TiXmlElement* rootNode)
 {
 	for (TiXmlElement* elem = rootNode->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement())
 	{
@@ -349,11 +349,11 @@ bool UiButton::LoadFromXml(TiXmlElement* rootNode)
 		}
 	}
 
-	return UiObject::LoadFromXml(rootNode);
+	return UiObjectOld::LoadFromXml(rootNode);
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiButton::SaveToXml(TiXmlElement* rootNode)
+bool UiButtonOld::SaveToXml(TiXmlElement* rootNode)
 {
 	TiXmlElement* elem;
 
@@ -384,7 +384,7 @@ bool UiButton::SaveToXml(TiXmlElement* rootNode)
 	m_PressedStyle->SaveToXml(elem);
 
 
-	return UiObject::SaveToXml(rootNode);
+	return UiObjectOld::SaveToXml(rootNode);
 }
 
 

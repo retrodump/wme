@@ -1,24 +1,24 @@
 // This file is part of Wintermute Engine
 // For conditions of distribution and use, see copyright notice in license.txt
 
-#ifndef __WmeUiWindow_H__
-#define __WmeUiWindow_H__
+#ifndef __WmeUiWindowOld_H__
+#define __WmeUiWindowOld_H__
 
 
-#include "UiObject.h"
+#include "UiObjectOld.h"
 
 
 namespace Wme
 {
 	class GuiStage;
-	class ResizableImage;
+	class ResizableImageOld;
 	class Sprite;
 	class ElementCollection;
 	class SpriteDrawingParams;
 	class RenderModifier;
-	class UiObjectStyle;
+	class UiObjectStyleOld;
 
-	class UiWindow : public UiObject
+	class UiWindowOld : public UiObjectOld
 	{
 	public:
 
@@ -30,10 +30,10 @@ namespace Wme
 		};
 
 
-		UiWindow(GuiStage* parentStage);
-		~UiWindow();
+		UiWindowOld(GuiStage* parentStage);
+		~UiWindowOld();
 
-		static UiObject* CreateInstance(GuiStage* parentStage) { return new UiWindow(parentStage); }
+		static UiObjectOld* CreateInstance(GuiStage* parentStage) { return new UiWindowOld(parentStage); }
 
 
 		void Display(ElementCollection* elementCol, const SpriteDrawingParams& params);
@@ -53,7 +53,7 @@ namespace Wme
 		bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
 
         // ScriptableObject
-		RTTI(UiWindow);
+		RTTI(UiWindowOld);
 		virtual WideString ConvertToString() { return L"Window object"; }
 		virtual WideString GetTypeName() const { return L"Window"; }
 
@@ -69,14 +69,14 @@ namespace Wme
 		RenderModifier* m_Clipper;
 		RenderModifier* m_UnClipper;
 
-		UiObjectStyle* m_NormalStyle;
-		UiObjectStyle* m_DisabledStyle;
-		UiObjectStyle* m_InactiveStyle;
+		UiObjectStyleOld* m_NormalStyle;
+		UiObjectStyleOld* m_DisabledStyle;
+		UiObjectStyleOld* m_InactiveStyle;
 
-		ResizableImage* GetImage() const;
+		ResizableImageOld* GetImage() const;
 		Sprite* GetSprite() const;
-		UiObjectStyle* GetCurrentStyle() const;
-		UiObjectStyle* GetStyle(WindowState state) const;
+		UiObjectStyleOld* GetCurrentStyle() const;
+		UiObjectStyleOld* GetStyle(WindowState state) const;
 
 		bool m_IsDragging;
 		Viewport* m_DragViewport;
@@ -85,4 +85,4 @@ namespace Wme
 	};
 }
 
-#endif // __WmeUiWindow_H__
+#endif // __WmeUiWindowOld_H__

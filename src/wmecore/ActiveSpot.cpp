@@ -14,7 +14,7 @@
 #include "RttView.h"
 #include "ViewportLayout.h"
 #include "StringUtil.h" // temp
-#include "UiButton.h" // temp
+#include "UiButtonOld.h" // temp
 
 
 namespace Wme
@@ -166,7 +166,7 @@ bool ActiveSpotGeometry::QueryObjectAt(int x, int y, float relX, float relY, Mou
 	pickParams.RenderQueueId = m_RenderQueueId;
 	pickParams.QueryUV = true;
 
-	static UiButton dummy(NULL);
+	static UiButtonOld dummy(NULL);
 
 	bool ok = m_Stage->RaycastFromPoint(pickParams);
 	if (ok)

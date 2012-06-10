@@ -6,7 +6,7 @@
 
 
 #include "Object.h"
-#include "UiObject.h"
+#include "UiObjectOld.h"
 
 
 namespace Wme
@@ -20,13 +20,13 @@ namespace Wme
 
 		static UiObjectFactory* GetInstance();
 
-		UiObject* CreateInstance(GuiStage* parentStage, const Utf8String& type);
-		void Register(const Utf8String& objectId, UiObject::UiObjectActivator activator);
+		UiObjectOld* CreateInstance(GuiStage* parentStage, const Utf8String& type);
+		void Register(const Utf8String& objectId, UiObjectOld::UiObjectActivator activator);
 
 	private:
 		UiObjectFactory();
 
-		typedef std::map<Utf8String, UiObject::UiObjectActivator> ActivatorMap;
+		typedef std::map<Utf8String, UiObjectOld::UiObjectActivator> ActivatorMap;
 		ActivatorMap m_Activators;
 	};
 }

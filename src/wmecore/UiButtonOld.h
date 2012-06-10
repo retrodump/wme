@@ -1,23 +1,23 @@
 // This file is part of Wintermute Engine
 // For conditions of distribution and use, see copyright notice in license.txt
 
-#ifndef __WmeUiButton_H__
-#define __WmeUiButton_H__
+#ifndef __WmeUiButtonOld_H__
+#define __WmeUiButtonOld_H__
 
 
-#include "UiObject.h"
+#include "UiObjectOld.h"
 #include "Alignment.h"
 
 
 namespace Wme
 {
-	class UiObjectStyle;
-	class ResizableImage;
+	class UiObjectStyleOld;
+	class ResizableImageOld;
 	class Sprite;
 	class Font;
 	class TextElement;
 
-	class UiButton : public UiObject
+	class UiButtonOld : public UiObjectOld
 	{
 	public:
 
@@ -29,10 +29,10 @@ namespace Wme
 			STATE_HOVER
 		};
 
-		UiButton(GuiStage* parentStage);
-		~UiButton();
+		UiButtonOld(GuiStage* parentStage);
+		~UiButtonOld();
 
-		static UiObject* CreateInstance(GuiStage* parentStage) { return new UiButton(parentStage); }
+		static UiObjectOld* CreateInstance(GuiStage* parentStage) { return new UiButtonOld(parentStage); }
 
 		void Display(ElementCollection* elementCol, const SpriteDrawingParams& params);
 		void Update();
@@ -58,7 +58,7 @@ namespace Wme
 		bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
 
         // ScriptableObject
-		RTTI(UiButton);
+		RTTI(UiButtonOld);
 		virtual WideString ConvertToString() { return L"Button object"; }
 		virtual WideString GetTypeName() const { return L"Button"; }
 
@@ -79,18 +79,18 @@ namespace Wme
 		int m_PressOffsetX;
 		int m_PressOffsetY;
 
-		UiObjectStyle* m_NormalStyle;
-		UiObjectStyle* m_DisabledStyle;
-		UiObjectStyle* m_PressedStyle;
-		UiObjectStyle* m_HoverStyle;
+		UiObjectStyleOld* m_NormalStyle;
+		UiObjectStyleOld* m_DisabledStyle;
+		UiObjectStyleOld* m_PressedStyle;
+		UiObjectStyleOld* m_HoverStyle;
 
-		UiObjectStyle* GetCurrentStyle() const;
-		UiObjectStyle* GetStyle(ButtonState state) const;
+		UiObjectStyleOld* GetCurrentStyle() const;
+		UiObjectStyleOld* GetStyle(ButtonState state) const;
 
 		void GetPressedAndHover(bool& pressedDown, bool& hover) const;
 		void GetSpritePos(Sprite* sprite, bool pressedDown, int& posX, int& posY) const;
 
-		ResizableImage* GetImage() const;
+		ResizableImageOld* GetImage() const;
 		Sprite* GetSprite() const;
 		Font* GetFont() const;
 		Ogre::ColourValue GetTextColor() const;
@@ -99,4 +99,4 @@ namespace Wme
 	};
 }
 
-#endif // __WmeUiButton_H__
+#endif // __WmeUiButtonOld_H__
