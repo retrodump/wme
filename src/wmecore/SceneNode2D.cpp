@@ -79,6 +79,16 @@ void SceneNode2D::RemoveChild(SceneNode2D* child)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SceneNode2D::RemoveAllChildren()
+{
+	while (!m_Children.empty())
+	{
+		SceneNode2D* child = m_Children.front();
+		child->SetParentNode(NULL);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void SceneNode2D::RemoveAndDestroyChild(SceneNode2D* child, bool destroyElements)
 {
 	if (!child || child->GetParentNode() != this) return;

@@ -1,11 +1,11 @@
 // This file is part of Wintermute Engine
 // For conditions of distribution and use, see copyright notice in license.txt
 
-#ifndef __WmeWindow_H__
-#define __WmeWindow_H__
+#ifndef __WmeUiWindow_H__
+#define __WmeUiWindow_H__
 
 
-#include "UiObjectBase.h"
+#include "UiControl.h"
 
 
 namespace Wme
@@ -14,15 +14,15 @@ namespace Wme
 	// temp
 	class ResizableImage;
 
-	class WmeDllExport Window : public UiObjectBase
+	class WmeDllExport UiWindow : public UiControl
 	{
 	public:
-		Window(Canvas2D* canvas);
-		virtual ~Window();
+		UiWindow(Canvas2D* canvas);
+		virtual ~UiWindow();
 
 
 		// ScriptableObject
-		RTTI(Window);
+		RTTI(UiWindow);
 		virtual WideString ConvertToString() { return L"Window object"; }
 		virtual WideString GetTypeName() const { return L"Window"; }
 

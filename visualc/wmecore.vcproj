@@ -877,6 +877,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiControl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiElement.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectBase.cpp"
 				>
 			</File>
@@ -889,7 +897,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiObjectState.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectStyleOld.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiWindow.cpp"
 				>
 			</File>
 			<File
@@ -938,10 +954,6 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Win32WindowExt.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\Window.cpp"
 				>
 			</File>
 			<File
@@ -1759,6 +1771,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiControl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiElement.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectBase.h"
 				>
 			</File>
@@ -1771,7 +1791,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiObjectState.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectStyleOld.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiWindow.h"
 				>
 			</File>
 			<File
@@ -1824,10 +1852,6 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\Win32WindowExt.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\Window.h"
 				>
 			</File>
 			<File

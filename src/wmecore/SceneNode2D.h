@@ -35,6 +35,7 @@ namespace Wme
 
 		void AddChild(SceneNode2D* child, int zOrder = 0);
 		void RemoveChild(SceneNode2D* child);
+		void RemoveAllChildren();
 
 		void RemoveAndDestroyChild(SceneNode2D* child, bool destroyElements);
 		void RemoveAndDestroyAllChildren(bool destroyElements);

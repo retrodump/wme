@@ -342,6 +342,17 @@ void ResizableElement2D::SetHeight(float val)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void ResizableElement2D::SetSize(float width, float height)
+{
+	if (width != m_Width || height != m_Height)
+	{
+		m_Width = width;
+		m_Height = height;
+		SetDirty();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void ResizableElement2D::SetImage(ResizableImage* val)
 {
 	if (val != m_Image)

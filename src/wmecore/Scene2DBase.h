@@ -23,7 +23,7 @@ namespace Wme
 	class RectElement2D;
 	class ResizableImage;
 	class ResizableElement2D;
-	class Window;
+	class UiWindow;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -64,8 +64,8 @@ namespace Wme
 		ResizableElement2D* m_Resizable;
 		SceneNode2D* m_ResizableNode;
 
-		Window* m_Window1;
-		Window* m_Window2;
+		UiWindow* m_Window1;
+		UiWindow* m_Window2;
 	};
 }
 

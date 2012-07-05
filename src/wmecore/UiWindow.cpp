@@ -2,7 +2,7 @@
 // For conditions of distribution and use, see copyright notice in license.txt
 
 #include "Wme.h"
-#include "Window.h"
+#include "UiWindow.h"
 #include "SceneNode2D.h"
 #include "ResizableElement2D.h"
 
@@ -15,7 +15,7 @@ namespace Wme
 
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window(Canvas2D* canvas) : UiObjectBase(canvas)
+UiWindow::UiWindow(Canvas2D* canvas) : UiControl(canvas)
 {
 	m_BackgroundNode = m_ElementsNode->CreateChildNode();
 	m_Background = new ResizableElement2D();
@@ -35,7 +35,7 @@ Window::Window(Canvas2D* canvas) : UiObjectBase(canvas)
 }
 
 //////////////////////////////////////////////////////////////////////////
-Window::~Window()
+UiWindow::~UiWindow()
 {
 	m_BackgroundNode->RemoveAndDestroyAllChildren(true);
 	SAFE_DELETE(m_BackgroundNode);
@@ -44,7 +44,7 @@ Window::~Window()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Window::OnSizeChanged()
+void UiWindow::OnSizeChanged()
 {
 	m_Background->SetWidth(GetWidth());
 	m_Background->SetHeight(GetHeight());

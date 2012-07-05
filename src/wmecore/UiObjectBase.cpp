@@ -135,6 +135,19 @@ void UiObjectBase::SetHeight(float height)
 }
 
 //////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetSize(float width, float height)
+{
+	if (width != m_Width || height != m_Height)
+	{
+		m_Width = width;
+		m_Height = height;
+		OnSizeChanged();
+		UpdateClippingRect();
+		InvokeGeometryChanged();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 float UiObjectBase::GetLeft() const
 {
 	return GetPosX();

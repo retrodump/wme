@@ -20,7 +20,7 @@
 #include "RectElement2D.h"
 #include "SpriteTexture.h"
 #include "ResizableElement2D.h"
-#include "Window.h"
+#include "UiWindow.h"
 
 
 namespace Wme
@@ -152,14 +152,14 @@ void Scene2DBase::Create()
 	m_ResizableNode->AttachElement(m_Resizable);
 	m_ResizableNode->SetPosition(400, 30);
 
-	m_Window1 = new Window(m_Canvas);
+	m_Window1 = new UiWindow(m_Canvas);
 	m_Window1->SetClipChildren(true);
 	m_Window1->SetPosX(60);
 	m_Window1->SetPosY(440);
 	m_Window1->SetWidth(200);
 	m_Window1->SetHeight(200);
 
-	m_Window2 = new Window(m_Canvas);
+	m_Window2 = new UiWindow(m_Canvas);
 	m_Window2->SetPosX(150);
 	m_Window2->SetPosY(150);
 	m_Window2->SetWidth(100);

@@ -25,6 +25,8 @@ namespace Wme
 		float GetHeight() const { return m_Height; }
 		void SetHeight(float val);
 
+		void SetSize(float width, float height);
+
 		ResizableImage* GetImage() const { return m_Image; }
 		void SetImage(ResizableImage* val);
 

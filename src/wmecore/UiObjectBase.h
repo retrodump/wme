@@ -67,6 +67,8 @@ namespace Wme
 		float GetHeight() const { return m_Height; }
 		void SetHeight(float height);
 
+		void SetSize(float width, float height);
+
 		float GetLeft() const;
 		void SetLeft(float left);
 
