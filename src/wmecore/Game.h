@@ -49,7 +49,7 @@ namespace Wme
 		void QuickMessage(const WideString& msg) const;
 
 		int RegisterObject(ScriptableObject* object);
-		bool UnregisterObject(int handle);
+		bool UnregisterObject(ScriptableObject* object);
 		ScriptableObject* GetObjectByHandle(int handle);
 
 		void DisplayContent();
@@ -73,8 +73,8 @@ namespace Wme
 
 		void AddRootsToGrayList(ValueManager* valMgr);
 
-		InteractiveObject* GetActiveObject() { return m_ActiveObject; }
-		void SetActiveObject(InteractiveObject* activeObject) { m_ActiveObject = activeObject; }
+		InteractiveObject* GetActiveObject() const { return m_ActiveObject; }
+		void SetActiveObject(InteractiveObject* activeObject);
 
 		GameTier* GetLiveTier();
 		GameTier* GetDefaultTier();

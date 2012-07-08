@@ -263,11 +263,11 @@ bool Game::ProcessFrame()
 
 	if (m_ContentMgr->ProcessFrame())
 	{
-		m_ActiveObject = m_ContentMgr->GetActiveObject();
+		SetActiveObject(m_ContentMgr->GetActiveObject());
 	}
 	else
 	{
-		m_ActiveObject = NULL;
+		SetActiveObject(NULL);
 		ret = false;
 	}
 
@@ -338,8 +338,12 @@ int Game::RegisterObject(ScriptableObject* object)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool Game::UnregisterObject(int handle)
+bool Game::UnregisterObject(ScriptableObject* object)
 {
+	if (object == m_ActiveObject) m_ActiveObject = NULL;
+
+	int handle = object->GetHandle();
+
 	ScriptableObjectMap::iterator it;
 	it = m_RegisteredObjects.find(handle);
 
@@ -371,6 +375,14 @@ void Game::AddRootsToGrayList(ValueManager* valMgr)
 	{
 		(*it).second->AddRootsToGrayList(valMgr);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Game::SetActiveObject(InteractiveObject* activeObject)
+{
+	if (m_ActiveObject) m_ActiveObject->OnMouseLeave();
+	m_ActiveObject = activeObject;
+	if (m_ActiveObject) m_ActiveObject->OnMouseEntry();
 }
 
 //////////////////////////////////////////////////////////////////////////

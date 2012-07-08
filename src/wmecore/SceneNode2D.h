@@ -78,6 +78,7 @@ namespace Wme
 		const Transform2D& GetSceneTransform();
 		
 		const BoundingRect& GetBoundingRect() const { return m_BoundingRect; }
+		void SetBoundingRect(float x, float y, float width, float height);
 
 		void AttachElement(Element2D* element);
 		void DetachElement();

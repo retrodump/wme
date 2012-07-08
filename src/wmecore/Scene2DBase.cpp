@@ -5,6 +5,7 @@
 #include "Scene2DBase.h"
 #include "SceneNode2D.h"
 #include "Viewport.h"
+#include "ViewportLayout.h"
 #include "Canvas2D.h"
 #include "ActiveSpot.h"
 
@@ -21,6 +22,9 @@
 #include "SpriteTexture.h"
 #include "ResizableElement2D.h"
 #include "UiWindow.h"
+#include "UiBorder.h"
+#include "UiInteractiveArea.h"
+#include "UiButton.h"
 
 
 namespace Wme
@@ -46,6 +50,7 @@ Scene2DBase::Scene2DBase()
 	m_ResizableImage = NULL;
 	m_ResizableNode = NULL;
 	m_Window1 = m_Window2 = NULL;
+	m_Border = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -153,6 +158,7 @@ void Scene2DBase::Create()
 	m_ResizableNode->SetPosition(400, 30);
 
 	m_Window1 = new UiWindow(m_Canvas);
+	m_Window1->SetName(L"Window1");
 	m_Window1->SetClipChildren(true);
 	m_Window1->SetPosX(60);
 	m_Window1->SetPosY(440);
@@ -166,6 +172,24 @@ void Scene2DBase::Create()
 	m_Window2->SetHeight(100);
 
 	m_Window1->AddChild(m_Window2);
+
+	m_Window1->SetWidth(300);
+	m_Window1->SetHeight(200);
+
+
+	m_Border = new UiBorder(m_Canvas);
+	m_Border->SetImage(L"win_grid.image");
+	m_Window1->AddChild(m_Border);
+	m_Border->FillParent(5,5,5,5);
+
+
+	UiInteractiveArea* area = new UiInteractiveArea(m_Canvas);
+	m_Window1->AddChild(area);
+	area->FillParent();
+/*
+	m_Window1->GetSceneNode()->SetRotation(15);
+	m_Window1->GetSceneNode()->SetScale(2, 1);
+*/
 /*
 	m_Window2->SetAnchor(UiObjectBase::ANCHOR_LEFT, m_Window1, 10);
 	m_Window2->SetAnchor(UiObjectBase::ANCHOR_RIGHT, m_Window1, 10);
@@ -175,15 +199,19 @@ void Scene2DBase::Create()
 	m_Window2->SetAnchor(UiObjectBase::ANCHOR_VERTICAL_CENTER, m_Window1);
 	m_Window2->SetAnchor(UiObjectBase::ANCHOR_HORIZONTAL_CENTER, m_Window1);
 
-	m_Window1->SetWidth(300);
-	m_Window1->SetHeight(300);
+	UiButton* button = new UiButton(m_Canvas);
+	button->SetSize(150, 50);
+	button->SetPosX(20);
+	button->SetPosY(20);
+
+	m_Window1->AddChild(button);
 
 
-	/*
-	m_Canvas->GetRootNode()->SetRotation(45);
-	m_Canvas->GetRootNode()->SetPosition(400, 400);
-	m_Canvas->GetRootNode()->SetScale(2, 1);
-	*/
+
+	//m_Canvas->GetRootNode()->SetRotation(45);
+	//m_Canvas->GetRootNode()->SetPosition(400, 400);
+	//m_Canvas->GetRootNode()->SetScale(1.5f, 1.5f);
+
 
 	//m_ElementCol->getParentSceneNode()->attachObject(m_Canvas);
 
@@ -242,6 +270,20 @@ void Scene2DBase::OnSceneGraphDirty()
 {
 
 }
+
+//////////////////////////////////////////////////////////////////////////
+bool Scene2DBase::HandleMouseEvent(Viewport* viewport, MouseEvent& event)
+{
+	bool res = Stage::HandleMouseEvent(viewport, event);
+
+	MousePickResult result;	
+	if (viewport->GetParentLayout()->GetObjectAt(event.GetPosX(), event.GetPosY(), result))
+	{
+		if (result.Object->HandleMouseEvent(viewport, event)) res = true;
+	}
+	return res;
+}
+
 
 
 } // namespace Wme

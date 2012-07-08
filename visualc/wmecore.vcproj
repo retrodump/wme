@@ -473,6 +473,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\InteractiveElement2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\InteractiveObject.cpp"
 				>
 			</File>
@@ -873,6 +877,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiBorder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiButton.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiButtonOld.cpp"
 				>
 			</File>
@@ -885,6 +897,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiInteractiveArea.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectBase.cpp"
 				>
 			</File>
@@ -894,10 +910,6 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\UiObjectOld.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\UiObjectState.cpp"
 				>
 			</File>
 			<File
@@ -1343,6 +1355,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\InteractiveElement2D.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\InteractiveObject.h"
 				>
 			</File>
@@ -1711,6 +1727,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\StateVar.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\StringUtil.h"
 				>
 			</File>
@@ -1767,6 +1787,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiBorder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\wmecore\UiButton.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiButtonOld.h"
 				>
 			</File>
@@ -1779,6 +1807,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\wmecore\UiInteractiveArea.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\wmecore\UiObjectBase.h"
 				>
 			</File>
@@ -1788,10 +1820,6 @@
 			</File>
 			<File
 				RelativePath="..\src\wmecore\UiObjectOld.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\wmecore\UiObjectState.h"
 				>
 			</File>
 			<File

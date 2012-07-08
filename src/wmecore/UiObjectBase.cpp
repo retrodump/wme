@@ -6,6 +6,7 @@
 #include "Canvas2D.h"
 #include "SceneNode2D.h"
 #include "UiAnchor.h"
+#include "UiControl.h"
 
 
 namespace Wme
@@ -21,8 +22,13 @@ UiObjectBase::UiObjectBase(Canvas2D* canvas)
 	m_ChildrenNode = m_SceneNode->CreateChildNode();
 	m_ClipChildren = false;
 	m_Width = m_Height = 0.0f;
+	m_Enabled = true;
+	m_Visible.SetValue(true);
+	m_MouseOver = false;
 
 	m_LeftAnchor = m_RightAnchor = m_TopAnchor = m_BottomAnchor = m_VerticalCenterAnchor = m_HorizontalCenterAnchor = NULL;
+
+	m_CurrentState = L"";
 
 	m_Parent = NULL;
 }
@@ -75,6 +81,8 @@ void UiObjectBase::SetParent(UiObjectBase* parent)
 	{
 		m_SceneNode->SetParentNode(m_Canvas->GetRootNode());
 	}
+
+	OnParentChanged();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -240,15 +248,20 @@ void UiObjectBase::SetHorizontalCenter(float horizontalCenter)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool UiObjectBase::IsVisible() const
+bool UiObjectBase::IsVisible(const WideString& stateName) const
 {
-	return m_SceneNode->IsVisible();
+	return m_Visible.GetValue(stateName);
 }
 
 //////////////////////////////////////////////////////////////////////////
-void UiObjectBase::SetVisible(bool visible)
+void UiObjectBase::SetVisible(bool visible, const WideString& stateName)
 {
-	m_SceneNode->SetVisible(visible);
+	m_Visible.SetValue(visible, stateName);
+
+	if (stateName == m_CurrentState)
+	{
+		m_SceneNode->SetVisible(visible);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -269,6 +282,7 @@ void UiObjectBase::SetEnabled(bool enabled)
 	{
 		m_Enabled = enabled;
 		OnEnabledChanged();
+		UpdateState();
 	}
 }
 
@@ -533,6 +547,59 @@ bool UiObjectBase::HasAnchor(AnchorType type) const
 	}
 
 	return (anchor && anchor->GetType() != ANCHOR_NONE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool UiObjectBase::FillParent(float marginLeft, float marginTop, float marginRight, float marginBottom)
+{
+	UiObjectBase* parent = GetParent();
+	if (!parent) return false;
+
+	bool ret = true;
+	ret = ret && SetAnchor(ANCHOR_LEFT, parent, marginLeft);
+	ret = ret && SetAnchor(ANCHOR_TOP, parent, marginTop);
+	ret = ret && SetAnchor(ANCHOR_RIGHT, parent, marginRight);
+	ret = ret && SetAnchor(ANCHOR_BOTTOM, parent, marginBottom);
+
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::SetCurrentState(const WideString& stateName)
+{
+	if (stateName != m_CurrentState)
+	{
+		m_CurrentState = stateName;
+
+		m_SceneNode->SetVisible(m_Visible.GetValue(stateName));
+		OnStateChanged();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::OnMouseEntry()
+{
+	m_MouseOver = true;
+	UpdateState();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void UiObjectBase::OnMouseLeave()
+{
+	m_MouseOver = false;
+	UpdateState();
+}
+
+//////////////////////////////////////////////////////////////////////////
+UiControl* UiObjectBase::GetParentControl()
+{
+	UiObjectBase* obj = this;
+	while (obj)
+	{
+		if (obj->IsControl()) return static_cast<UiControl*>(obj);
+		else obj = obj->GetParent();
+	}
+	return NULL;
 }
 
 

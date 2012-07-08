@@ -60,7 +60,7 @@ int ScriptableObject::Register()
 //////////////////////////////////////////////////////////////////////////
 void ScriptableObject::Unregister()
 {
-	Game::GetInstance()->UnregisterObject(m_Handle);
+	Game::GetInstance()->UnregisterObject(this);
 	m_Handle = -1;
 }
 

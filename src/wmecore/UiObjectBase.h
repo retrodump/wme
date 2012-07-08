@@ -6,6 +6,7 @@
 
 
 #include "InteractiveObject.h"
+#include "StateVar.h"
 
 
 namespace Wme
@@ -13,6 +14,7 @@ namespace Wme
 	class Canvas2D;
 	class SceneNode2D;
 	class UiAnchor;
+	class UiControl;
 
 	class WmeDllExport UiObjectBase : public InteractiveObject
 	{
@@ -51,6 +53,7 @@ namespace Wme
 		
 		UiObjectBase* GetParent() const { return m_Parent; }
 		void SetParent(UiObjectBase* parent);
+		virtual void OnParentChanged() {}
 
 		bool GetClipChildren() const { return m_ClipChildren; }
 		void SetClipChildren(bool clipChildren);
@@ -87,8 +90,10 @@ namespace Wme
 		float GetHorizontalCenter() const;
 		void SetHorizontalCenter(float horizontalCenter);
 
-		bool IsVisible() const;
-		void SetVisible(bool visible);
+		bool IsVisible(const WideString& stateName = L"") const;
+		void SetVisible(bool visible, const WideString& stateName = L"");
+
+		bool IsMouseOver() const { return m_MouseOver; }
 
 		bool IsEnabled() const;
 		void SetEnabled(bool enabled);
@@ -114,13 +119,30 @@ namespace Wme
 		bool GetAnchor(AnchorType type, UiObjectBase*& target, float& margin) const;
 		bool HasAnchor(AnchorType type) const;
 
+		bool FillParent(float marginLeft = 0.0f, float marginTop = 0.0f, float marginRight = 0.0f, float marginBottom = 0.0f);
+
+		void SetCurrentState(const WideString& stateName);
+		WideString GetCurrentState() { return m_CurrentState; }
+
+		virtual void OnStateChanged() {};
+
+		virtual void OnMouseEntry();
+		virtual void OnMouseLeave();
+
+		virtual bool IsControl() const { return false; }
+		UiControl* GetParentControl();
+
 	protected:
 		Canvas2D* m_Canvas;
 		SceneNode2D* m_SceneNode;
 		SceneNode2D* m_ElementsNode;
 		SceneNode2D* m_ChildrenNode;
 
+		WideString m_CurrentState;
+
+		StateVar<bool> m_Visible;
 		bool m_Enabled;
+		bool m_MouseOver;
 
 		float m_Width;
 		float m_Height;
@@ -137,6 +159,8 @@ namespace Wme
 		virtual void OnEnabledChanged() {}
 
 		void InvokeGeometryChanged() const;
+
+		virtual void UpdateState() {}
 
 		typedef std::vector<Listener*> ListenerList;
 		ListenerList m_Listeners;

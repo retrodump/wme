@@ -23,6 +23,9 @@ namespace Wme
 		// events
 		virtual bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
 		bool HasMouseCapture() const;
+
+		virtual void OnMouseEntry() {}
+		virtual void OnMouseLeave() {}
 	};
 }
 

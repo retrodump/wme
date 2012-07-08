@@ -49,6 +49,7 @@ namespace Wme
 			m_Decimals = 2;
 		}
 		~PropertyFloat() {};
+		
 
 		bool LoadFromXml(TiXmlElement* rootNode);
 		bool SaveToXml(TiXmlElement* rootNode);

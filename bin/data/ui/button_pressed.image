@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WmeResizableImage GeneratorVersion="2.0.0">
+    <Image Filename="true">ui/button_pressed.png</Image>
+    <FrameSize Left="10" Right="10" Top="10" Bottom="10" />
+    <StretchVertical>true</StretchVertical>
+    <StretchHorizontal>true</StretchHorizontal>
+    <PaintMiddlePart>true</PaintMiddlePart>
+</WmeResizableImage>

@@ -24,6 +24,7 @@ namespace Wme
 	class ResizableImage;
 	class ResizableElement2D;
 	class UiWindow;
+	class UiBorder;
 
 	class WmeDllExport Scene2DBase : public Scene
 	{
@@ -47,6 +48,8 @@ namespace Wme
 		virtual void OnSceneNodeChanged(SceneNode2D* node);
 		virtual void OnSceneGraphDirty();
 
+		virtual bool HandleMouseEvent(Viewport* viewport, MouseEvent& event);
+
 	protected:
 		Canvas2D* m_Canvas;
 		Viewport* m_Viewport;
@@ -63,6 +66,7 @@ namespace Wme
 		ResizableImage* m_ResizableImage;
 		ResizableElement2D* m_Resizable;
 		SceneNode2D* m_ResizableNode;
+		UiBorder* m_Border;
 
 		UiWindow* m_Window1;
 		UiWindow* m_Window2;

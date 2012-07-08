@@ -10,26 +10,16 @@
 
 namespace Wme
 {
-	class UiObjectState;
-
 	class WmeDllExport UiControl : public UiElement
 	{
 	public:
 		UiControl(Canvas2D* canvas);
 		virtual ~UiControl();
 
-		WideString GetCurrentState() const { return m_CurrentState; }
-		void SetCurrentState(const WideString& stateName);
+		virtual bool IsControl() const { return true; }
 
 	protected:
-		void AddState(const WideString& stateName, UiObjectState* state);
 
-		typedef std::map<WideString, UiObjectState*> StateMap;
-		StateMap m_States;
-
-		WideString m_CurrentState;
-
-		virtual void OnSizeChanged();
 	};
 }
 

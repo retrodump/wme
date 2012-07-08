@@ -30,6 +30,8 @@ UiWindow::UiWindow(Canvas2D* canvas) : UiControl(canvas)
 	m_ResizableTexture->SetFrameTopHeight(30);
 	m_ResizableTexture->SetFrameBottomHeight(30);
 
+	m_ResizableTexture->SaveToFile(L"c:/win.image");
+
 
 	m_Background->SetImage(m_ResizableTexture);
 }

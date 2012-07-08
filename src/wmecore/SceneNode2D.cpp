@@ -424,6 +424,15 @@ void SceneNode2D::AddGeometry(Vertex2DTex* vertexData, size_t numVerts, const Og
 }
 
 //////////////////////////////////////////////////////////////////////////
+void SceneNode2D::SetBoundingRect(float x, float y, float width, float height)
+{
+	m_BoundingRect.AddPoint(GetSceneTransform() * Ogre::Vector2(x, y));
+	m_BoundingRect.AddPoint(GetSceneTransform() * Ogre::Vector2(x + width, y));
+	m_BoundingRect.AddPoint(GetSceneTransform() * Ogre::Vector2(x, y + height));
+	m_BoundingRect.AddPoint(GetSceneTransform() * Ogre::Vector2(x + width, y + height));
+}
+
+//////////////////////////////////////////////////////////////////////////
 RenderBatch2D* SceneNode2D::GetFreeRenderBatch()
 {
 	size_t counter = 0;
